@@ -17,6 +17,7 @@ type Ball = {
   escapedAt?: number; // ms timestamp (performance.now)
   spawned?: boolean; // whether we've spawned replacements for this ball
   opacity?: number; // 0..1 for fade-out after delay
+  trail?: { x: number; y: number; r: number }[]; // short-lived trail positions
 };
 
 // ---- Math helpers (with simple dev tests below) ----
@@ -80,8 +81,8 @@ export default function RotatingGateBalls() {
   const minBounceSpeed = 260; // stronger push off from the wall
   const airDrag = 0.000; // per frame linear drag (0..0.01)
   const maxBalls = 300; // safety cap to avoid browser meltdown
-  const minBallRadius = 3; // smaller minimum
-  const initialRadius = 8; // smaller starting size
+  const minBallRadius = 4; // slightly larger minimum
+  const initialRadius = 12; // slightly larger starting size
 
   // Spawn throttling: when too many balls, disable splitting until one remains
   const spawnEnabledRef = useRef<boolean>(true);
@@ -169,6 +170,7 @@ export default function RotatingGateBalls() {
       vy: (Math.random() - 0.8) * 120, // slight initial upward bias
       r: radius,
       color: `hsl(${hue} 70% 55%)`,
+      trail: [],
     };
   }
 
@@ -253,11 +255,14 @@ export default function RotatingGateBalls() {
     const canvas = canvasRef.current!;
     const dpr = window.devicePixelRatio || 1;
     const cssW = canvas.width / dpr;
+    const cssH = canvas.height / dpr;
 
     // Integrate and wall interactions
     const now = performance.now();
     const toRemove: number[] = [];
+    const toSpawn: Ball[] = [];
 
+    const TRAIL_LEN = 20;
     for (let i = 0; i < balls.length; i++) {
       const b = balls[i];
 
@@ -267,6 +272,10 @@ export default function RotatingGateBalls() {
       // Integrate position
       b.x += b.vx * dt;
       b.y += b.vy * dt;
+
+      // Update trail (short-lived, no permanent ghosting)
+      (b.trail ||= []).push({ x: b.x, y: b.y, r: b.r });
+      if (b.trail.length > TRAIL_LEN) b.trail.shift();
 
       // Air drag (very light)
       if (airDrag > 0) {
@@ -292,15 +301,16 @@ export default function RotatingGateBalls() {
             const { x: cx2, y: cy2 } = centerRef.current;
             const jx = (Math.random() - 0.5) * 0.5;
             const jy = (Math.random() - 0.5) * 0.5;
-            balls.push(makeBall(cx2 + jx, cy2 + jy, newR));
-            balls.push(makeBall(cx2 - jx, cy2 - jy, newR));
+            toSpawn.push(makeBall(cx2 + jx, cy2 + jy, newR));
+            toSpawn.push(makeBall(cx2 - jx, cy2 - jy, newR));
           }
         }
         b.spawned = true;
       }
 
-      // If NOT in gap, resolve collision only when inside the ring (prevent pull-back)
-      if (!inGap && dist + b.r > R && dist < R) {
+      // If NOT in gap, resolve collision with the solid arc (prevent tunneling)
+      // Do not resolve against the ring once a ball has escaped.
+      if (!inGap && dist + b.r > R && b.escapedAt === undefined) {
         resolveWallCollision(b, cx, cy, R);
       }
 
@@ -312,6 +322,20 @@ export default function RotatingGateBalls() {
         // small vertical friction
         b.vy *= 0.98;
         if (Math.abs(b.vx) < 5) b.vx = 0;
+      }
+
+      // Top and bottom bounds
+      if (b.y - b.r < 0) {
+        b.y = b.r;
+        if (b.vy < 0) b.vy = -b.vy * 0.55;
+        b.vx *= 0.99;
+        if (Math.abs(b.vy) < 5) b.vy = 0;
+      }
+      if (b.y + b.r > cssH) {
+        b.y = cssH - b.r;
+        if (b.vy > 0) b.vy = -b.vy * 0.55;
+        b.vx *= 0.99;
+        if (Math.abs(b.vy) < 5) b.vy = 0;
       }
 
       // Fade out ~1s after escape, then remove
@@ -329,10 +353,21 @@ export default function RotatingGateBalls() {
     // Ball-ball collisions after wall/floor resolution (single pass is usually enough visually)
     resolveBallBallCollisions();
 
+    // Apply any queued spawns after physics
+    if (toSpawn.length) {
+      for (const nb of toSpawn) balls.push(nb);
+    }
+
     // Remove fully faded balls (from end to start)
     if (toRemove.length) {
       toRemove.sort((a, b) => b - a);
       for (const idx of toRemove) balls.splice(idx, 1);
+    }
+
+    // Safety: never let population drop to zero
+    if (balls.length === 0) {
+      const { x: cx2, y: cy2 } = centerRef.current;
+      balls.push(makeBall(cx2, cy2, initialRadius));
     }
 
     // Keep UI count updated
@@ -351,12 +386,8 @@ export default function RotatingGateBalls() {
     const cssW = canvas.width / dpr;
     const cssH = canvas.height / dpr;
 
-    // --- Comet trail background fade (no full clear) ---
-    ctx.save();
-    ctx.globalCompositeOperation = "source-over";
-    ctx.fillStyle = "rgba(11,16,32,0.18)"; // slight fade to leave trails
-    ctx.fillRect(0, 0, cssW, cssH);
-    ctx.restore();
+    // Full clear to avoid permanent ghosting; background is provided by CSS behind the canvas
+    ctx.clearRect(0, 0, cssW, cssH);
 
     // Draw the rotating ring (solid arc only) - crisp redraw each frame
     ctx.save();
@@ -385,14 +416,37 @@ export default function RotatingGateBalls() {
     ctx.stroke();
     ctx.restore();
 
-    // Draw balls with glow
+    // Draw balls with short procedural trails (no canvas accumulation)
     const balls = ballsRef.current;
     for (let i = 0; i < balls.length; i++) {
       const b = balls[i];
-      const alpha = b.opacity !== undefined ? b.opacity : 1;
-      ctx.shadowColor = b.color;
-      ctx.shadowBlur = 16;
-      ctx.globalAlpha = alpha;
+      const baseAlpha = b.opacity !== undefined ? b.opacity : 1;
+      const trail = b.trail || [];
+
+      // Circular trail segments with subtle glow (classic comet dots)
+      if (trail.length >= 2) {
+        ctx.save();
+        for (let t = 0; t < trail.length - 1; t++) {
+          const seg = trail[t];
+          const k = t / (trail.length - 1 || 1); // 0..1 old->new
+          // Fade tail to a fine, dim point; brighter/softer near the head
+          const a = baseAlpha * (0.01 + 0.06 * k);
+          ctx.globalAlpha = a;
+          ctx.fillStyle = b.color;
+          ctx.shadowColor = b.color;
+          ctx.shadowBlur = 8 * k;
+          ctx.beginPath();
+          ctx.arc(seg.x, seg.y, seg.r * (0.12 + 0.88 * k), 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+
+      // Ball (on top)
+      ctx.globalAlpha = baseAlpha;
+      // No glow halo
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
       ctx.fillStyle = b.color;
       ctx.beginPath();
       ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
@@ -414,12 +468,8 @@ export default function RotatingGateBalls() {
   return (
     <div className="rtg-container" data-testid="hero-root">
       <div className="rtg-overlay">
-        <h1 className="hero-title">Design. Code. Physics.</h1>
-        <p className="hero-subtitle">A minimal physics visual that feels alive. Built with React + TypeScript.</p>
-        <div className="cta">
-          <button className="btn btn-primary">Play Demo</button>
-          <button className="btn btn-ghost">Learn More</button>
-        </div>
+        <h1 className="hero-title">Lorem Ipsum</h1>
+        <p className="hero-subtitle">dolor sit amet.</p>
       </div>
       <canvas ref={canvasRef} />
     </div>
