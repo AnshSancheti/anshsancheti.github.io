@@ -145,6 +145,37 @@ export default function RotatingGateBalls() {
       const cx = isMobile ? vw / 2 : vw - circleDia / 2 - 60;
       const cy = isMobile ? Math.max(R + padding + 12, vh * 0.38) : vh / 2;
       centerRef.current = { x: cx, y: cy, R };
+
+      // Position the overlay on mobile: centered between circle bottom and viewport bottom
+      const ov = overlayRef.current;
+      if (ov) {
+        if (isMobile) {
+          const circleBottom = cy + R;
+          // Ensure layout is up to date before measuring height
+          // Use rAF to avoid thrashing; schedule immediately
+          requestAnimationFrame(() => {
+            const h = ov.offsetHeight || 0;
+            const gutter = 12; // space between circle and overlay, and overlay and bottom
+            const targetCenter = Math.max(circleBottom + gutter, (circleBottom + vh) / 2);
+            let top = Math.round(targetCenter - h / 2);
+            const minTop = Math.round(circleBottom + gutter);
+            const maxTop = Math.round(vh - h - gutter);
+            if (!Number.isNaN(top)) {
+              top = Math.max(minTop, Math.min(maxTop, top));
+              ov.style.left = '50%';
+              ov.style.transform = 'translateX(-50%)';
+              ov.style.top = `${top}px`;
+              ov.style.bottom = 'auto';
+            }
+          });
+        } else {
+          // Clear overrides to use desktop CSS positioning
+          ov.style.top = '';
+          ov.style.bottom = '';
+          ov.style.left = '';
+          ov.style.transform = '';
+        }
+      }
     }
 
     // First layout + tests + initial state
