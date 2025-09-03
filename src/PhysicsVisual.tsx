@@ -568,6 +568,34 @@ export default function RotatingGateBalls() {
 
   return (
     <div className="rtg-container" data-testid="hero-root">
+      <div className="rtg-social" aria-label="Social links">
+        <a
+          className="icon-link"
+          href="https://www.linkedin.com/in/ansh-sancheti-10b043aa/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="LinkedIn"
+          title="LinkedIn"
+        >
+          {/* LinkedIn icon */}
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.024-3.037-1.852-3.037-1.853 0-2.136 1.447-2.136 2.944v5.662H9.35V9h3.414v1.561h.049c.476-.9 1.637-1.85 3.368-1.85 3.602 0 4.269 2.371 4.269 5.455v6.286zM5.337 7.433a2.063 2.063 0 1 1 0-4.126 2.063 2.063 0 0 1 0 4.126zM7.114 20.452H3.556V9h3.558v11.452z" />
+          </svg>
+        </a>
+        <a
+          className="icon-link"
+          href="https://github.com/AnshSancheti"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="GitHub"
+          title="GitHub"
+        >
+          {/* GitHub icon */}
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 .5C5.73.5.98 5.24.98 11.5c0 4.85 3.15 8.96 7.52 10.41.55.1.75-.24.75-.53 0-.26-.01-1.12-.02-2.03-3.06.66-3.71-1.31-3.71-1.31-.5-1.27-1.22-1.6-1.22-1.6-.99-.68.08-.67.08-.67 1.1.08 1.68 1.13 1.68 1.13.97 1.66 2.54 1.18 3.16.9.1-.7.38-1.18.69-1.45-2.44-.28-5.01-1.22-5.01-5.43 0-1.2.43-2.18 1.13-2.95-.11-.28-.49-1.4.11-2.91 0 0 .92-.29 3.02 1.13a10.5 10.5 0 0 1 5.5 0c2.1-1.42 3.02-1.13 3.02-1.13.6 1.51.22 2.63.11 2.91.7.77 1.13 1.75 1.13 2.95 0 4.22-2.58 5.14-5.03 5.41.39.34.74 1.01.74 2.04 0 1.47-.01 2.65-.01 3.01 0 .29.19.64.76.53A10.52 10.52 0 0 0 23.02 11.5C23.02 5.24 18.27.5 12 .5z"/>
+          </svg>
+        </a>
+      </div>
       <div className="rtg-overlay" ref={overlayRef}>
         <h1 className="hero-title">Ansh Sancheti</h1>
         <p className="hero-subtitle">software engineer.</p>
