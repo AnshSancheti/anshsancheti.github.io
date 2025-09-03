@@ -18,6 +18,8 @@ type Ball = {
   spawned?: boolean; // whether we've spawned replacements for this ball
   opacity?: number; // 0..1 for fade-out after delay
   trail?: { x: number; y: number; r: number }[]; // short-lived trail positions
+  gapOutsideTicks?: number;
+  exitGraceUntil?: number; // ms timestamp to ignore ring collisions briefly
 };
 
 // ---- Math helpers (with simple dev tests below) ----
@@ -77,7 +79,7 @@ export default function RotatingGateBalls() {
   const gapPercent = 0.10; // ~10% of circumference
   const rotationSpeed = 0.6; // rad/s
   const gravity = 1400; // px/s^2
-  const restitutionWall = 1.02; // slightly >1 for a punchy push-off
+  const restitutionWall = 0.98; // elastic-ish but non-injective
   const restitutionBall = 0.98; // slightly bouncier ball-ball
   const minBounceSpeed = 260; // stronger push off from the wall
   const airDrag = 0.000; // per frame linear drag (0..0.01)
@@ -192,47 +194,30 @@ export default function RotatingGateBalls() {
     };
   }
 
-  // Ring collision from either side (inside or outside), except at the gap
+  // Ring collision: clamp inside; reflect only when approaching outward
   function resolveRingCollision(b: Ball, cx: number, cy: number, R: number) {
     const dx = b.x - cx;
     const dy = b.y - cy;
     const dist = Math.hypot(dx, dy) || 1e-6;
-    const nx = dx / dist; // outward normal from center
+    const nx = dx / dist;
     const ny = dy / dist;
+    const e = Math.min(1.0, restitutionWall);
+    const eps = 0.8;
 
-    // Velocity along outward normal
-    const vn = b.vx * nx + b.vy * ny;
-    const eps = 0.5; // small separation to avoid re-penetration
-    const e = Math.min(1.02, restitutionWall); // a touch more lively
+    const target = R - b.r - eps;
+    if (dist > target) {
+      b.x = cx + nx * target;
+      b.y = cy + ny * target;
 
-    if (dist < R) {
-      // Ball center is inside the ring radius
-      const overlap = dist + b.r - R;
-      if (overlap >= 0 && vn > 0) {
-        // Moving outward into the ring
-        // Snap to just inside the boundary
-        const target = R - b.r - eps;
-        b.x = cx + nx * target;
-        b.y = cy + ny * target;
-        // Reflect outward component to inward
+      const vn = b.vx * nx + b.vy * ny;
+      if (vn > 0) {
         const j = (1 + e) * vn;
         b.vx -= j * nx;
         b.vy -= j * ny;
       }
-    } else {
-      // Ball center is outside the ring radius
-      const overlap = R - (dist - b.r);
-      if (overlap >= 0 && vn < 0) {
-        // Moving inward into the ring
-        // Snap to just outside the boundary
-        const target = R + b.r + eps;
-        b.x = cx + nx * target;
-        b.y = cy + ny * target;
-        // Reflect inward component to outward
-        const j = (1 + e) * (-vn);
-        b.vx += j * nx;
-        b.vy += j * ny;
-      }
+
+      b.vx *= 0.999;
+      b.vy *= 0.999;
     }
   }
 
@@ -403,28 +388,43 @@ export default function RotatingGateBalls() {
       const dy = b.y - cy;
       const dist = Math.hypot(dx, dy);
       const angle = Math.atan2(dy, dx);
-      const inGap = angleInArc(angle, gapStart, gapLen);
+      const padding = Math.atan2(b.r, R) + 0.02;
+      const effectiveStart = gapStart + padding;
+      const effectiveLen = Math.max(0, gapLen - 2 * padding);
+      const inGap = angleInArc(angle, effectiveStart, effectiveLen);
 
-      // Detect first-time escape: fully outside and within the gap sector
-      if (inGap && dist - b.r >= R && b.escapedAt === undefined) {
-        b.escapedAt = now;
-        b.opacity = 1;
-        // Immediately spawn replacements
-        if (spawnEnabledRef.current) {
-          const newR = Math.max(minBallRadius, b.r * 0.96);
-          if (balls.length <= maxBalls && newR >= minBallRadius) {
-            const { x: cx2, y: cy2 } = centerRef.current;
-            const jx = (Math.random() - 0.5) * 0.5;
-            const jy = (Math.random() - 0.5) * 0.5;
-            toSpawn.push(makeBall(cx2 + jx, cy2 + jy, newR));
-            toSpawn.push(makeBall(cx2 - jx, cy2 - jy, newR));
+      const nx = dx / (dist || 1e-6);
+      const ny = dy / (dist || 1e-6);
+      const vn = b.vx * nx + b.vy * ny;
+      const fullyOutside = dist - b.r >= R + 0.5;
+
+      if (inGap && fullyOutside && vn > 0 && b.escapedAt === undefined) {
+        b.gapOutsideTicks = (b.gapOutsideTicks || 0) + 1;
+        if (b.gapOutsideTicks >= 2) {
+          b.escapedAt = now;
+          b.opacity = 1;
+          if (spawnEnabledRef.current) {
+            const newR = Math.max(minBallRadius, b.r * 0.96);
+            if (balls.length <= maxBalls && newR >= minBallRadius) {
+              const { x: cx2, y: cy2 } = centerRef.current;
+              const jx = (Math.random() - 0.5) * 0.5;
+              const jy = (Math.random() - 0.5) * 0.5;
+              toSpawn.push(makeBall(cx2 + jx, cy2 + jy, newR));
+              toSpawn.push(makeBall(cx2 - jx, cy2 - jy, newR));
+            }
           }
+          b.spawned = true;
         }
-        b.spawned = true;
+      } else {
+        b.gapOutsideTicks = 0;
       }
 
-      // If NOT in gap, resolve collision with the solid ring from either side
-      if (!inGap) {
+      // If NOT in gap, resolve collision with the solid ring
+      // Skip when ball is escaped or within a brief grace window after crossing the gap
+      const closeToExit = inGap && (dist - b.r >= R - 0.5);
+      if (closeToExit) b.exitGraceUntil = Math.max(b.exitGraceUntil || 0, now + 180);
+      const inExitGrace = (b.exitGraceUntil || 0) > now;
+      if (!inGap && b.escapedAt === undefined && !inExitGrace) {
         resolveRingCollision(b, cx, cy, R);
       }
 

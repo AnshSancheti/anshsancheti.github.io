@@ -9,6 +9,8 @@ type Ball = {
   vy: number;
   r: number;
   color: string;
+  gapOutsideTicks?: number;
+  exitGraceUntil?: number;
 };
 
 function clamp(v: number, min: number, max: number) {
@@ -43,9 +45,8 @@ export default function PhysicsVisualMinimal() {
   const gapPercent = 0.10;
   const rotationSpeed = 0.6;
   const gravity = 1400;
-  const restitutionWall = 1.02;
+  const restitutionWall = 0.98;
   const restitutionBall = 0.96;
-  const minBounceSpeed = 260;
   const maxBalls = 300;
   const minBallRadius = 3;
   const initialRadius = 8;
@@ -131,17 +132,20 @@ export default function PhysicsVisualMinimal() {
     const dist = Math.hypot(dx, dy) || 1e-6;
     const nx = dx / dist;
     const ny = dy / dist;
+    const e = Math.min(1.0, restitutionWall);
+    const eps = 0.8;
 
-    const penetration = dist + b.r - R;
-    if (penetration > 0) {
-      const slop = 1.2;
-      b.x -= (penetration + slop) * nx;
-      b.y -= (penetration + slop) * ny;
+    const target = R - b.r - eps;
+    if (dist > target) {
+      b.x = cx + nx * target;
+      b.y = cy + ny * target;
 
       const vn = b.vx * nx + b.vy * ny;
-      let desiredInward = Math.max(minBounceSpeed, Math.abs(vn) * restitutionWall);
-      b.vx += (-vn - desiredInward) * nx;
-      b.vy += (-vn - desiredInward) * ny;
+      if (vn > 0) {
+        const j = (1 + e) * vn;
+        b.vx -= j * nx;
+        b.vy -= j * ny;
+      }
 
       b.vx *= 0.999;
       b.vy *= 0.999;
@@ -197,6 +201,7 @@ export default function PhysicsVisualMinimal() {
     const gapStart = gapStartRef.current;
 
     const escapedIndices: number[] = [];
+    const now = performance.now();
 
     for (let i = 0; i < balls.length; i++) {
       const b = balls[i];
@@ -209,14 +214,32 @@ export default function PhysicsVisualMinimal() {
       const dy = b.y - cy;
       const dist = Math.hypot(dx, dy);
       const angle = Math.atan2(dy, dx);
-      const inGap = angleInArc(angle, gapStart, gapLen);
+      const padding = Math.atan2(b.r, R) + 0.02;
+      const effectiveStart = gapStart + padding;
+      const effectiveLen = Math.max(0, gapLen - 2 * padding);
+      const inGap = angleInArc(angle, effectiveStart, effectiveLen);
 
-      if (inGap && dist - b.r >= R) {
-        escapedIndices.push(i);
-        continue;
+      const nx = dx / (dist || 1e-6);
+      const ny = dy / (dist || 1e-6);
+      const vn = b.vx * nx + b.vy * ny;
+      const fullyOutside = dist - b.r >= R + 0.5;
+
+      if (inGap && fullyOutside && vn > 0) {
+        b.gapOutsideTicks = (b.gapOutsideTicks || 0) + 1;
+        if (b.gapOutsideTicks >= 2) {
+          escapedIndices.push(i);
+          continue;
+        }
+      } else {
+        b.gapOutsideTicks = 0;
       }
 
-      if (!inGap && dist + b.r > R) {
+      // Brief grace to allow clearing the boundary after entering gap
+      const closeToExit = inGap && (dist - b.r >= R - 0.5);
+      if (closeToExit) b.exitGraceUntil = Math.max(b.exitGraceUntil || 0, now + 180);
+      const inExitGrace = (b.exitGraceUntil || 0) > now;
+
+      if (!inGap && !inExitGrace && dist + b.r > R) {
         resolveWallCollision(b, cx, cy, R);
       }
     }
