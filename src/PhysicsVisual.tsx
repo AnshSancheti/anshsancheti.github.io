@@ -73,7 +73,7 @@ export default function RotatingGateBalls() {
   const rafRef = useRef<number | null>(null);
   const [isRunning, setIsRunning] = useState(true);
   const isRunningRef = useRef(true);
-  const [, setBallCount] = useState(1);
+  // Ball count state removed (unused in UI)
   const overlayRef = useRef<HTMLDivElement | null>(null);
   // Simulation clock (ms), advances only while running
   const simNowMsRef = useRef<number>(0);
@@ -185,7 +185,7 @@ export default function RotatingGateBalls() {
     // Initialize with a single ball at center (after we know center)
     const { x: cx, y: cy } = centerRef.current;
     ballsRef.current = [makeBall(cx, cy, initialRadius)];
-    setBallCount(1);
+    // initial ball already seeded; no UI counter to update
 
     // Animation loop
     lastTRef.current = performance.now();
@@ -495,8 +495,7 @@ export default function RotatingGateBalls() {
       balls.push(makeBall(cx2, cy2, initialRadius));
     }
 
-    // Keep UI count updated
-    setBallCount(balls.length);
+    // UI counter removed; no-op
   }
 
   function draw() {

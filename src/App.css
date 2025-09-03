@@ -8,51 +8,7 @@
   --border: rgba(255, 255, 255, 0.08);
 }
 
-/* Page */
-.landing {
-  min-height: 100vh;
-  color: var(--text);
-  background: radial-gradient(1200px 800px at 20% -10%, #1a2455 0%, transparent 50%),
-    radial-gradient(900px 600px at 100% 0%, #0f2762 0%, transparent 55%),
-    linear-gradient(180deg, var(--bg-0), var(--bg-1));
-  display: flex;
-  flex-direction: column;
-}
-
-/* Top nav */
-.navbar {
-  width: 100%;
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 20px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.nav-brand {
-  font-weight: 700;
-  letter-spacing: 0.3px;
-}
-.nav-actions { display: flex; gap: 16px; align-items: center; }
-.link { color: var(--muted); text-decoration: none; font-size: 14px; }
-.link:hover { color: var(--text); }
-
-/* Hero */
-.hero {
-  width: 100%;
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 24px;
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 28px;
-  align-items: start;
-}
-@media (max-width: 900px) {
-  .hero { grid-template-columns: 1fr; gap: 36px; }
-}
-
-.hero-left { display: flex; flex-direction: column; gap: 20px; }
+/* Headings used in hero overlay */
 .hero-title {
   font-size: clamp(32px, 5vw, 56px);
   line-height: 1.05;
@@ -79,16 +35,7 @@
 .btn-primary:hover { filter: brightness(1.05); box-shadow: 0 0 0 8px rgba(122,162,255,0.18); }
 .btn-ghost { background: transparent; }
 
-/* Visual circle */
-.hero-right { display: flex; align-items: flex-start; justify-content: center; overflow: visible; }
-.circle-stage {
-  width: clamp(280px, 42vw, 560px);
-  height: 100vh;
-  overflow: visible;
-  display: grid;
-  place-items: start center;
-}
-.circle-stage canvas { display: block; }
+/* Visual circle is drawn on canvas */
 
 /* Full-screen component container */
 .rtg-container {
@@ -168,16 +115,6 @@
     font-size: clamp(26px, 7.5vw, 32px);
   }
 }
-:root {
-  --bg-0: #0b1020;
-  --bg-1: #0f1730;
-  --text: #e6e9ef;
-  --muted: #a8b0c2;
-  --brand: #7aa2ff;
-  --ring: rgba(122, 162, 255, 0.4);
-  --border: rgba(255, 255, 255, 0.08);
-}
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 html, body, #root {

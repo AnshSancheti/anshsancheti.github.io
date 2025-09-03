@@ -1,7 +1,7 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- Source: `src/` — `App.tsx`, `PhysicsVisualMinimal.tsx`, `PhysicsVisual.tsx`, styles (`App.css`, `index.css`).
+- Source: `src/` — `App.tsx`, `PhysicsVisual.tsx`, styles (`App.css`, `index.css`).
 - Tests: colocated `*.test.tsx` (e.g., `src/App.test.tsx`); Jest setup in `src/setupTests.ts`.
 - Assets: `public/` (`index.html`, icons, manifest).
 - Config: `package.json`, `tsconfig.json`; CRA scaffolding via `react-scripts`.
@@ -15,8 +15,8 @@
 ## Coding Style & Naming Conventions
 - Language: TypeScript + React (functional components, hooks).
 - Indentation: 2 spaces; keep semicolons and imports consistent with existing files.
-- Names: Components in PascalCase (`PhysicsVisualMinimal`), files `PascalCase.tsx`; utilities in camelCase.
-- Styling: Tailwind utility classes in JSX; legacy CSS files remain for base styles.
+- Names: Components in PascalCase, files `PascalCase.tsx`; utilities in camelCase.
+- Styling: CSS modules in `App.css` and base styles in `index.css`.
 - Linting: CRA ESLint preset (`react-app`, `react-app/jest`). Fix editor/CI warnings before opening a PR.
 
 ## Testing Guidelines
@@ -37,4 +37,3 @@
 - Keep changes scoped; avoid drive-by refactors.
 - If behavior changes, update tests and `README.md` snippets accordingly.
 - Validate locally: `npm start`, then `npm test`, and `npm run build` before proposing changes.
-
