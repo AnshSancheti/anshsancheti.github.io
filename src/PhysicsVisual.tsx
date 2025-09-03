@@ -71,8 +71,8 @@ let GLOBAL_ID = 1;
 export default function RotatingGateBalls() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef<number | null>(null);
-  const [running, setRunning] = useState(true);
-  const [ballCount, setBallCount] = useState(1);
+  const [running] = useState(true);
+  const [, setBallCount] = useState(1);
   const overlayRef = useRef<HTMLDivElement | null>(null);
 
   // Tunables
@@ -81,7 +81,7 @@ export default function RotatingGateBalls() {
   const gravity = 1400; // px/s^2
   const restitutionWall = 0.98; // elastic-ish but non-injective
   const restitutionBall = 0.98; // slightly bouncier ball-ball
-  const minBounceSpeed = 260; // stronger push off from the wall
+  // const minBounceSpeed = 260; // stronger push off from the wall (unused)
   const airDrag = 0.000; // per frame linear drag (0..0.01)
   const maxBalls = 300; // safety cap to avoid browser meltdown
   const minBallRadius = 4; // slightly larger minimum
@@ -264,64 +264,7 @@ export default function RotatingGateBalls() {
   }
 
   // Axis-aligned rectangle collision (against the text overlay)
-  function resolveRectCollision(
-    b: Ball,
-    rect: { left: number; top: number; right: number; bottom: number },
-    restitution = 0.7
-  ) {
-    // Find closest point on rect to ball center
-    const cx = clamp(b.x, rect.left, rect.right);
-    const cy = clamp(b.y, rect.top, rect.bottom);
-    let dx = b.x - cx;
-    let dy = b.y - cy;
-    let dist2 = dx * dx + dy * dy;
-
-    if (dist2 > b.r * b.r) return; // no overlap
-
-    let nx = 0;
-    let ny = 0;
-    let pen = 0;
-
-    if (dist2 === 0) {
-      // Center is inside rect; choose the shallowest push to nearest edge
-      const leftPen = Math.abs(b.x - rect.left);
-      const rightPen = Math.abs(rect.right - b.x);
-      const topPen = Math.abs(b.y - rect.top);
-      const bottomPen = Math.abs(rect.bottom - b.y);
-      const minPen = Math.min(leftPen, rightPen, topPen, bottomPen);
-      if (minPen === leftPen) {
-        nx = -1; ny = 0; pen = b.r - leftPen;
-      } else if (minPen === rightPen) {
-        nx = 1; ny = 0; pen = b.r - rightPen;
-      } else if (minPen === topPen) {
-        nx = 0; ny = -1; pen = b.r - topPen;
-      } else {
-        nx = 0; ny = 1; pen = b.r - bottomPen;
-      }
-    } else {
-      const dist = Math.sqrt(dist2);
-      nx = dx / dist;
-      ny = dy / dist;
-      pen = b.r - dist;
-    }
-
-    if (pen > 0) {
-      const eps = 0.5;
-      // Positional correction
-      b.x += (pen + eps) * nx;
-      b.y += (pen + eps) * ny;
-      // Velocity reflection along normal only if approaching
-      const vn = b.vx * nx + b.vy * ny;
-      if (vn < 0) {
-        const j = -(1 + restitution) * vn;
-        b.vx += j * nx;
-        b.vy += j * ny;
-      }
-      // tiny tangent damping
-      b.vx *= 0.998;
-      b.vy *= 0.998;
-    }
-  }
+  // Note: rectangle collision helper removed (unused after overlay became non-colliding)
 
   function stepSimulation(dt: number) {
     const balls = ballsRef.current;
@@ -621,18 +564,13 @@ export default function RotatingGateBalls() {
     ctx.restore();
   }
 
-  function handleReset() {
-    const { x: cx, y: cy } = centerRef.current;
-    ballsRef.current = [makeBall(cx, cy, initialRadius)];
-    spawnEnabledRef.current = true;
-    setBallCount(1);
-  }
+  // Note: reset handler removed (unused)
 
   return (
     <div className="rtg-container" data-testid="hero-root">
       <div className="rtg-overlay" ref={overlayRef}>
-        <h1 className="hero-title">Lorem Ipsum</h1>
-        <p className="hero-subtitle">dolor sit amet.</p>
+        <h1 className="hero-title">Ansh Sancheti</h1>
+        <p className="hero-subtitle">software engineer.</p>
       </div>
       <canvas ref={canvasRef} />
     </div>
