@@ -112,3 +112,17 @@
   flex-direction: column;
   gap: 16px;
 }
+
+/* Mobile layout: place circle above, text below */
+@media (max-width: 768px) {
+  .rtg-overlay {
+    left: 50%;
+    top: auto;
+    bottom: 8%;
+    transform: translateX(-50%);
+    text-align: center;
+    max-width: min(90vw, 640px);
+    padding: 0 12px;
+    align-items: center;
+  }
+}

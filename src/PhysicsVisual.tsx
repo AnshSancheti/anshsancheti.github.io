@@ -77,7 +77,7 @@ export default function RotatingGateBalls() {
   const rotationSpeed = 0.6; // rad/s
   const gravity = 1400; // px/s^2
   const restitutionWall = 1.02; // slightly >1 for a punchy push-off
-  const restitutionBall = 0.96; // lively ball-ball
+  const restitutionBall = 0.98; // slightly bouncier ball-ball
   const minBounceSpeed = 260; // stronger push off from the wall
   const airDrag = 0.000; // per frame linear drag (0..0.01)
   const maxBalls = 300; // safety cap to avoid browser meltdown
@@ -92,6 +92,7 @@ export default function RotatingGateBalls() {
   const gapStartRef = useRef<number>(0);
   const lastTRef = useRef<number>(0);
   const centerRef = useRef({ x: 0, y: 0, R: 0 });
+  const isMobileRef = useRef<boolean>(false);
 
   // Mount: set up canvas sizing, tests, RAF loop, and initial ball
   useEffect(() => {
@@ -102,6 +103,8 @@ export default function RotatingGateBalls() {
       const dpr = window.devicePixelRatio || 1;
       const vw = window.innerWidth;
       const vh = window.innerHeight;
+      const isMobile = vw <= 768; // basic mobile breakpoint
+      isMobileRef.current = isMobile;
 
       // CSS size
       canvas.style.width = `${vw}px`;
@@ -114,12 +117,26 @@ export default function RotatingGateBalls() {
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
 
-      // Circle on the right side, centered vertically
+      // Circle positioning: desktop on the right; mobile centered above text
       const padding = 16;
-      const circleDia = Math.min(vw, vh) * 0.8;
-      const R = circleDia / 2 - padding;
-      const cx = vw - (circleDia / 2) - 60; // right offset
-      const cy = vh / 2;
+      let circleDia: number;
+      if (isMobile) {
+        circleDia = Math.min(vw, vh) * 0.86;
+      } else {
+        // Constrain by available width after reserving space for the text block
+        const sidePadRight = 60; // visual offset from right edge
+        const leftMargin = Math.min(vw * 0.07, 80);
+        const textWidth = Math.min(560, vw * 0.45); // responsive text column width
+        const gutter = 32; // breathing room between text and circle
+        const baseDia = Math.min(vw, vh) * 0.8;
+        const widthCap = vw - (leftMargin + textWidth + gutter) - sidePadRight + padding;
+        const heightCap = vh - 2 * padding;
+        circleDia = Math.max(120, Math.min(baseDia, widthCap, heightCap));
+      }
+
+      const R = Math.max(8, circleDia / 2 - padding);
+      const cx = isMobile ? vw / 2 : vw - circleDia / 2 - 60;
+      const cy = isMobile ? Math.max(R + padding + 12, vh * 0.38) : vh / 2;
       centerRef.current = { x: cx, y: cy, R };
     }
 
@@ -174,29 +191,47 @@ export default function RotatingGateBalls() {
     };
   }
 
-  function resolveWallCollision(b: Ball, cx: number, cy: number, R: number) {
+  // Ring collision from either side (inside or outside), except at the gap
+  function resolveRingCollision(b: Ball, cx: number, cy: number, R: number) {
     const dx = b.x - cx;
     const dy = b.y - cy;
     const dist = Math.hypot(dx, dy) || 1e-6;
-    const nx = dx / dist; // normal from center to ball
+    const nx = dx / dist; // outward normal from center
     const ny = dy / dist;
 
-    const penetration = dist + b.r - R; // > 0 means outside solid arc (when not in gap)
-    if (penetration > 0) {
-      // Positional correction: push just inside with a slop so we "feel" the push
-      const slop = 1.2; // stronger visible push off
-      b.x -= (penetration + slop) * nx;
-      b.y -= (penetration + slop) * ny;
+    // Velocity along outward normal
+    const vn = b.vx * nx + b.vy * ny;
+    const eps = 0.5; // small separation to avoid re-penetration
+    const e = Math.min(1.02, restitutionWall); // a touch more lively
 
-      // Velocity response: reflect and guarantee an inward speed (push off)
-      const vn = b.vx * nx + b.vy * ny; // outward component
-      let desiredInward = Math.max(minBounceSpeed, Math.abs(vn) * restitutionWall);
-      b.vx += (-vn - desiredInward) * nx;
-      b.vy += (-vn - desiredInward) * ny;
-
-      // small tangent damping
-      b.vx *= 0.999;
-      b.vy *= 0.999;
+    if (dist < R) {
+      // Ball center is inside the ring radius
+      const overlap = dist + b.r - R;
+      if (overlap >= 0 && vn > 0) {
+        // Moving outward into the ring
+        // Snap to just inside the boundary
+        const target = R - b.r - eps;
+        b.x = cx + nx * target;
+        b.y = cy + ny * target;
+        // Reflect outward component to inward
+        const j = (1 + e) * vn;
+        b.vx -= j * nx;
+        b.vy -= j * ny;
+      }
+    } else {
+      // Ball center is outside the ring radius
+      const overlap = R - (dist - b.r);
+      if (overlap >= 0 && vn < 0) {
+        // Moving inward into the ring
+        // Snap to just outside the boundary
+        const target = R + b.r + eps;
+        b.x = cx + nx * target;
+        b.y = cy + ny * target;
+        // Reflect inward component to outward
+        const j = (1 + e) * (-vn);
+        b.vx += j * nx;
+        b.vy += j * ny;
+      }
     }
   }
 
@@ -266,8 +301,12 @@ export default function RotatingGateBalls() {
     for (let i = 0; i < balls.length; i++) {
       const b = balls[i];
 
-      // Gravity (sideways to the left)
-      b.vx += -gravity * dt;
+      // Gravity: desktop pushes left; mobile pushes downward
+      if (isMobileRef.current) {
+        b.vy += gravity * dt;
+      } else {
+        b.vx += -gravity * dt;
+      }
 
       // Integrate position
       b.x += b.vx * dt;
@@ -308,33 +347,59 @@ export default function RotatingGateBalls() {
         b.spawned = true;
       }
 
-      // If NOT in gap, resolve collision with the solid arc (prevent tunneling)
-      // Do not resolve against the ring once a ball has escaped.
-      if (!inGap && dist + b.r > R && b.escapedAt === undefined) {
-        resolveWallCollision(b, cx, cy, R);
+      // If NOT in gap, resolve collision with the solid ring from either side
+      if (!inGap) {
+        resolveRingCollision(b, cx, cy, R);
       }
 
-      // Floor collision at bottom of the screen
-      // Left wall collision as the new "floor"
-      if (b.x - b.r < 0) {
-        b.x = b.r;
-        if (b.vx < 0) b.vx = -b.vx * 0.55; // dampened bounce
-        // small vertical friction
-        b.vy *= 0.98;
-        if (Math.abs(b.vx) < 5) b.vx = 0;
+      // Floor/wall handling based on gravity direction
+      // Desktop: left wall is the "floor"; Mobile: bottom is the floor
+      if (!isMobileRef.current) {
+        // Left wall as floor
+        if (b.x - b.r < 0) {
+          b.x = b.r;
+          if (b.vx < 0) b.vx = -b.vx * 0.7;
+          b.vy *= 0.99; // small vertical friction
+          if (Math.abs(b.vx) < 5) b.vx = 0;
+        }
+      }
+
+      // Side walls
+      if (isMobileRef.current) {
+        // Mobile: both left and right behave as walls
+        if (b.x - b.r < 0) {
+          b.x = b.r;
+          if (b.vx < 0) b.vx = -b.vx * 0.7;
+          b.vy *= 0.995;
+          if (Math.abs(b.vx) < 5) b.vx = 0;
+        }
+        if (b.x + b.r > cssW) {
+          b.x = cssW - b.r;
+          if (b.vx > 0) b.vx = -b.vx * 0.7;
+          b.vy *= 0.995;
+          if (Math.abs(b.vx) < 5) b.vx = 0;
+        }
+      } else {
+        // Desktop: still bounce on right wall as a boundary
+        if (b.x + b.r > cssW) {
+          b.x = cssW - b.r;
+          if (b.vx > 0) b.vx = -b.vx * 0.7;
+          b.vy *= 0.995;
+          if (Math.abs(b.vx) < 5) b.vx = 0;
+        }
       }
 
       // Top and bottom bounds
       if (b.y - b.r < 0) {
         b.y = b.r;
-        if (b.vy < 0) b.vy = -b.vy * 0.55;
-        b.vx *= 0.99;
+        if (b.vy < 0) b.vy = -b.vy * 0.65;
+        b.vx *= 0.995;
         if (Math.abs(b.vy) < 5) b.vy = 0;
       }
       if (b.y + b.r > cssH) {
         b.y = cssH - b.r;
-        if (b.vy > 0) b.vy = -b.vy * 0.55;
-        b.vx *= 0.99;
+        if (b.vy > 0) b.vy = -b.vy * (isMobileRef.current ? 0.72 : 0.68);
+        b.vx *= isMobileRef.current ? 0.992 : 0.995; // slightly reduced friction
         if (Math.abs(b.vy) < 5) b.vy = 0;
       }
 
