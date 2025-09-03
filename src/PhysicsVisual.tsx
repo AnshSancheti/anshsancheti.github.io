@@ -112,7 +112,8 @@ export default function RotatingGateBalls() {
     function resize() {
       const dpr = window.devicePixelRatio || 1;
       const vw = window.innerWidth;
-      const vh = window.innerHeight;
+      // Prefer visual viewport height on mobile to avoid white bars/gaps
+      const vh = (window.visualViewport?.height || window.innerHeight);
       const isMobile = vw <= 768; // basic mobile breakpoint
       isMobileRef.current = isMobile;
 
@@ -187,7 +188,8 @@ export default function RotatingGateBalls() {
 
     // Initialize with a single ball at center (after we know center)
     const { x: cx, y: cy } = centerRef.current;
-    ballsRef.current = [makeBall(cx, cy, initialRadius)];
+    const initR = isMobileRef.current ? Math.round(initialRadius * 1.2) : initialRadius;
+    ballsRef.current = [makeBall(cx, cy, initR)];
     // initial ball already seeded; no UI counter to update
 
     // Animation loop
@@ -502,7 +504,8 @@ export default function RotatingGateBalls() {
     // Safety: never let population drop to zero
     if (balls.length === 0) {
       const { x: cx2, y: cy2 } = centerRef.current;
-      balls.push(makeBall(cx2, cy2, initialRadius));
+      const initR = isMobileRef.current ? Math.round(initialRadius * 1.2) : initialRadius;
+      balls.push(makeBall(cx2, cy2, initR));
     }
 
     // UI counter removed; no-op
