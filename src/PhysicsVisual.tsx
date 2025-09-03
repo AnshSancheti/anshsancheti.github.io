@@ -79,16 +79,16 @@ export default function RotatingGateBalls() {
   const simNowMsRef = useRef<number>(0);
 
   // Tunables
-  const gapPercent = 0.10; // ~10% of circumference
+  const gapPercent = 0.15; // ~15% of circumference
   const rotationSpeed = 0.6; // rad/s
   const gravity = 1400; // px/s^2
-  const restitutionWall = 0.98; // elastic-ish but non-injective
-  const restitutionBall = 0.98; // slightly bouncier ball-ball
+  const restitutionWall = 1.005; // slightly more elastic wall collisions
+  const restitutionBall = 1.005; // slightly more elastic ball-ball
   // const minBounceSpeed = 260; // stronger push off from the wall (unused)
   const airDrag = 0.000; // per frame linear drag (0..0.01)
   const maxBalls = 300; // safety cap to avoid browser meltdown
-  const minBallRadius = 4; // slightly larger minimum
-  const initialRadius = 12; // slightly larger starting size
+  const minBallRadius = 12; // keep balls a bit larger overall
+  const initialRadius = 14; // start slightly larger
 
   // Spawn throttling: when too many balls, disable splitting until one remains
   const spawnEnabledRef = useRef<boolean>(true);
@@ -381,7 +381,7 @@ export default function RotatingGateBalls() {
           b.escapedAt = now;
           b.opacity = 1;
           if (spawnEnabledRef.current) {
-            const newR = Math.max(minBallRadius, b.r * 0.96);
+            const newR = Math.max(minBallRadius, b.r * 0.98);
             if (balls.length <= maxBalls && newR >= minBallRadius) {
               const { x: cx2, y: cy2 } = centerRef.current;
               const jx = (Math.random() - 0.5) * 0.5;
