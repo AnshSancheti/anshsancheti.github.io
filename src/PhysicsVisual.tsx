@@ -96,6 +96,7 @@ export default function RotatingGateBalls() {
   const lastTRef = useRef<number>(0);
   const centerRef = useRef({ x: 0, y: 0, R: 0 });
   const isMobileRef = useRef<boolean>(false);
+  const ringGlowRef = useRef<number>(0); // 0..1 visual glow intensity
 
   // Mount: set up canvas sizing, tests, RAF loop, and initial ball
   useEffect(() => {
@@ -214,6 +215,8 @@ export default function RotatingGateBalls() {
         const j = (1 + e) * vn;
         b.vx -= j * nx;
         b.vy -= j * ny;
+        // Kick up the ring glow on impact
+        ringGlowRef.current = Math.min(1, ringGlowRef.current + 0.30);
       }
 
       b.vx *= 0.999;
@@ -338,20 +341,7 @@ export default function RotatingGateBalls() {
     const cssW = canvas.width / dpr;
     const cssH = canvas.height / dpr;
 
-    // Measure overlay rect (text block) in CSS px
-    const overlayEl = overlayRef.current;
-    let overlayRect: { left: number; top: number; right: number; bottom: number } | null = null;
-    if (overlayEl) {
-      const r = overlayEl.getBoundingClientRect();
-      const cr = canvas.getBoundingClientRect();
-      // Convert overlay rect from viewport coords to canvas-local coords (CSS px)
-      overlayRect = {
-        left: r.left - cr.left,
-        top: r.top - cr.top,
-        right: r.right - cr.left,
-        bottom: r.bottom - cr.top,
-      };
-    }
+    // We no longer collide with the overlay; it's purely visual glass
 
     // Integrate and wall interactions
     const now = performance.now();
@@ -428,10 +418,7 @@ export default function RotatingGateBalls() {
         resolveRingCollision(b, cx, cy, R);
       }
 
-      // Collide with the text overlay rectangle
-      if (overlayRect) {
-        resolveRectCollision(b, overlayRect, 0.75);
-      }
+      // No collision with overlay: balls pass visually behind the glass
 
       // Floor/wall handling based on gravity direction
       // Desktop: left wall is the "floor"; Mobile: bottom is the floor
@@ -496,6 +483,9 @@ export default function RotatingGateBalls() {
       }
     }
 
+    // Lightly decay the ring glow each step
+    ringGlowRef.current = Math.max(0, ringGlowRef.current - dt * 1.45);
+
     // Ball-ball collisions after wall/floor resolution (single pass is usually enough visually)
     resolveBallBallCollisions();
 
@@ -535,10 +525,42 @@ export default function RotatingGateBalls() {
     // Full clear to avoid permanent ghosting; background is provided by CSS behind the canvas
     ctx.clearRect(0, 0, cssW, cssH);
 
-    // Draw the rotating ring (solid arc only) - crisp redraw each frame
+    // Draw the rotating ring with gradient and optional glow
     ctx.save();
+    const grad = ctx.createLinearGradient(cx - R, cy - R, cx + R, cy + R);
+    grad.addColorStop(0, '#7aa2ff');
+    grad.addColorStop(1, '#9ff0ff');
+
+    const glow = ringGlowRef.current;
+    if (glow > 0.001) {
+      // Inner glow (subtle)
+      ctx.save();
+      ctx.globalAlpha = 0.22 + 0.36 * glow;
+      ctx.shadowColor = 'rgba(122, 162, 255, 0.88)';
+      ctx.shadowBlur = 18 + 28 * glow;
+      ctx.lineWidth = 6 + 2.0 * glow;
+      ctx.strokeStyle = grad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, gapStart + gapLen, gapStart + Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+
+      // Soft outer halo
+      ctx.save();
+      ctx.globalAlpha = 0.06 + 0.14 * glow;
+      ctx.shadowColor = 'rgba(122, 162, 255, 0.84)';
+      ctx.shadowBlur = 24 + 40 * glow;
+      ctx.lineWidth = 7.5 + 3.5 * glow;
+      ctx.strokeStyle = grad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, gapStart + gapLen, gapStart + Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Base ring stroke on top for crisp edge
     ctx.lineWidth = 6;
-    ctx.strokeStyle = "#9ab";
+    ctx.strokeStyle = grad;
     ctx.beginPath();
     ctx.arc(cx, cy, R, gapStart + gapLen, gapStart + Math.PI * 2);
     ctx.stroke();

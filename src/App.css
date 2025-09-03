@@ -111,9 +111,16 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  /* Visible collision box */
-  border: 1.5px solid rgba(230, 233, 239, 0.6);
-  padding: 12px; /* equal space on all sides around text */
+  /* Glassmorphism card */
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: saturate(1.1) blur(14px);
+  -webkit-backdrop-filter: saturate(1.1) blur(14px);
 }
 
 /* Mobile layout: place circle above, text below */
@@ -125,7 +132,26 @@
     transform: translateX(-50%);
     text-align: center;
     max-width: min(90vw, 640px);
-    padding: 12px; /* keep equal padding on all sides for mobile */
+    padding: 16px;
     align-items: center;
   }
+}
+:root {
+  --bg-0: #0b1020;
+  --bg-1: #0f1730;
+  --text: #e6e9ef;
+  --muted: #a8b0c2;
+  --brand: #7aa2ff;
+  --ring: rgba(122, 162, 255, 0.4);
+  --border: rgba(255, 255, 255, 0.08);
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+html, body, #root {
+  height: 100%;
+}
+body {
+  font-family: 'Inter', ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
+  margin: 0;
 }
