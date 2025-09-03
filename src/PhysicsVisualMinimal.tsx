@@ -298,15 +298,28 @@ export default function PhysicsVisualMinimal() {
     const balls = ballsRef.current;
     for (let i = 0; i < balls.length; i++) {
       const b = balls[i];
+      // Base fill
       ctx.fillStyle = b.color;
       ctx.beginPath();
       ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
       ctx.fill();
-      
-      // Clean outline
-      ctx.strokeStyle = "#000";
-      ctx.lineWidth = 0.5;
+
+      // Rim stroke (softer than pure black)
+      ctx.strokeStyle = 'rgba(10, 12, 18, 0.22)';
+      ctx.lineWidth = Math.max(0.5, Math.min(1.1, b.r * 0.10));
       ctx.stroke();
+
+      // Soft specular highlight (cheap overlay)
+      const hx = b.r * 0.36;
+      const hy = b.r * 0.36;
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = 0.12;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.beginPath();
+      ctx.arc(b.x - hx, b.y - hy, b.r * 0.55, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = 'source-over';
     }
 
     ctx.restore();

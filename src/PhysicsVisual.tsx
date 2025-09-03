@@ -593,17 +593,29 @@ export default function RotatingGateBalls() {
         ctx.restore();
       }
 
-      // Ball (on top)
+      // Ball (on top) with subtle polish: base fill, rim, and highlight
+      ctx.save();
       ctx.globalAlpha = baseAlpha;
-      // No glow halo
-      ctx.shadowColor = 'transparent';
-      ctx.shadowBlur = 0;
       ctx.fillStyle = b.color;
       ctx.beginPath();
       ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
       ctx.fill();
-      ctx.shadowBlur = 0;
-      ctx.globalAlpha = 1;
+
+      // Rim stroke (subtle depth)
+      ctx.lineWidth = Math.max(0.5, Math.min(1.2, b.r * 0.10));
+      ctx.strokeStyle = 'rgba(10, 12, 18, 0.22)';
+      ctx.stroke();
+
+      // Soft specular highlight (cheap overlay, no clip)
+      const hx = b.r * 0.36;
+      const hy = b.r * 0.36;
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = baseAlpha * 0.12;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.beginPath();
+      ctx.arc(b.x - hx, b.y - hy, b.r * 0.55, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
     }
 
     ctx.restore();
