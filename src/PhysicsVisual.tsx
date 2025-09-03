@@ -13,6 +13,9 @@ type Ball = {
   vy: number;
   r: number;
   color: string;
+  h?: number; // hue for styled rendering
+  s?: number; // saturation %
+  l?: number; // lightness %
   // Escape + fade lifecycle
   escapedAt?: number; // ms timestamp (performance.now)
   spawned?: boolean; // whether we've spawned replacements for this ball
@@ -82,13 +85,13 @@ export default function RotatingGateBalls() {
   const gapPercent = 0.15; // ~15% of circumference
   const rotationSpeed = 0.6; // rad/s
   const gravity = 1400; // px/s^2
-  const restitutionWall = 1.005; // slightly more elastic wall collisions
-  const restitutionBall = 1.005; // slightly more elastic ball-ball
+  const restitutionWall = 1.00; // slightly more elastic wall collisions
+  const restitutionBall = 0.98; // slightly more elastic ball-ball
   // const minBounceSpeed = 260; // stronger push off from the wall (unused)
   const airDrag = 0.000; // per frame linear drag (0..0.01)
   const maxBalls = 300; // safety cap to avoid browser meltdown
-  const minBallRadius = 12; // keep balls a bit larger overall
-  const initialRadius = 14; // start slightly larger
+  const minBallRadius = 10; // keep balls a bit larger overall
+  const initialRadius = 10; // start slightly larger
 
   // Spawn throttling: when too many balls, disable splitting until one remains
   const spawnEnabledRef = useRef<boolean>(true);
@@ -218,7 +221,11 @@ export default function RotatingGateBalls() {
   }, []);
 
   function makeBall(x: number, y: number, radius: number): Ball {
-    const hue = Math.floor(200 + Math.random() * 140); // bluish-green range
+    // Curated but more varied palette around the ring’s blue/cyan
+    // Slight variance in hue, saturation, and lightness for visual richness
+    const hue = Math.floor(185 + Math.random() * 50); // 185..235 (teal → blue → periwinkle)
+    const sat = 64 + Math.floor(Math.random() * 16); // 64..79 %
+    const light = 52 + Math.floor(Math.random() * 12); // 52..63 %
     return {
       id: GLOBAL_ID++,
       x,
@@ -226,7 +233,10 @@ export default function RotatingGateBalls() {
       vx: (Math.random() - 0.5) * 60,
       vy: (Math.random() - 0.8) * 120, // slight initial upward bias
       r: radius,
-      color: `hsl(${hue} 70% 55%)`,
+      color: `hsl(${hue} ${sat}% ${light}%)`,
+      h: hue,
+      s: sat,
+      l: light,
       trail: [],
     };
   }
@@ -252,8 +262,8 @@ export default function RotatingGateBalls() {
         const j = (1 + e) * vn;
         b.vx -= j * nx;
         b.vy -= j * ny;
-        // Kick up the ring glow on impact
-        ringGlowRef.current = Math.min(1, ringGlowRef.current + 0.30);
+        // Kick up the ring glow on impact (stronger burst)
+        ringGlowRef.current = Math.min(1, ringGlowRef.current + 0.6);
       }
 
       b.vx *= 0.999;
@@ -472,8 +482,8 @@ export default function RotatingGateBalls() {
       }
     }
 
-    // Lightly decay the ring glow each step
-    ringGlowRef.current = Math.max(0, ringGlowRef.current - dt * 1.45);
+    // Lightly decay the ring glow each step (slower decay for more presence)
+    ringGlowRef.current = Math.max(0, ringGlowRef.current - dt * 1.0);
 
     // Ball-ball collisions after wall/floor resolution (single pass is usually enough visually)
     resolveBallBallCollisions();
@@ -523,10 +533,11 @@ export default function RotatingGateBalls() {
     if (glow > 0.001) {
       // Inner glow (subtle)
       ctx.save();
-      ctx.globalAlpha = 0.22 + 0.36 * glow;
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = 0.32 + 0.56 * glow;
       ctx.shadowColor = 'rgba(122, 162, 255, 0.88)';
-      ctx.shadowBlur = 18 + 28 * glow;
-      ctx.lineWidth = 6 + 2.0 * glow;
+      ctx.shadowBlur = 26 + 38 * glow;
+      ctx.lineWidth = 7 + 3.0 * glow;
       ctx.strokeStyle = grad;
       ctx.beginPath();
       ctx.arc(cx, cy, R, gapStart + gapLen, gapStart + Math.PI * 2);
@@ -535,10 +546,11 @@ export default function RotatingGateBalls() {
 
       // Soft outer halo
       ctx.save();
-      ctx.globalAlpha = 0.06 + 0.14 * glow;
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = 0.12 + 0.26 * glow;
       ctx.shadowColor = 'rgba(122, 162, 255, 0.84)';
-      ctx.shadowBlur = 24 + 40 * glow;
-      ctx.lineWidth = 7.5 + 3.5 * glow;
+      ctx.shadowBlur = 34 + 56 * glow;
+      ctx.lineWidth = 9 + 4.0 * glow;
       ctx.strokeStyle = grad;
       ctx.beginPath();
       ctx.arc(cx, cy, R, gapStart + gapLen, gapStart + Math.PI * 2);
@@ -562,47 +574,45 @@ export default function RotatingGateBalls() {
       const baseAlpha = b.opacity !== undefined ? b.opacity : 1;
       const trail = b.trail || [];
 
-      // Circular trail segments with subtle glow (classic comet dots)
+      // Circular trail segments: flatter, color-matched, no glow
       if (trail.length >= 2) {
         ctx.save();
         for (let t = 0; t < trail.length - 1; t++) {
           const seg = trail[t];
           const k = t / (trail.length - 1 || 1); // 0..1 old->new
-          // Fade tail to a fine, dim point; brighter/softer near the head
-          const a = baseAlpha * (0.01 + 0.06 * k);
+          // Fade tail to a fine, dim point; slightly denser near the head
+          const a = baseAlpha * (0.02 + 0.08 * k);
           ctx.globalAlpha = a;
           ctx.fillStyle = b.color;
-          ctx.shadowColor = b.color;
-          ctx.shadowBlur = 8 * k;
+          ctx.shadowColor = 'transparent';
+          ctx.shadowBlur = 0;
           ctx.beginPath();
-          ctx.arc(seg.x, seg.y, seg.r * (0.12 + 0.88 * k), 0, Math.PI * 2);
+          ctx.arc(seg.x, seg.y, seg.r * (0.10 + 0.75 * k), 0, Math.PI * 2);
           ctx.fill();
         }
         ctx.restore();
       }
 
-      // Ball (on top) with subtle polish: base fill, rim, and highlight
+      // Ball (flat 2D style with defined dual border)
       ctx.save();
       ctx.globalAlpha = baseAlpha;
+      // Keep per-ball color for fill, for variety
       ctx.fillStyle = b.color;
       ctx.beginPath();
       ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
       ctx.fill();
-
-      // Rim stroke (subtle depth)
-      ctx.lineWidth = Math.max(0.5, Math.min(1.2, b.r * 0.10));
-      ctx.strokeStyle = 'rgba(10, 12, 18, 0.22)';
+      // First, darker stroke (inner) derived from fill color
+      const h = (b.h ?? 210);
+      const s = (b.s ?? 70);
+      const l = (b.l ?? 56);
+      const darkL = Math.max(20, l - 14);
+      ctx.lineWidth = Math.max(2.0, Math.min(3.0, b.r * 0.22));
+      ctx.strokeStyle = `hsl(${h} ${s}% ${darkL}%)`;
       ctx.stroke();
-
-      // Soft specular highlight (cheap overlay, no clip)
-      const hx = b.r * 0.36;
-      const hy = b.r * 0.36;
-      ctx.globalCompositeOperation = 'lighter';
-      ctx.globalAlpha = baseAlpha * 0.12;
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-      ctx.beginPath();
-      ctx.arc(b.x - hx, b.y - hy, b.r * 0.55, 0, Math.PI * 2);
-      ctx.fill();
+      // Second, thin accent stroke to echo the ring palette
+      ctx.lineWidth = Math.max(1.0, Math.min(1.8, b.r * 0.12));
+      ctx.strokeStyle = '#9ff0ff';
+      ctx.stroke();
       ctx.restore();
     }
 
