@@ -216,7 +216,8 @@ export default function RotatingGateBalls() {
       b.y = cy + ny * target;
 
       const vn = b.vx * nx + b.vy * ny;
-      if (vn > 0) {
+      // Minimal outward speed threshold to avoid micro-bounces at the gap boundary
+      if (vn > 5) {
         const j = (1 + e) * vn;
         b.vx -= j * nx;
         b.vy -= j * ny;
@@ -326,17 +327,24 @@ export default function RotatingGateBalls() {
       const dy = b.y - cy;
       const dist = Math.hypot(dx, dy);
       const angle = Math.atan2(dy, dx);
-      const padding = Math.atan2(b.r, R) + 0.02;
-      const effectiveStart = gapStart + padding;
-      const effectiveLen = Math.max(0, gapLen - 2 * padding);
-      const inGap = angleInArc(angle, effectiveStart, effectiveLen);
+      // Core gap definition (strict)
+      const basePad = Math.atan2(b.r, R) + 0.02;
+      const coreStart = gapStart + basePad;
+      const coreLen = Math.max(0, gapLen - 2 * basePad);
+      const inGapCore = angleInArc(angle, coreStart, coreLen);
 
       const nx = dx / (dist || 1e-6);
       const ny = dy / (dist || 1e-6);
       const vn = b.vx * nx + b.vy * ny;
+      // Near-gap region: very small fixed angular margin around the core gap.
+      // This only suppresses collisions right at the rim to avoid one-frame jitter.
+      const nearMargin = Math.max(0.0025, Math.atan2(b.r * 0.3 + 0.5, R));
+      const nearStart = coreStart - nearMargin;
+      const nearLen = coreLen + 2 * nearMargin;
+      const inGapNear = angleInArc(angle, nearStart, nearLen);
       const fullyOutside = dist - b.r >= R + 0.5;
 
-      if (inGap && fullyOutside && vn > 0 && b.escapedAt === undefined) {
+      if (inGapCore && fullyOutside && vn > 0 && b.escapedAt === undefined) {
         b.gapOutsideTicks = (b.gapOutsideTicks || 0) + 1;
         if (b.gapOutsideTicks >= 2) {
           b.escapedAt = now;
@@ -359,10 +367,12 @@ export default function RotatingGateBalls() {
 
       // If NOT in gap, resolve collision with the solid ring
       // Skip when ball is escaped or within a brief grace window after crossing the gap
-      const closeToExit = inGap && (dist - b.r >= R - 0.5);
+      const closeToExit = inGapNear && (dist - b.r >= R - 0.6);
       if (closeToExit) b.exitGraceUntil = Math.max(b.exitGraceUntil || 0, now + 180);
       const inExitGrace = (b.exitGraceUntil || 0) > now;
-      if (!inGap && b.escapedAt === undefined && !inExitGrace) {
+      // Only suppress collisions if actually in the gap core, or in the near-gap band and right at the rim
+      const suppressCollision = inGapCore || (inGapNear && closeToExit);
+      if (!suppressCollision && b.escapedAt === undefined && !inExitGrace) {
         resolveRingCollision(b, cx, cy, R);
       }
 
