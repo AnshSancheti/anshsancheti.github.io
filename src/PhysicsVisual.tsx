@@ -543,24 +543,7 @@ export default function RotatingGateBalls() {
     ctx.arc(cx, cy, R, gapStart + gapLen, gapStart + Math.PI * 2);
     ctx.stroke();
 
-    // Optional: faint inner rim
-    ctx.globalAlpha = 0.15;
-    ctx.beginPath();
-    ctx.arc(cx, cy, R - 8, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.globalAlpha = 1;
-
-    // Draw gap indicator (subtle)
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.rotate(gapStart + gapLen / 2);
-    ctx.strokeStyle = "#cde";
-    ctx.globalAlpha = 0.4;
-    ctx.beginPath();
-    ctx.moveTo(R - 12, 0);
-    ctx.lineTo(R + 12, 0);
-    ctx.stroke();
-    ctx.restore();
+    // Inner rim and gap indicator removed for cleaner look
 
     // Draw balls with short procedural trails (no canvas accumulation)
     const balls = ballsRef.current;
