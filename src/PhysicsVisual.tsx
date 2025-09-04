@@ -83,7 +83,14 @@ export default function RotatingGateBalls() {
 
   // Tunables
   const gapPercent = 0.15; // ~15% of circumference
-  const rotationSpeed = 0.6; // rad/s
+  // Angular motion (user can drag to spin). Start with a gentle spin.
+  const baseRotSpeed = 0.6; // default speed (rad/s)
+  const rotVelRef = useRef<number>(0.6); // current angular velocity (rad/s)
+  const rotDamping = 0.8; // per second fractional damping toward 0 (when interacting)
+  const autoApproachRate = 1.6; // per second approach toward baseRotSpeed when idle
+  const rotMax = 6.0; // clamp max angular speed (rad/s)
+  const idleResetMs = 1600; // after this idle, ease back to base speed
+  const lastInteractAtRef = useRef<number>(-1e9); // sim-time of last pointer interaction
   const gravity = 1400; // px/s^2
   const restitutionWall = 1.00; // slightly more elastic wall collisions
   const restitutionBall = 0.98; // slightly more elastic ball-ball
@@ -108,6 +115,9 @@ export default function RotatingGateBalls() {
   useEffect(() => {
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
+    let dragging = false;
+    let lastAngle: number | null = null;
+    let lastT = 0;
 
     function resize() {
       const dpr = window.devicePixelRatio || 1;
@@ -192,6 +202,74 @@ export default function RotatingGateBalls() {
     ballsRef.current = [makeBall(cx, cy, initR)];
     // initial ball already seeded; no UI counter to update
 
+    // Pointer interaction: drag near the ring to spin
+    function clientToCanvasAngle(ev: PointerEvent) {
+      const rect = canvas.getBoundingClientRect();
+      const x = ev.clientX - rect.left;
+      const y = ev.clientY - rect.top;
+      const { x: cx, y: cy } = centerRef.current;
+      return Math.atan2(y - cy, x - cx);
+    }
+
+    function pointerDown(ev: PointerEvent) {
+      // Only start drag if near the ring rim for better UX
+      const rect = canvas.getBoundingClientRect();
+      const px = ev.clientX - rect.left;
+      const py = ev.clientY - rect.top;
+      const { x: cx, y: cy, R } = centerRef.current;
+      const d = Math.hypot(px - cx, py - cy);
+      const rimBand = Math.max(18, Math.min(36, R * 0.08));
+      if (d > R - rimBand && d < R + rimBand) {
+        dragging = true;
+        lastAngle = Math.atan2(py - cy, px - cx);
+        lastT = performance.now();
+        // Mark interaction in sim-time so idle timer delays reset
+        lastInteractAtRef.current = simNowMsRef.current;
+        try { canvas.setPointerCapture(ev.pointerId); } catch {}
+      }
+    }
+
+    function pointerMove(ev: PointerEvent) {
+      if (!dragging) return;
+      ev.preventDefault();
+      const ang = clientToCanvasAngle(ev);
+      if (lastAngle == null) {
+        lastAngle = ang;
+        return;
+      }
+      // Shortest signed delta between angles
+      let dAng = ang - lastAngle;
+      // Wrap to [-π, π]
+      dAng = ((dAng + Math.PI) % (Math.PI * 2)) - Math.PI;
+      gapStartRef.current = wrapAngle(gapStartRef.current + dAng);
+
+      const now = performance.now();
+      const dt = Math.max(1e-3, (now - lastT) / 1000);
+      const instVel = dAng / dt;
+      // Light smoothing to avoid spikes
+      const alpha = 0.25;
+      rotVelRef.current = clamp(
+        alpha * instVel + (1 - alpha) * rotVelRef.current,
+        -rotMax,
+        rotMax
+      );
+      lastAngle = ang;
+      lastT = now;
+      lastInteractAtRef.current = simNowMsRef.current;
+    }
+
+    function pointerUp(ev: PointerEvent) {
+      if (!dragging) return;
+      dragging = false;
+      lastAngle = null;
+      lastInteractAtRef.current = simNowMsRef.current;
+      try { canvas.releasePointerCapture(ev.pointerId); } catch {}
+    }
+
+    canvas.addEventListener("pointerdown", pointerDown);
+    canvas.addEventListener("pointermove", pointerMove, { passive: false });
+    window.addEventListener("pointerup", pointerUp);
+
     // Animation loop
     lastTRef.current = performance.now();
     const tick = () => {
@@ -218,6 +296,9 @@ export default function RotatingGateBalls() {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       window.removeEventListener("resize", resize);
+      canvas.removeEventListener("pointerdown", pointerDown);
+      canvas.removeEventListener("pointermove", pointerMove as any);
+      window.removeEventListener("pointerup", pointerUp);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -323,9 +404,32 @@ export default function RotatingGateBalls() {
     if (balls.length >= 20) spawnEnabledRef.current = false;
     if (balls.length <= 1) spawnEnabledRef.current = true;
 
-    // Rotate the gap
+    // Rotate the gap using current angular velocity and apply damping toward 0
     const gapLen = Math.PI * 2 * gapPercent; // radians
-    gapStartRef.current = wrapAngle(gapStartRef.current + rotationSpeed * dt);
+    gapStartRef.current = wrapAngle(gapStartRef.current + rotVelRef.current * dt);
+
+    // Determine if we've been idle past the threshold (in simulation time)
+    const simNow = simNowMsRef.current;
+    const idleFor = simNow - lastInteractAtRef.current;
+    const idleActive = idleFor >= idleResetMs;
+
+    if (idleActive) {
+      // Ease angular velocity toward the base speed smoothly (no snap)
+      const target = baseRotSpeed;
+      const v = rotVelRef.current;
+      const blend = 1 - Math.exp(-autoApproachRate * dt);
+      rotVelRef.current = v + (target - v) * blend;
+    } else if (rotVelRef.current !== 0) {
+      // Normal damping toward 0 while interacting or shortly after
+      const sign = Math.sign(rotVelRef.current);
+      const mag = Math.abs(rotVelRef.current);
+      const decayed = mag * Math.exp(-rotDamping * dt);
+      rotVelRef.current = sign * (decayed < 1e-4 ? 0 : decayed);
+    }
+    // Enforce max bound
+    if (Math.abs(rotVelRef.current) > rotMax) {
+      rotVelRef.current = Math.sign(rotVelRef.current) * rotMax;
+    }
     const gapStart = gapStartRef.current;
 
     const canvas = canvasRef.current!;
