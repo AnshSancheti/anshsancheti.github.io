@@ -1,9 +1,9 @@
 import React from 'react';
-import RotatingGateBalls from './PhysicsVisual';
+import EndlessDoor from './EndlessDoor';
 import './App.css';
 
 function App() {
-  return <RotatingGateBalls />;
+  return <EndlessDoor />;
 }
 
 export default App;

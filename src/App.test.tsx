@@ -2,10 +2,10 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders hero with name and subtitle', () => {
+test('renders the endless door interaction surface', () => {
   render(<App />);
-  const hero = screen.getByTestId('hero-root');
-  expect(hero).toBeInTheDocument();
-  expect(screen.getByText(/Ansh Sancheti/i)).toBeInTheDocument();
-  expect(screen.getByText(/software engineer\./i)).toBeInTheDocument();
+  expect(screen.getByTestId('endless-door')).toBeInTheDocument();
+  expect(
+    screen.getByRole('button', { name: /click or drag left to open/i })
+  ).toBeInTheDocument();
 });
