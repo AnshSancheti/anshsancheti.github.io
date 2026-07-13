@@ -10,9 +10,9 @@ Canonical site: https://anshsancheti.github.io/
 
 ## Recent selected work
 
+- [Reddit Atlas](https://reddit-atlas.fly.dev/): Every Reddit post and comment from 2006–2025, embedded and clustered by user participation. Tags: data, map. Created 2026.
 - [Claude Explores Earth](https://claude-explores-earth.fly.dev/): A pair of agents wander the planet via Street View, trying to find each other by passing notes on a shared scratchpad. Tags: agents, map. Created 2026.
 - [Artificial Taste](https://tastebench.fly.dev/): BuzzFeed for LLMs - a quiz to see what model your taste most naturally maps to. Tags: benchmark, quiz. Created 2026.
-- [Reddit Atlas](https://reddit-atlas.fly.dev/): Every Reddit post and comment from 2006–2025, embedded and clustered by user participation. Tags: data, map. Created 2026.
 - [The Artisanal Tax](https://sizzle-index.fly.dev/): Scraped every menu item in NYC I could get my hands on to figure out where I'm getting upcharged for fries. Tags: data, NYC. Created 2026.
 - [Lot Shot](https://lot-shot.fly.dev/): Guess which artwork sold for more. Learn nothing about art and too much about money. Tags: game, art. Created 2026.
 - [DONGs Gallery](https://anshsancheti.github.io/dongs/gallery.html): An index of all of VSauce’s DONGs (Do Online Now, Guys): tagged and organized. Tags: archive, web. Created 2026.

@@ -1,5 +1,12 @@
 [
   {
+    "title": "Reddit Atlas",
+    "year": "2026",
+    "tags": "data, map",
+    "description": "Every Reddit post and comment from 2006–2025, embedded and clustered by user participation.",
+    "href": "https://reddit-atlas.fly.dev/"
+  },
+  {
     "title": "Claude Explores Earth",
     "year": "2026",
     "tags": "agents, map",
@@ -12,13 +19,6 @@
     "tags": "benchmark, quiz",
     "description": "BuzzFeed for LLMs - a quiz to see what model your taste most naturally maps to.",
     "href": "https://tastebench.fly.dev/"
-  },
-  {
-    "title": "Reddit Atlas",
-    "year": "2026",
-    "tags": "data, map",
-    "description": "Every Reddit post and comment from 2006–2025, embedded and clustered by user participation.",
-    "href": "https://reddit-atlas.fly.dev/"
   },
   {
     "title": "The Artisanal Tax",
