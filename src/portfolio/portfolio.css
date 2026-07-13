@@ -74,7 +74,35 @@ body { margin: 0; background: var(--page); }
 .minimal-project-copy { display: grid; grid-template-columns: minmax(160px, .65fr) minmax(260px, 1fr); gap: 28px; }
 .minimal-project-copy strong { font-size: 17px; line-height: 1.25; }
 .minimal-project-copy > span { max-width: 520px; color: #464642; }
-.minimal-arrow { justify-self: end; }
+.minimal-arrow {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 12px;
+  width: 12px;
+  height: 12px;
+  margin-top: 2px;
+  justify-self: end;
+}
+.minimal-arrow::before {
+  content: '';
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 7px;
+  height: 7px;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+}
+.minimal-arrow::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  bottom: 2px;
+  width: 10px;
+  border-top: 1px solid currentColor;
+  transform: rotate(-45deg);
+  transform-origin: left center;
+}
 
 .minimal-secondary {
   display: grid;
@@ -96,7 +124,7 @@ body { margin: 0; background: var(--page); }
 .minimal-note p { margin: 10px 0 18px; color: #464642; }
 .minimal-note span { color: var(--muted); font-size: 12px; }
 .minimal-links { border-top: 1px solid var(--rule); }
-.minimal-links a { display: flex; justify-content: space-between; padding: 13px 10px; border-bottom: 1px solid var(--rule); text-decoration: none; }
+.minimal-links a { display: flex; align-items: center; justify-content: space-between; padding: 13px 10px; border-bottom: 1px solid var(--rule); text-decoration: none; }
 .minimal-links a:hover { background: var(--hover); }
 
 .minimal-now { padding: 32px 0 115px; }
@@ -146,6 +174,7 @@ body { margin: 0; background: var(--page); }
   .minimal-project-copy { grid-template-columns: 1fr; gap: 8px; }
   .minimal-tags { display: none; }
   .minimal-secondary { grid-template-columns: 1fr; gap: 65px; }
+  .minimal-column-about { order: 2; }
   .minimal-now-intro,
   .minimal-now-item { grid-template-columns: 1fr; gap: 18px; }
 }
@@ -156,7 +185,8 @@ body { margin: 0; background: var(--page); }
   .minimal-section-title span { display: block; margin-top: 8px; }
   .minimal-project { grid-template-columns: 1fr 18px; padding-block: 20px; }
   .minimal-year { display: none; }
-  .minimal-footer { flex-direction: column; }
+  .minimal-footer { align-items: center; gap: 16px; }
+  .minimal-footer div { gap: 16px; margin-left: auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {

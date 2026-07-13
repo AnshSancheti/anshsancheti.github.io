@@ -29,7 +29,7 @@ export default function PortfolioPrototype() {
                   <span>{project.description}</span>
                 </span>
                 <span className="minimal-tags">{project.tags}</span>
-                <span className="minimal-arrow" aria-hidden="true">↗</span>
+                <span className="minimal-arrow" aria-hidden="true" />
               </a>
             ))}
           </div>
@@ -44,9 +44,9 @@ export default function PortfolioPrototype() {
           <div className="minimal-column">
             <h2>Artifacts</h2>
             <div className="minimal-links">
-              <a href="/?door">Endless Door <span>↗</span></a>
-              <a href="https://anshsancheti.github.io/nyc-tree-map/" target="_blank" rel="noreferrer">NYC Tree Foliage <span>↗</span></a>
-              <a href="https://anshsancheti.github.io/us-voter-turnout/" target="_blank" rel="noreferrer">US Voter Turnout <span>↗</span></a>
+              <a href="/?door">Endless Door <span className="minimal-arrow" aria-hidden="true" /></a>
+              <a href="https://anshsancheti.github.io/nyc-tree-map/" target="_blank" rel="noreferrer">NYC Tree Foliage <span className="minimal-arrow" aria-hidden="true" /></a>
+              <a href="https://anshsancheti.github.io/us-voter-turnout/" target="_blank" rel="noreferrer">US Voter Turnout <span className="minimal-arrow" aria-hidden="true" /></a>
             </div>
           </div>
         </section>

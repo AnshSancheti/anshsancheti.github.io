@@ -24,7 +24,7 @@ const projectRows = projects.map((project) => `
                 <span>${escapeHtml(project.description)}</span>
               </span>
               <span class="minimal-tags">${escapeHtml(project.tags)}</span>
-              <span class="minimal-arrow" aria-hidden="true">↗</span>
+              <span class="minimal-arrow" aria-hidden="true"></span>
             </a>`).join('');
 
 const staticPortfolio = `
@@ -53,9 +53,9 @@ const staticPortfolio = `
           <div class="minimal-column">
             <h2>Artifacts</h2>
             <div class="minimal-links">
-              <a href="/?door">Endless Door <span>↗</span></a>
-              <a href="https://anshsancheti.github.io/nyc-tree-map/" target="_blank" rel="noreferrer">NYC Tree Foliage <span>↗</span></a>
-              <a href="https://anshsancheti.github.io/us-voter-turnout/" target="_blank" rel="noreferrer">US Voter Turnout <span>↗</span></a>
+              <a href="/?door">Endless Door <span class="minimal-arrow" aria-hidden="true"></span></a>
+              <a href="https://anshsancheti.github.io/nyc-tree-map/" target="_blank" rel="noreferrer">NYC Tree Foliage <span class="minimal-arrow" aria-hidden="true"></span></a>
+              <a href="https://anshsancheti.github.io/us-voter-turnout/" target="_blank" rel="noreferrer">US Voter Turnout <span class="minimal-arrow" aria-hidden="true"></span></a>
             </div>
           </div>
         </section>
