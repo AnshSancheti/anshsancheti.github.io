@@ -13,23 +13,22 @@ export default function NowPage() {
         </nav>
       </header>
 
-      <main className="minimal-now">
-        <section className="minimal-now-intro" aria-labelledby="now-heading">
-          <h1 id="now-heading">Now</h1>
-          <div>
-            <p>{now.intro}</p>
-            <span>Updated {now.updated}</span>
-          </div>
-        </section>
+      <main className="minimal-now" aria-label="Now">
+        <div className="minimal-now-copy">
+          <p>{now.employment}</p>
+          {now.projects.map((project) => {
+            const [before, after] = project.sentence.split(project.title);
 
-        <section className="minimal-now-items" aria-label="Current projects">
-          {now.items.map((item) => (
-            <article className="minimal-now-item" key={item.title}>
-              <h2>{item.title}</h2>
-              <p>{item.description}</p>
-            </article>
-          ))}
-        </section>
+            return (
+              <p key={project.title}>
+                {before}
+                {project.href ? <a href={project.href}>{project.title}</a> : <strong>{project.title}</strong>}
+                {after}
+              </p>
+            );
+          })}
+          <span>Updated {now.updated}</span>
+        </div>
       </main>
 
       <footer className="minimal-footer">

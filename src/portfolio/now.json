@@ -1,18 +1,15 @@
 {
   "updated": "July 2026",
-  "intro": "What has my attention right now.",
-  "items": [
+  "employment": "I'm working on agentic data security at Teleskope.",
+  "projects": [
     {
       "title": "Artificial Taste",
-      "description": "Finishing a BuzzFeed quiz for finding the language model that shares your taste—and writing up what that says about benchmarking."
+      "href": "https://tastebench.fly.dev/",
+      "sentence": "Outside of work, I'm finishing Artificial Taste: BuzzFeed for LLMs, or a quiz to see what model your taste most naturally maps to."
     },
     {
       "title": "Superforecaster",
-      "description": "Building an auditable research harness for making—and grading—probabilistic forecasts with AI."
-    },
-    {
-      "title": "This site",
-      "description": "Rescuing old projects, deciding which ones still deserve the internet, and giving the survivors a proper home."
+      "sentence": "I'm also building Superforecaster, an auditable research harness for making and grading probabilistic forecasts with AI."
     }
   ]
 }

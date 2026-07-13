@@ -24,3 +24,13 @@ test('keeps the endless door available as an artifact', () => {
     screen.getByRole('button', { name: /click or drag left to open/i })
   ).toBeInTheDocument();
 });
+
+test('renders the Now page as a concise prose update', () => {
+  window.history.pushState({}, '', '/now/');
+  render(<App />);
+
+  expect(screen.getByText(/agentic data security at Teleskope/i)).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Artificial Taste' })).toBeInTheDocument();
+  expect(screen.getByText('Superforecaster')).toBeInTheDocument();
+  expect(screen.queryByText('This site')).not.toBeInTheDocument();
+});

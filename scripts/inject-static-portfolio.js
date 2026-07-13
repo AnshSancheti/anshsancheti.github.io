@@ -69,11 +69,15 @@ const staticPortfolio = `
       </footer>
     </div>`;
 
-const nowItems = now.items.map((item) => `
-          <article class="minimal-now-item">
-            <h2>${escapeHtml(item.title)}</h2>
-            <p>${escapeHtml(item.description)}</p>
-          </article>`).join('');
+const nowProjects = now.projects.map((project) => {
+  const [before, after] = project.sentence.split(project.title);
+  const title = project.href
+    ? `<a href="${escapeHtml(project.href)}">${escapeHtml(project.title)}</a>`
+    : `<strong>${escapeHtml(project.title)}</strong>`;
+
+  return `
+          <p>${escapeHtml(before)}${title}${escapeHtml(after)}</p>`;
+}).join('');
 
 const staticNow = `
     <div class="minimal-page">
@@ -84,16 +88,11 @@ const staticNow = `
           <a href="mailto:ansh.sancheti@gmail.com">Email</a>
         </nav>
       </header>
-      <main class="minimal-now">
-        <section class="minimal-now-intro" aria-labelledby="now-heading">
-          <h1 id="now-heading">Now</h1>
-          <div>
-            <p>${escapeHtml(now.intro)}</p>
-            <span>Updated ${escapeHtml(now.updated)}</span>
-          </div>
-        </section>
-        <section class="minimal-now-items" aria-label="Current projects">${nowItems}
-        </section>
+      <main class="minimal-now" aria-label="Now">
+        <div class="minimal-now-copy">
+          <p>${escapeHtml(now.employment)}</p>${nowProjects}
+          <span>Updated ${escapeHtml(now.updated)}</span>
+        </div>
       </main>
       <footer class="minimal-footer">
         <span>Unsupervised</span>
@@ -156,13 +155,14 @@ const nowStructuredData = {
   '@id': `${siteUrl}now/#page`,
   url: `${siteUrl}now/`,
   name: 'Now — Ansh Sancheti',
-  description: now.intro,
+  description: `${now.employment} ${now.projects.map((project) => project.sentence).join(' ')}`,
   dateModified: '2026-07-13',
   mainEntity: {
     '@type': 'Person',
     '@id': `${siteUrl}#ansh`,
     name: 'Ansh Sancheti',
     url: siteUrl,
+    worksFor: { '@type': 'Organization', name: 'Teleskope' },
   },
 };
 
@@ -186,7 +186,7 @@ const injectPage = (content, data) => template
   );
 
 const homeHtml = injectPage(staticPortfolio, structuredData);
-const nowDescription = 'What Ansh Sancheti is building and thinking about now.';
+const nowDescription = 'Ansh Sancheti works on agentic data security at Teleskope and is building Artificial Taste and Superforecaster.';
 const nowHtml = injectPage(staticNow, nowStructuredData)
   .replace('<title>Ansh Sancheti — Projects</title>', '<title>Now — Ansh Sancheti</title>')
   .replace(
