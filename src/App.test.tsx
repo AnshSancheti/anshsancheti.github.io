@@ -29,8 +29,14 @@ test('renders the Now page as a concise prose update', () => {
   window.history.pushState({}, '', '/now/');
   render(<App />);
 
-  expect(screen.getByText(/agentic data security at Teleskope/i)).toBeInTheDocument();
-  expect(screen.getByRole('link', { name: 'Artificial Taste' })).toBeInTheDocument();
-  expect(screen.getByText('Superforecaster')).toBeInTheDocument();
+  const teleskope = screen.getByRole('link', { name: 'Teleskope' });
+  expect(teleskope).toHaveAttribute('href', 'https://www.teleskope.ai/');
+  expect(teleskope.querySelector('strong')).not.toBeNull();
+  expect(screen.getByText('Artificial Taste')).toBeInTheDocument();
+  expect(screen.queryByRole('link', { name: 'Artificial Taste' })).not.toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'ForecastBench' })).toHaveAttribute(
+    'href',
+    'https://forecastbench.org/'
+  );
   expect(screen.queryByText('This site')).not.toBeInTheDocument();
 });

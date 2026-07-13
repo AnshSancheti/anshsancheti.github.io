@@ -69,16 +69,6 @@ const staticPortfolio = `
       </footer>
     </div>`;
 
-const nowProjects = now.projects.map((project) => {
-  const [before, after] = project.sentence.split(project.title);
-  const title = project.href
-    ? `<a href="${escapeHtml(project.href)}">${escapeHtml(project.title)}</a>`
-    : `<strong>${escapeHtml(project.title)}</strong>`;
-
-  return `
-          <p>${escapeHtml(before)}${title}${escapeHtml(after)}</p>`;
-}).join('');
-
 const staticNow = `
     <div class="minimal-page">
       <header class="minimal-header">
@@ -90,7 +80,9 @@ const staticNow = `
       </header>
       <main class="minimal-now" aria-label="Now">
         <div class="minimal-now-copy">
-          <p>${escapeHtml(now.employment)}</p>${nowProjects}
+          <p>${escapeHtml(now.employment.prefix)}<a href="${escapeHtml(now.employment.href)}"><strong>${escapeHtml(now.employment.company)}</strong></a>.</p>
+          <p>${escapeHtml(now.artificialTaste.prefix)}<strong>${escapeHtml(now.artificialTaste.title)}</strong>. ${escapeHtml(now.artificialTaste.reflection)}</p>
+          <p>${escapeHtml(now.forecastBench.prefix)}<a href="${escapeHtml(now.forecastBench.href)}">${escapeHtml(now.forecastBench.title)}</a>${escapeHtml(now.forecastBench.suffix)}</p>
           <span>Updated ${escapeHtml(now.updated)}</span>
         </div>
       </main>
@@ -155,7 +147,7 @@ const nowStructuredData = {
   '@id': `${siteUrl}now/#page`,
   url: `${siteUrl}now/`,
   name: 'Now — Ansh Sancheti',
-  description: `${now.employment} ${now.projects.map((project) => project.sentence).join(' ')}`,
+  description: `${now.employment.prefix}${now.employment.company}. ${now.artificialTaste.prefix}${now.artificialTaste.title}. ${now.artificialTaste.reflection} ${now.forecastBench.prefix}${now.forecastBench.title}${now.forecastBench.suffix}`,
   dateModified: '2026-07-13',
   mainEntity: {
     '@type': 'Person',
@@ -186,7 +178,7 @@ const injectPage = (content, data) => template
   );
 
 const homeHtml = injectPage(staticPortfolio, structuredData);
-const nowDescription = 'Ansh Sancheti works on agentic data security at Teleskope and is building Artificial Taste and Superforecaster.';
+const nowDescription = 'Ansh Sancheti is a senior software engineer building agentic data security at Teleskope and working on Artificial Taste and ForecastBench submissions.';
 const nowHtml = injectPage(staticNow, nowStructuredData)
   .replace('<title>Ansh Sancheti — Projects</title>', '<title>Now — Ansh Sancheti</title>')
   .replace(

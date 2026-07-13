@@ -1,15 +1,19 @@
 {
   "updated": "July 2026",
-  "employment": "I'm working on agentic data security at Teleskope.",
-  "projects": [
-    {
-      "title": "Artificial Taste",
-      "href": "https://tastebench.fly.dev/",
-      "sentence": "Outside of work, I'm finishing Artificial Taste: BuzzFeed for LLMs, or a quiz to see what model your taste most naturally maps to."
-    },
-    {
-      "title": "Superforecaster",
-      "sentence": "I'm also building Superforecaster, an auditable research harness for making and grading probabilistic forecasts with AI."
-    }
-  ]
+  "employment": {
+    "prefix": "Senior software engineer building agentic data security at ",
+    "company": "Teleskope",
+    "href": "https://www.teleskope.ai/"
+  },
+  "artificialTaste": {
+    "prefix": "Outside of work, I'm finishing ",
+    "title": "Artificial Taste",
+    "reflection": "I'm a big believer in the idea that you're a combination of the five people you spend the most time with. As more people add an LLM or three to their top five, what does that do to our culture? I'm starting by mapping the taste of each model family."
+  },
+  "forecastBench": {
+    "prefix": "I'm also building submissions to ",
+    "title": "ForecastBench",
+    "href": "https://forecastbench.org/",
+    "suffix": ", a competition to see if models can beat the best superforecasters at predicting the future."
+  }
 }

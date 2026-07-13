@@ -15,18 +15,19 @@ export default function NowPage() {
 
       <main className="minimal-now" aria-label="Now">
         <div className="minimal-now-copy">
-          <p>{now.employment}</p>
-          {now.projects.map((project) => {
-            const [before, after] = project.sentence.split(project.title);
-
-            return (
-              <p key={project.title}>
-                {before}
-                {project.href ? <a href={project.href}>{project.title}</a> : <strong>{project.title}</strong>}
-                {after}
-              </p>
-            );
-          })}
+          <p>
+            {now.employment.prefix}
+            <a href={now.employment.href}><strong>{now.employment.company}</strong></a>.
+          </p>
+          <p>
+            {now.artificialTaste.prefix}<strong>{now.artificialTaste.title}</strong>.{' '}
+            {now.artificialTaste.reflection}
+          </p>
+          <p>
+            {now.forecastBench.prefix}
+            <a href={now.forecastBench.href}>{now.forecastBench.title}</a>
+            {now.forecastBench.suffix}
+          </p>
           <span>Updated {now.updated}</span>
         </div>
       </main>

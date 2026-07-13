@@ -136,7 +136,6 @@ body { margin: 0; background: var(--page); }
   line-height: 1.35;
   letter-spacing: -.025em;
 }
-.minimal-now-copy a,
 .minimal-now-copy strong { font-weight: 700; }
 .minimal-now-copy a { text-underline-offset: 4px; }
 .minimal-now-copy span { color: var(--muted); font-size: 12px; }
