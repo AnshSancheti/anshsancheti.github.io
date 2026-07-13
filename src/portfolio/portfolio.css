@@ -55,7 +55,7 @@ body { margin: 0; background: var(--page); }
 
 .minimal-project {
   display: grid;
-  grid-template-columns: 62px minmax(0, 1fr) 160px 20px;
+  grid-template-columns: minmax(0, 1fr) 160px 20px;
   gap: 24px;
   align-items: start;
   padding: 24px 10px 25px;
@@ -69,7 +69,6 @@ body { margin: 0; background: var(--page); }
   background: var(--hover);
   outline: none;
 }
-.minimal-year,
 .minimal-tags { color: var(--muted); font-size: 12px; }
 .minimal-project-copy { display: grid; grid-template-columns: minmax(160px, .65fr) minmax(260px, 1fr); gap: 28px; }
 .minimal-project-copy strong { font-size: 17px; line-height: 1.25; }
@@ -170,7 +169,7 @@ body { margin: 0; background: var(--page); }
   .minimal-page main,
   .minimal-footer { width: calc(100% - 32px); }
   .minimal-work { padding: 26px 0 36px; }
-  .minimal-project { grid-template-columns: 48px 1fr 18px; gap: 14px; }
+  .minimal-project { grid-template-columns: 1fr 18px; gap: 14px; }
   .minimal-project-copy { grid-template-columns: 1fr; gap: 8px; }
   .minimal-tags { display: none; }
   .minimal-secondary { grid-template-columns: 1fr; gap: 65px; }
@@ -184,7 +183,6 @@ body { margin: 0; background: var(--page); }
   .minimal-section-title { display: block; }
   .minimal-section-title span { display: block; margin-top: 8px; }
   .minimal-project { grid-template-columns: 1fr 18px; padding-block: 20px; }
-  .minimal-year { display: none; }
   .minimal-footer { align-items: center; gap: 16px; }
   .minimal-footer div { gap: 16px; margin-left: auto; }
 }

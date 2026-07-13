@@ -18,7 +18,6 @@ const absoluteUrl = (href) => new URL(href, siteUrl).href;
 
 const projectRows = projects.map((project) => `
             <a class="minimal-project" href="${escapeHtml(project.href)}" target="_blank" rel="noreferrer">
-              <span class="minimal-year">${escapeHtml(project.year)}</span>
               <span class="minimal-project-copy">
                 <strong>${escapeHtml(project.title)}</strong>
                 <span>${escapeHtml(project.description)}</span>

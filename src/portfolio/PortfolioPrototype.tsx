@@ -23,7 +23,6 @@ export default function PortfolioPrototype() {
           <div className="minimal-projects">
             {projects.map((project) => (
               <a className="minimal-project" href={project.href} target="_blank" rel="noreferrer" key={project.title}>
-                <span className="minimal-year">{project.year}</span>
                 <span className="minimal-project-copy">
                   <strong>{project.title}</strong>
                   <span>{project.description}</span>
