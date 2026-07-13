@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import App from './App';
 
 beforeEach(() => {
@@ -13,6 +13,10 @@ test('renders the portfolio homepage', () => {
     screen.getByRole('heading', { name: 'Selected work' })
   ).toBeInTheDocument();
   expect(screen.getByText('Claude Explores Earth')).toBeInTheDocument();
+  expect(screen.queryByText('Artificial Taste')).not.toBeInTheDocument();
+  expect(
+    within(screen.getByRole('navigation')).queryByRole('link', { name: 'Email' })
+  ).not.toBeInTheDocument();
 });
 
 test('keeps the endless door available as an artifact', () => {

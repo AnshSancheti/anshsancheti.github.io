@@ -14,13 +14,6 @@
     "href": "https://claude-explores-earth.fly.dev/"
   },
   {
-    "title": "Artificial Taste",
-    "year": "2026",
-    "tags": "benchmark, quiz",
-    "description": "BuzzFeed for LLMs - a quiz to see what model your taste most naturally maps to.",
-    "href": "https://tastebench.fly.dev/"
-  },
-  {
     "title": "The Artisanal Tax",
     "year": "2026",
     "tags": "data, NYC",

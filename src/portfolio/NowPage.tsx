@@ -9,7 +9,6 @@ export default function NowPage() {
         <a className="minimal-name" href="/" aria-label="Ansh Sancheti — Home">AS</a>
         <nav aria-label="Primary navigation">
           <a href="/now/" aria-current="page">Now</a>
-          <a href="mailto:ansh.sancheti@gmail.com">Email</a>
         </nav>
       </header>
 
