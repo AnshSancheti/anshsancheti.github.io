@@ -1,0 +1,165 @@
+:root {
+  --page: #f7f7f4;
+  --text: #161616;
+  --muted: #6f6f69;
+  --rule: #ccccC6;
+  --hover: #eeeecf;
+}
+
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--page); }
+
+.minimal-page {
+  min-height: 100vh;
+  color: var(--text);
+  background: var(--page);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.minimal-page a { color: inherit; }
+.minimal-header,
+.minimal-page main,
+.minimal-footer {
+  width: min(1040px, calc(100% - 48px));
+  margin-inline: auto;
+}
+
+.minimal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 0;
+}
+
+.minimal-name { font-weight: 700; letter-spacing: -.08em; text-decoration: none; }
+.minimal-header nav { display: flex; gap: 28px; }
+.minimal-header nav a,
+.minimal-footer a { text-decoration: none; }
+.minimal-header nav a:hover,
+.minimal-footer a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.minimal-work { padding: 32px 0 42px; }
+.minimal-section-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  align-items: baseline;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--text);
+}
+.minimal-section-title h2,
+.minimal-column h2 { margin: 0; font-size: 14px; font-weight: 700; }
+.minimal-section-title span { color: var(--muted); font-size: 12px; }
+
+.minimal-project {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr) 160px 20px;
+  gap: 24px;
+  align-items: start;
+  padding: 24px 10px 25px;
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  transition: background-color 120ms ease;
+}
+.minimal-project:last-child { border-bottom: 0; }
+.minimal-project:hover,
+.minimal-project:focus-visible {
+  background: var(--hover);
+  outline: none;
+}
+.minimal-year,
+.minimal-tags { color: var(--muted); font-size: 12px; }
+.minimal-project-copy { display: grid; grid-template-columns: minmax(160px, .65fr) minmax(260px, 1fr); gap: 28px; }
+.minimal-project-copy strong { font-size: 17px; line-height: 1.25; }
+.minimal-project-copy > span { max-width: 520px; color: #464642; }
+.minimal-arrow { justify-self: end; }
+
+.minimal-secondary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  padding: 70px 0 105px;
+  border-top: 1px solid var(--text);
+}
+.minimal-column h2 { margin-bottom: 30px; }
+.minimal-column-about p {
+  max-width: 390px;
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.4;
+  letter-spacing: -.015em;
+}
+.minimal-note { max-width: 390px; }
+.minimal-note strong { font-size: 20px; }
+.minimal-note p { margin: 10px 0 18px; color: #464642; }
+.minimal-note span { color: var(--muted); font-size: 12px; }
+.minimal-links { border-top: 1px solid var(--rule); }
+.minimal-links a { display: flex; justify-content: space-between; padding: 13px 10px; border-bottom: 1px solid var(--rule); text-decoration: none; }
+.minimal-links a:hover { background: var(--hover); }
+
+.minimal-now { padding: 32px 0 115px; }
+.minimal-now-intro {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 80px;
+  padding: 0 0 70px;
+}
+.minimal-now-intro h1 { margin: 0; font-size: 14px; }
+.minimal-now-intro p {
+  max-width: 640px;
+  margin: 0 0 16px;
+  font-size: clamp(20px, 2.6vw, 29px);
+  line-height: 1.35;
+  letter-spacing: -.025em;
+}
+.minimal-now-intro span { color: var(--muted); font-size: 12px; }
+.minimal-now-items { border-top: 1px solid var(--text); }
+.minimal-now-item {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 80px;
+  padding: 28px 10px 30px;
+  border-bottom: 1px solid var(--rule);
+}
+.minimal-now-item h2 { margin: 0; font-size: 18px; }
+.minimal-now-item p { max-width: 640px; margin: 0; color: #464642; }
+
+.minimal-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 25px 0 40px;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 12px;
+}
+.minimal-footer div { display: flex; gap: 24px; }
+
+@media (max-width: 780px) {
+  .minimal-header,
+  .minimal-page main,
+  .minimal-footer { width: calc(100% - 32px); }
+  .minimal-work { padding: 26px 0 36px; }
+  .minimal-project { grid-template-columns: 48px 1fr 18px; gap: 14px; }
+  .minimal-project-copy { grid-template-columns: 1fr; gap: 8px; }
+  .minimal-tags { display: none; }
+  .minimal-secondary { grid-template-columns: 1fr; gap: 65px; }
+  .minimal-now-intro,
+  .minimal-now-item { grid-template-columns: 1fr; gap: 18px; }
+}
+
+@media (max-width: 500px) {
+  .minimal-header nav { gap: 16px; }
+  .minimal-section-title { display: block; }
+  .minimal-section-title span { display: block; margin-top: 8px; }
+  .minimal-project { grid-template-columns: 1fr 18px; padding-block: 20px; }
+  .minimal-year { display: none; }
+  .minimal-footer { flex-direction: column; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .minimal-project { transition: none; }
+}

@@ -1,0 +1,18 @@
+{
+  "updated": "July 2026",
+  "intro": "What has my attention right now.",
+  "items": [
+    {
+      "title": "Artificial Taste",
+      "description": "Finishing a BuzzFeed quiz for finding the language model that shares your taste—and writing up what that says about benchmarking."
+    },
+    {
+      "title": "Superforecaster",
+      "description": "Building an auditable research harness for making—and grading—probabilistic forecasts with AI."
+    },
+    {
+      "title": "This site",
+      "description": "Rescuing old projects, deciding which ones still deserve the internet, and giving the survivors a proper home."
+    }
+  ]
+}

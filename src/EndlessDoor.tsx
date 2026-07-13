@@ -28,25 +28,12 @@ type DoorBodyProps = {
   idSuffix: string;
 };
 
-const KNOB_SLICE_ANGLES = [-70, -42, -18, 18, 42, 70];
-
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
 function DoorDepth({ idSuffix, side }: DoorDepthProps) {
   const wobbleId = `door-depth-wobble-${idSuffix}`;
-  const scratches = useMemo(
-    () => [
-      'M9 34 C14 31 19 34 24 31',
-      'M8 119 C13 116 20 119 26 116',
-      'M7 248 C13 245 20 248 27 246',
-      'M8 386 C14 383 20 386 26 384',
-      'M7 521 C12 518 19 521 27 519',
-      'M8 653 C14 650 21 653 26 651',
-    ],
-    []
-  );
 
   return (
     <svg
@@ -54,7 +41,7 @@ function DoorDepth({ idSuffix, side }: DoorDepthProps) {
       className={`door-depth-art door-depth-art-${side}`}
       focusable="false"
       preserveAspectRatio="none"
-      viewBox="0 0 34 704"
+      viewBox="0 0 34 720"
     >
       <defs>
         <filter id={wobbleId} x="-8%" y="-4%" width="116%" height="108%">
@@ -64,14 +51,11 @@ function DoorDepth({ idSuffix, side }: DoorDepthProps) {
       </defs>
 
       <g filter={`url(#${wobbleId})`}>
-        <path className="door-depth-fill" d="M2 2 C12 3 22 2 32 3 L31 701 C21 703 13 700 2 702 Z" />
-        <path className="door-depth-line" d="M3 3 C12 4 22 3 31 4 L31 700 C21 702 13 699 3 701 Z" />
-        <path className="door-depth-edge" d="M4 7 C7 143 4 263 6 354 C4 468 7 582 5 698" />
-        <path className="door-depth-edge" d="M29 8 C26 143 30 265 28 357 C30 465 27 583 29 697" />
-        <path className="door-depth-highlight" d="M10 14 C13 155 10 296 12 424 C10 534 13 620 11 691" />
-        {scratches.map((scratch) => (
-          <path className="door-depth-scratch" d={scratch} key={scratch} />
-        ))}
+        <path className="door-depth-fill" d="M3 10 C12 8 22 10 31 10 L31 710 C22 713 13 710 3 711 Z" />
+        <path className="door-depth-line" d="M3 10 C12 8 22 10 31 10 L31 710 C22 713 13 710 3 711 Z" />
+        <path className="door-depth-edge" d="M6 18 C7 156 5 284 6 360 C5 474 7 590 6 704" />
+        <path className="door-depth-edge" d="M28 17 C27 158 29 286 28 361 C29 475 27 591 28 704" />
+        <path className="door-depth-highlight" d="M24 25 C23 164 24 296 23 430 C24 540 23 624 24 696" />
       </g>
     </svg>
   );
@@ -86,59 +70,21 @@ function DoorBody({ idSuffix }: DoorBodyProps) {
       <div className="door-face door-face-back">
         <DoorDrawing idSuffix={`${idSuffix}-back`} />
       </div>
-      <DoorKnobAssembly />
+      <DoorKnobAssembly face="front" />
+      <DoorKnobAssembly face="back" />
       <DoorDepth idSuffix={`${idSuffix}-hinge`} side="hinge" />
       <DoorDepth idSuffix={`${idSuffix}-latch`} side="latch" />
     </>
   );
 }
 
-function DoorKnobAssembly() {
+function DoorKnobAssembly({ face }: { face: 'front' | 'back' }) {
   return (
-    <div aria-hidden="true" className="door-knob-assembly">
-      <div className="door-knob-bridge" />
-      {KNOB_SLICE_ANGLES.map((sliceAngle) => (
-        <span
-          className="door-knob-orb door-knob-orb-front"
-          key={`front-${sliceAngle}`}
-          style={{ '--knob-slice-angle': `${sliceAngle}deg` } as React.CSSProperties}
-        />
-      ))}
-      {KNOB_SLICE_ANGLES.map((sliceAngle) => (
-        <span
-          className="door-knob-orb door-knob-orb-back"
-          key={`back-${sliceAngle}`}
-          style={{ '--knob-slice-angle': `${sliceAngle}deg` } as React.CSSProperties}
-        />
-      ))}
-      <div className="door-knob-neck door-knob-neck-front" />
-      <div className="door-knob-neck door-knob-neck-back" />
-      <svg
-        className="door-knob-cap door-knob-cap-front"
-        focusable="false"
-        preserveAspectRatio="none"
-        viewBox="0 0 42 42"
-      >
-        <path className="door-knob-cap-fill" d="M21 4 C31 3 39 12 38 22 C37 32 29 39 19 38 C9 37 3 29 4 20 C5 10 12 5 21 4 Z" />
-        <path className="door-knob-cap-line" d="M21 4 C31 3 39 12 38 22 C37 32 29 39 19 38 C9 37 3 29 4 20 C5 10 12 5 21 4 Z" />
-        <path className="door-knob-cap-ring" d="M21 8 C29 7 35 14 34 22 C33 29 27 35 19 34 C12 33 8 27 8 20 C9 13 14 9 21 8 Z" />
-        <path className="door-knob-cap-shadow" d="M11 25 C16 34 29 34 34 24" />
-        <path className="door-knob-cap-highlight" d="M13 15 C16 11 23 10 28 13" />
-        <circle className="door-knob-cap-scratch" cx="16" cy="15" r="2.6" />
-      </svg>
-      <svg
-        className="door-knob-cap door-knob-cap-back"
-        focusable="false"
-        preserveAspectRatio="none"
-        viewBox="0 0 42 42"
-      >
-        <path className="door-knob-cap-fill" d="M21 4 C31 3 39 12 38 22 C37 32 29 39 19 38 C9 37 3 29 4 20 C5 10 12 5 21 4 Z" />
-        <path className="door-knob-cap-line" d="M21 4 C31 3 39 12 38 22 C37 32 29 39 19 38 C9 37 3 29 4 20 C5 10 12 5 21 4 Z" />
-        <path className="door-knob-cap-ring" d="M21 8 C29 7 35 14 34 22 C33 29 27 35 19 34 C12 33 8 27 8 20 C9 13 14 9 21 8 Z" />
-        <path className="door-knob-cap-shadow" d="M11 25 C16 34 29 34 34 24" />
-        <path className="door-knob-cap-highlight" d="M13 15 C16 11 23 10 28 13" />
-        <circle className="door-knob-cap-scratch" cx="16" cy="15" r="2.6" />
-      </svg>
+    <div aria-hidden="true" className={`door-knob-assembly door-knob-assembly-${face}`}>
+      <span className="door-knob-stem door-knob-stem-side" />
+      <span className="door-knob-stem door-knob-stem-cap" />
+      <span className="door-knob-sphere door-knob-sphere-side" />
+      <span className="door-knob-sphere door-knob-sphere-face" />
     </div>
   );
 }
@@ -229,9 +175,9 @@ function DoorDrawing({ idSuffix }: DoorDrawingProps) {
         ))}
 
         <g className="door-hardware">
-          <path className="door-plate" d="M276 428 L296 428 L296 494 L276 493 Z" />
-          <path className="door-plate-echo" d="M274 431 L294 429 L295 491 L277 496" />
-          <path className="door-keyhole" d="M288 465 C284 465 283 471 286 473 L284 486 L292 486 L290 473 C293 471 292 465 288 465 Z" />
+          <path className="door-plate" d="M266 428 L286 428 L286 494 L266 493 Z" />
+          <path className="door-plate-echo" d="M264 431 L284 429 L285 491 L267 496" />
+          <path className="door-keyhole" d="M278 465 C274 465 273 471 276 473 L274 486 L282 486 L280 473 C283 471 282 465 278 465 Z" />
         </g>
 
         <path className="door-ink-scratch" d="M45 188 C106 184 164 188 222 185 C246 184 265 185 280 184" />

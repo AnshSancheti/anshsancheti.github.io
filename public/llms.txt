@@ -1,0 +1,34 @@
+# Ansh Sancheti
+
+> Personal site and project index for Ansh Sancheti, a software engineer in New York who builds AI experiments, large-scale data maps, games, archives, and small tools for the web.
+
+Canonical site: https://anshsancheti.github.io/
+
+## Now
+
+- [Current work](https://anshsancheti.github.io/now/): Artificial Taste, Superforecaster, and consolidating this project archive. Updated July 2026.
+
+## Recent selected work
+
+- [Claude Explores Earth](https://claude-explores-earth.fly.dev/): A pair of agents wander the planet via Street View, trying to find each other by passing notes on a shared scratchpad. Tags: agents, map. Created 2026.
+- [Artificial Taste](https://tastebench.fly.dev/): BuzzFeed for LLMs - a quiz to see what model your taste most naturally maps to. Tags: benchmark, quiz. Created 2026.
+- [Reddit Atlas](https://reddit-atlas.fly.dev/): Every Reddit post and comment from 2006–2025, embedded and clustered by user participation. Tags: data, map. Created 2026.
+- [The Artisanal Tax](https://sizzle-index.fly.dev/): Scraped every menu item in NYC I could get my hands on to figure out where I'm getting upcharged for fries. Tags: data, NYC. Created 2026.
+- [Lot Shot](https://lot-shot.fly.dev/): Guess which artwork sold for more. Learn nothing about art and too much about money. Tags: game, art. Created 2026.
+- [DONGs Gallery](https://anshsancheti.github.io/dongs/gallery.html): An index of all of VSauce’s DONGs (Do Online Now, Guys): tagged and organized. Tags: archive, web. Created 2026.
+- [Fourcorners](https://fourcorners.fly.dev/): Political compass memes but for anything on two axes. Tags: tool, memes. Created 2025.
+- [Crosswars](https://crosswars.fly.dev/): Real-time PvP crosswords (NYT Mini edition). Tags: game, multiplayer. Created 2025.
+
+## In progress
+
+- Superforecaster: An auditable research harness for AI probabilistic forecasting. Research prototype, 2026.
+
+## Artifacts
+
+- [Endless Door](https://anshsancheti.github.io/?door)
+- [NYC Tree Foliage](https://anshsancheti.github.io/nyc-tree-map/)
+- [US Voter Turnout](https://anshsancheti.github.io/us-voter-turnout/)
+
+## About and contact
+
+Committed to answering questions nobody's asked. Based in NYC. Unsupervised. Email: ansh.sancheti@gmail.com. GitHub: https://github.com/AnshSancheti. LinkedIn: https://www.linkedin.com/in/ansh-sancheti-10b043aa.

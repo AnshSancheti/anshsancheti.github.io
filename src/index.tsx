@@ -3,6 +3,13 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { animateFavicon } from './faviconAnimation';
+
+if (process.env.NODE_ENV === 'development') {
+  import('react-grab');
+}
+
+animateFavicon();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

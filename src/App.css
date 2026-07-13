@@ -69,7 +69,8 @@ body {
   --door-angle: 0deg;
   --door-hinge-x: 7.7%;
   --door-edge-x: 93.1%;
-  --door-depth: clamp(8px, 0.9vw, 14px);
+  --door-knob-x: 87%;
+  --door-depth: clamp(7px, 0.72vw, 11px);
   --door-half-depth: calc(var(--door-depth) / 2);
   position: relative;
   width: clamp(222px, min(31vw, calc((100dvh - var(--floor-offset) - 34px) * 0.44)), 366px);
@@ -160,11 +161,11 @@ body {
 
 .door-depth-art {
   position: absolute;
-  top: 1.25%;
+  top: 0;
   z-index: 1;
   display: block;
   width: var(--door-depth);
-  height: 97.5%;
+  height: 100%;
   overflow: visible;
   pointer-events: none;
   transform: rotateY(90deg);
@@ -181,100 +182,120 @@ body {
 }
 
 .door-knob-assembly {
-  --knob-size: clamp(18px, 7.6%, 27px);
-  --knob-throw: clamp(11px, 1.18vw, 16px);
+  --knob-size: clamp(18px, min(1.9vw, 3.2vh), 29px);
+  --knob-visible-stem: clamp(6px, 0.58vw, 9px);
+  --knob-mount-inset: clamp(2px, 0.18vw, 3px);
+  --knob-center-depth: calc((var(--knob-size) * 0.5) + var(--knob-visible-stem));
+  --knob-stem-thickness: calc(var(--knob-size) * 0.24);
   position: absolute;
-  left: 90%;
+  left: var(--door-knob-x);
   top: 61.8%;
   z-index: 8;
   width: var(--knob-size);
-  aspect-ratio: 1;
+  height: var(--knob-size);
   pointer-events: none;
-  transform: translate(-50%, -50%);
   transform-style: preserve-3d;
 }
 
-.door-knob-bridge,
-.door-knob-orb,
-.door-knob-neck,
-.door-knob-cap {
+.door-knob-assembly-front {
+  transform: translate(-50%, -50%) translateZ(var(--door-half-depth));
+}
+
+.door-knob-assembly-back {
+  left: var(--door-knob-x);
+  transform: translate(-50%, -50%) rotateY(180deg) translateZ(var(--door-half-depth));
+}
+
+
+.door-knob-assembly,
+.door-knob-stem,
+.door-knob-sphere {
   position: absolute;
   transform-style: preserve-3d;
   backface-visibility: visible;
 }
 
-.door-knob-bridge {
-  top: 50%;
+.door-knob-stem {
   left: 50%;
-  width: calc(var(--door-depth) + (var(--knob-throw) * 2.05));
-  height: 48%;
+  top: 50%;
+  background:
+    linear-gradient(180deg, rgba(255, 254, 249, 0.28), rgba(255, 254, 249, 0) 42%),
+    var(--ink);
+  border: 2px solid var(--ink);
   border-radius: 999px;
-  background: var(--ink);
-  border: 1px solid rgba(255, 254, 249, 0.34);
   box-shadow:
-    inset 0 2px 0 rgba(255, 254, 249, 0.22),
-    inset 0 -3px 0 rgba(0, 0, 0, 0.42);
-  opacity: 0.96;
-  transform: translate(-50%, -50%) rotateY(90deg);
+    inset 0 2px 0 rgba(255, 254, 249, 0.16),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.56);
 }
 
-.door-knob-orb {
-  inset: 4%;
-  border-radius: 50%;
-  background: var(--ink);
-  border: 1px solid rgba(255, 254, 249, 0.32);
-  box-shadow:
-    inset -3px -2px 0 rgba(0, 0, 0, 0.45),
-    inset 2px 2px 0 rgba(255, 254, 249, 0.22);
+.door-knob-stem-side {
+  z-index: 2;
+  width: calc(var(--knob-center-depth) + var(--knob-mount-inset));
+  height: var(--knob-stem-thickness);
+  border-radius: 2px 999px 999px 2px;
+  transform-origin: 0 50%;
+  transform:
+    translateZ(calc(var(--knob-mount-inset) * -1))
+    translateY(-50%)
+    rotateY(-90deg);
 }
 
-.door-knob-orb::before {
+.door-knob-stem-cap {
+  z-index: 2;
+  width: calc(var(--knob-size) * 0.34);
+  height: var(--knob-stem-thickness);
+  transform: translate(-50%, -50%) translateZ(calc(var(--knob-visible-stem) * 0.56));
+}
+
+.door-knob-sphere {
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  width: var(--knob-size);
+  aspect-ratio: 1;
+  border: 2px solid var(--ink);
+  border-radius: 51% 49% 52% 48%;
+  background:
+    radial-gradient(circle at 31% 25%, #fffef9 0 7%, rgba(255, 254, 249, 0.72) 8% 11%, transparent 12%),
+    radial-gradient(circle at 43% 34%, #6f6f68 0 10%, #272725 34%, #080808 66%, #000 100%);
+  box-shadow:
+    inset 3px 3px 0 rgba(255, 254, 249, 0.16),
+    inset -5px -5px 0 rgba(0, 0, 0, 0.72),
+    1px 1px 0 rgba(0, 0, 0, 0.58);
+}
+
+.door-knob-sphere-face {
+  transform: translate(-50%, -50%) translateZ(var(--knob-center-depth));
+}
+
+.door-knob-sphere-side {
+  transform: translate(-50%, -50%) translateZ(var(--knob-center-depth)) rotateY(90deg);
+}
+
+.door-knob-sphere::before,
+.door-knob-sphere::after {
   content: '';
   position: absolute;
-  left: 24%;
-  top: 18%;
-  width: 30%;
+  pointer-events: none;
+}
+
+.door-knob-sphere::before {
+  left: 20%;
+  top: 21%;
+  width: 45%;
   height: 22%;
+  border-top: 2px solid rgba(255, 254, 249, 0.56);
   border-radius: 50%;
-  background: rgba(255, 254, 249, 0.72);
-  transform: rotate(-12deg);
+  transform: rotate(-16deg);
 }
 
-.door-knob-orb-front {
-  transform: translateZ(calc(var(--door-half-depth) + var(--knob-throw))) rotateY(var(--knob-slice-angle));
-}
-
-.door-knob-orb-back {
-  transform: rotateY(180deg) translateZ(calc(var(--door-half-depth) + var(--knob-throw))) rotateY(var(--knob-slice-angle));
-}
-
-.door-knob-neck {
-  inset: 21%;
+.door-knob-sphere::after {
+  left: 15%;
+  right: 15%;
+  bottom: 13%;
+  height: 34%;
+  border-bottom: 2px solid rgba(255, 254, 249, 0.24);
   border-radius: 50%;
-  background: var(--ink);
-  border: 1px solid rgba(255, 254, 249, 0.42);
-}
-
-.door-knob-neck-front {
-  transform: translateZ(calc(var(--door-half-depth) + (var(--knob-throw) * 0.45)));
-}
-
-.door-knob-neck-back {
-  transform: rotateY(180deg) translateZ(calc(var(--door-half-depth) + (var(--knob-throw) * 0.45)));
-}
-
-.door-knob-cap {
-  inset: 0;
-  overflow: visible;
-  backface-visibility: hidden;
-}
-
-.door-knob-cap-front {
-  transform: translateZ(calc(var(--door-half-depth) + var(--knob-throw)));
-}
-
-.door-knob-cap-back {
-  transform: rotateY(180deg) translateZ(calc(var(--door-half-depth) + var(--knob-throw)));
 }
 
 .door-fill,
@@ -290,15 +311,10 @@ body {
 .door-panel-weight,
 .door-plate,
 .door-plate-echo,
-.door-knob-cap-line,
-.door-knob-cap-ring,
-.door-knob-cap-shadow,
-.door-knob-cap-highlight,
 .door-hatch,
 .door-depth-line,
 .door-depth-edge,
-.door-depth-highlight,
-.door-depth-scratch {
+.door-depth-highlight {
   vector-effect: non-scaling-stroke;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -317,22 +333,15 @@ body {
 .door-depth-edge {
   fill: none;
   stroke: #fffef9;
-  stroke-width: 1.1;
-  opacity: 0.28;
+  stroke-width: 0.9;
+  opacity: 0.18;
 }
 
 .door-depth-highlight {
   fill: none;
   stroke: #fffef9;
   stroke-width: 0.8;
-  opacity: 0.42;
-}
-
-.door-depth-scratch {
-  fill: none;
-  stroke: #fffef9;
-  stroke-width: 0.72;
-  opacity: 0.5;
+  opacity: 0.32;
 }
 
 .door-line-heavy {
@@ -398,39 +407,8 @@ body {
   stroke-width: 0.95;
 }
 
-.door-knob-cap-fill,
 .door-keyhole {
   fill: var(--ink);
-}
-
-.door-knob-cap-line {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 2.4;
-}
-
-.door-knob-cap-ring {
-  fill: none;
-  stroke: rgba(255, 254, 249, 0.62);
-  stroke-width: 1.2;
-}
-
-.door-knob-cap-shadow {
-  fill: none;
-  stroke: #fffef9;
-  stroke-width: 1.45;
-  opacity: 0.28;
-}
-
-.door-knob-cap-highlight {
-  fill: none;
-  stroke: #fffef9;
-  stroke-width: 1.35;
-  opacity: 0.72;
-}
-
-.door-knob-cap-scratch {
-  fill: rgba(255, 255, 255, 0.85);
 }
 
 @media (max-width: 760px) {

@@ -1,0 +1,58 @@
+[
+  {
+    "title": "Claude Explores Earth",
+    "year": "2026",
+    "tags": "agents, map",
+    "description": "A pair of agents wander the planet via Street View, trying to find each other by passing notes on a shared scratchpad.",
+    "href": "https://claude-explores-earth.fly.dev/"
+  },
+  {
+    "title": "Artificial Taste",
+    "year": "2026",
+    "tags": "benchmark, quiz",
+    "description": "BuzzFeed for LLMs - a quiz to see what model your taste most naturally maps to.",
+    "href": "https://tastebench.fly.dev/"
+  },
+  {
+    "title": "Reddit Atlas",
+    "year": "2026",
+    "tags": "data, map",
+    "description": "Every Reddit post and comment from 2006–2025, embedded and clustered by user participation.",
+    "href": "https://reddit-atlas.fly.dev/"
+  },
+  {
+    "title": "The Artisanal Tax",
+    "year": "2026",
+    "tags": "data, NYC",
+    "description": "Scraped every menu item in NYC I could get my hands on to figure out where I'm getting upcharged for fries.",
+    "href": "https://sizzle-index.fly.dev/"
+  },
+  {
+    "title": "Lot Shot",
+    "year": "2026",
+    "tags": "game, art",
+    "description": "Guess which artwork sold for more. Learn nothing about art and too much about money.",
+    "href": "https://lot-shot.fly.dev/"
+  },
+  {
+    "title": "DONGs Gallery",
+    "year": "2026",
+    "tags": "archive, web",
+    "description": "An index of all of VSauce’s DONGs (Do Online Now, Guys): tagged and organized.",
+    "href": "/dongs/gallery.html"
+  },
+  {
+    "title": "Fourcorners",
+    "year": "2025",
+    "tags": "tool, memes",
+    "description": "Political compass memes but for anything on two axes.",
+    "href": "https://fourcorners.fly.dev/"
+  },
+  {
+    "title": "Crosswars",
+    "year": "2025",
+    "tags": "game, multiplayer",
+    "description": "Real-time PvP crosswords (NYT Mini edition).",
+    "href": "https://crosswars.fly.dev/"
+  }
+]
