@@ -1,9 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Shantell+Sans:wght@400;500&display=swap');
+
 :root {
   --paper: #fbfaf5;
   --ink: #050505;
   --soft-ink: rgba(5, 5, 5, 0.44);
   --thin-ink: rgba(5, 5, 5, 0.28);
-  --floor-offset: clamp(56px, 8vh, 86px);
 }
 
 * {
@@ -17,63 +18,68 @@ body,
 }
 
 body {
-  background: var(--paper);
+  margin: 0;
+  background: #0a0a0a;
 }
 
-.endless-door-page {
-  position: relative;
+.object-gallery-page {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
   min-height: 100vh;
   min-height: 100svh;
   min-height: 100dvh;
   overflow: hidden;
-  color: var(--ink);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.92), transparent 34%),
-    radial-gradient(circle at 50% 48%, rgba(0, 0, 0, 0.035), transparent 36%),
-    var(--paper);
+    radial-gradient(circle at 24% 42%, rgba(255, 255, 255, 0.055), transparent 28%),
+    radial-gradient(circle at 75% 40%, rgba(255, 255, 255, 0.04), transparent 24%),
+    #0a0a0a;
 }
 
-.room-line {
-  position: absolute;
-  left: -2vw;
-  right: -2vw;
-  pointer-events: none;
-}
-
-.room-line-top {
-  top: 0;
-  height: 3px;
-  background: var(--ink);
-  opacity: 0.82;
-}
-
-.room-line-baseboard {
-  bottom: var(--floor-offset);
-  border-top: 2px solid rgba(5, 5, 5, 0.74);
-}
-
-.room-line-floor {
-  bottom: calc(var(--floor-offset) - 23px);
-  border-top: 1px solid rgba(5, 5, 5, 0.35);
-}
-
-.endless-door-world {
-  position: absolute;
-  inset: 0;
+.object-gallery-grid {
   display: grid;
-  place-items: end center;
-  padding-bottom: var(--floor-offset);
+  grid-template-columns: minmax(210px, 0.82fr) minmax(230px, 1fr);
+  align-items: center;
+  justify-items: center;
+  width: min(980px, calc(100vw - 40px));
+  gap: clamp(28px, 7vw, 96px);
+}
+
+.object-cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  overflow: visible;
+}
+
+.object-cell-door {
+  align-self: stretch;
+}
+
+.endless-door-object {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: min(78vh, 760px);
+  overflow: visible;
 }
 
 .endless-door-stage {
   --door-angle: 0deg;
   --door-hinge-x: 7.7%;
   --door-edge-x: 93.1%;
-  --door-depth: clamp(8px, 0.9vw, 14px);
+  --door-depth: clamp(5px, 0.58vw, 10px);
   --door-half-depth: calc(var(--door-depth) / 2);
+  --door-ink: #e9e7df;
+  --door-solid-fill: #10100f;
+  --door-panel-fill: #131312;
+  --door-faint: rgba(233, 231, 223, 0.44);
+  --door-soft: rgba(233, 231, 223, 0.62);
   position: relative;
-  width: clamp(222px, min(31vw, calc((100dvh - var(--floor-offset) - 34px) * 0.44)), 366px);
-  aspect-ratio: 320 / 720;
+  width: clamp(148px, min(16vw, calc((100dvh - 40px) * 0.24)), 168px);
+  aspect-ratio: 360 / 720;
   perspective: 1400px;
   transform-style: preserve-3d;
   cursor: grab;
@@ -83,7 +89,7 @@ body {
 }
 
 .endless-door-stage:focus-visible {
-  filter: drop-shadow(0 0 0.6rem rgba(5, 5, 5, 0.18));
+  filter: drop-shadow(0 0 0.6rem rgba(233, 231, 223, 0.18));
 }
 
 .endless-door-stage.is-dragging {
@@ -112,6 +118,11 @@ body {
   transform-origin: var(--door-hinge-x) 50%;
   will-change: transform;
   backface-visibility: visible;
+  --leaf-knob-facing-angle: var(--door-counter-angle);
+}
+
+.endless-door-stage.is-hover-preview .door-leaf {
+  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .endless-door-stage.is-transitioning .door-leaf {
@@ -127,6 +138,7 @@ body {
   transform-origin: var(--door-hinge-x) 50%;
   transform: rotateY(-180deg) translateZ(3px);
   backface-visibility: visible;
+  --leaf-knob-facing-angle: 180deg;
 }
 
 .door-face {
@@ -181,10 +193,10 @@ body {
 }
 
 .door-knob-assembly {
-  --knob-size: clamp(18px, 7.6%, 27px);
-  --knob-throw: clamp(11px, 1.18vw, 16px);
+  --knob-size: clamp(9px, 6.15%, 14px);
+  --knob-throw: clamp(4px, 0.5vw, 8px);
   position: absolute;
-  left: 90%;
+  left: 86.8%;
   top: 61.8%;
   z-index: 8;
   width: var(--knob-size);
@@ -194,93 +206,39 @@ body {
   transform-style: preserve-3d;
 }
 
-.door-knob-bridge,
-.door-knob-orb,
-.door-knob-neck,
-.door-knob-cap {
+.door-knob-sphere {
   position: absolute;
   transform-style: preserve-3d;
   backface-visibility: visible;
 }
 
-.door-knob-bridge {
-  top: 50%;
-  left: 50%;
-  width: calc(var(--door-depth) + (var(--knob-throw) * 2.05));
-  height: 48%;
-  border-radius: 999px;
-  background: var(--ink);
-  border: 1px solid rgba(255, 254, 249, 0.34);
-  box-shadow:
-    inset 0 2px 0 rgba(255, 254, 249, 0.22),
-    inset 0 -3px 0 rgba(0, 0, 0, 0.42);
-  opacity: 0.96;
-  transform: translate(-50%, -50%) rotateY(90deg);
-}
-
-.door-knob-orb {
-  inset: 4%;
-  border-radius: 50%;
-  background: var(--ink);
-  border: 1px solid rgba(255, 254, 249, 0.32);
-  box-shadow:
-    inset -3px -2px 0 rgba(0, 0, 0, 0.45),
-    inset 2px 2px 0 rgba(255, 254, 249, 0.22);
-}
-
-.door-knob-orb::before {
-  content: '';
-  position: absolute;
-  left: 24%;
-  top: 18%;
-  width: 30%;
-  height: 22%;
-  border-radius: 50%;
-  background: rgba(255, 254, 249, 0.72);
-  transform: rotate(-12deg);
-}
-
-.door-knob-orb-front {
-  transform: translateZ(calc(var(--door-half-depth) + var(--knob-throw))) rotateY(var(--knob-slice-angle));
-}
-
-.door-knob-orb-back {
-  transform: rotateY(180deg) translateZ(calc(var(--door-half-depth) + var(--knob-throw))) rotateY(var(--knob-slice-angle));
-}
-
-.door-knob-neck {
-  inset: 21%;
-  border-radius: 50%;
-  background: var(--ink);
-  border: 1px solid rgba(255, 254, 249, 0.42);
-}
-
-.door-knob-neck-front {
-  transform: translateZ(calc(var(--door-half-depth) + (var(--knob-throw) * 0.45)));
-}
-
-.door-knob-neck-back {
-  transform: rotateY(180deg) translateZ(calc(var(--door-half-depth) + (var(--knob-throw) * 0.45)));
-}
-
-.door-knob-cap {
+.door-knob-sphere {
   inset: 0;
+  border-radius: 50%;
+  background: #11110f;
+  box-shadow:
+    0 0 0 1.3px rgba(233, 231, 223, 0.82),
+    0 0 0 2.6px rgba(233, 231, 223, 0.2);
   overflow: visible;
-  backface-visibility: hidden;
 }
 
-.door-knob-cap-front {
-  transform: translateZ(calc(var(--door-half-depth) + var(--knob-throw)));
+.door-knob-sphere-front {
+  transform: translateZ(calc(var(--door-half-depth) + var(--knob-throw))) rotateY(var(--leaf-knob-facing-angle, 0deg));
 }
 
-.door-knob-cap-back {
-  transform: rotateY(180deg) translateZ(calc(var(--door-half-depth) + var(--knob-throw)));
+.door-knob-sphere-back {
+  transform: rotateY(180deg) translateZ(calc(var(--door-half-depth) + var(--knob-throw))) rotateY(var(--leaf-knob-facing-angle, 0deg));
 }
 
 .door-fill,
 .door-panel-face,
 .door-plate {
-  fill: #fffef9;
+  fill: var(--door-solid-fill);
+}
+
+.door-panel-face,
+.door-plate {
+  fill: var(--door-panel-fill);
 }
 
 .door-line,
@@ -290,155 +248,280 @@ body {
 .door-panel-weight,
 .door-plate,
 .door-plate-echo,
-.door-knob-cap-line,
-.door-knob-cap-ring,
-.door-knob-cap-shadow,
-.door-knob-cap-highlight,
-.door-hatch,
 .door-depth-line,
-.door-depth-edge,
-.door-depth-highlight,
-.door-depth-scratch {
+.door-depth-edge {
   vector-effect: non-scaling-stroke;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .door-depth-fill {
-  fill: var(--ink);
+  fill: var(--door-solid-fill);
 }
 
 .door-depth-line {
   fill: none;
-  stroke: var(--ink);
-  stroke-width: 2.4;
+  stroke: var(--door-ink);
+  stroke-width: 3.1;
+  opacity: 0.92;
 }
 
 .door-depth-edge {
   fill: none;
-  stroke: #fffef9;
-  stroke-width: 1.1;
-  opacity: 0.28;
-}
-
-.door-depth-highlight {
-  fill: none;
-  stroke: #fffef9;
-  stroke-width: 0.8;
-  opacity: 0.42;
-}
-
-.door-depth-scratch {
-  fill: none;
-  stroke: #fffef9;
-  stroke-width: 0.72;
-  opacity: 0.5;
+  stroke: var(--door-faint);
+  stroke-width: 1.7;
+  opacity: 0.72;
 }
 
 .door-line-heavy {
   fill: none;
-  stroke: var(--ink);
-  stroke-width: 3.25;
+  stroke: var(--door-ink);
+  stroke-width: 3.55;
+  opacity: 0.94;
 }
 
 .door-line-echo {
   fill: none;
-  stroke: var(--ink);
+  stroke: var(--door-ink);
   stroke-width: 1.2;
   opacity: 0.62;
 }
 
 .door-line-faint {
   fill: none;
-  stroke: var(--soft-ink);
-  stroke-width: 0.95;
+  stroke: var(--door-faint);
+  stroke-width: 1.85;
+  opacity: 0.82;
 }
 
-.door-line-scratch,
-.door-ink-scratch,
-.door-hatch {
+.door-line-scratch {
   fill: none;
-  stroke: rgba(5, 5, 5, 0.38);
-  stroke-width: 0.9;
+  stroke: var(--door-faint);
+  stroke-width: 1.15;
 }
 
 .door-panel-face {
-  stroke: var(--ink);
-  stroke-width: 2.45;
+  stroke: var(--door-ink);
+  stroke-width: 3.35;
+  opacity: 0.94;
 }
 
 .door-panel-echo {
   fill: none;
-  stroke: var(--ink);
+  stroke: var(--door-ink);
   stroke-width: 1.1;
   opacity: 0.5;
 }
 
 .door-panel-inner {
   fill: none;
-  stroke: rgba(5, 5, 5, 0.33);
-  stroke-width: 1.35;
+  stroke: var(--door-faint);
+  stroke-width: 1.85;
+  opacity: 0.78;
 }
 
 .door-panel-weight {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 4.4;
-  opacity: 0.9;
+  display: none;
 }
 
 .door-plate {
-  stroke: rgba(5, 5, 5, 0.55);
-  stroke-width: 1.35;
+  stroke: var(--door-ink);
+  stroke-width: 2.2;
 }
 
 .door-plate-echo {
   fill: none;
-  stroke: rgba(5, 5, 5, 0.45);
-  stroke-width: 0.95;
-}
-
-.door-knob-cap-fill,
-.door-keyhole {
-  fill: var(--ink);
-}
-
-.door-knob-cap-line {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 2.4;
-}
-
-.door-knob-cap-ring {
-  fill: none;
-  stroke: rgba(255, 254, 249, 0.62);
-  stroke-width: 1.2;
-}
-
-.door-knob-cap-shadow {
-  fill: none;
-  stroke: #fffef9;
-  stroke-width: 1.45;
-  opacity: 0.28;
-}
-
-.door-knob-cap-highlight {
-  fill: none;
-  stroke: #fffef9;
+  stroke: var(--door-faint);
   stroke-width: 1.35;
-  opacity: 0.72;
 }
 
-.door-knob-cap-scratch {
-  fill: rgba(255, 255, 255, 0.85);
+.door-keyhole {
+  fill: var(--door-ink);
 }
 
-@media (max-width: 760px) {
-  :root {
-    --floor-offset: clamp(44px, 7vh, 64px);
+.trifold-map-thing {
+  --map-hand: "Shantell Sans", ui-rounded, "Comic Sans MS", cursive;
+  --map-ink: #e9e7df;
+  --map-paperfill: rgba(255, 255, 255, 0.035);
+  --map-faint: rgba(233, 231, 223, 0.42);
+  --map-open: 1.3;
+  appearance: none;
+  border: 0;
+  background: none;
+  color: var(--map-ink);
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  font-family: var(--map-hand);
+}
+
+.trifold-map-art {
+  width: clamp(220px, 29vw, 300px);
+  aspect-ratio: 1;
+}
+
+.trifold-map-art svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.trifold-map-thing [data-stroke] {
+  fill: none;
+  stroke: var(--map-ink);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.92;
+}
+
+.trifold-map-thing [data-fill] {
+  fill: var(--map-paperfill);
+  stroke: var(--map-ink);
+  stroke-width: 2.4;
+  stroke-linejoin: round;
+  opacity: 0.96;
+}
+
+.trifold-map-thing [data-faint] {
+  fill: none;
+  stroke: var(--map-faint);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.trifold-map-thing [data-route] {
+  fill: none;
+  stroke: var(--map-ink);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+
+.trifold-map-closed,
+.trifold-map-open {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    opacity 0.35s ease,
+    transform 0.45s cubic-bezier(0.34, 1.4, 0.5, 1);
+}
+
+.trifold-map-open {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.86);
+}
+
+.trifold-map-thing.opened .trifold-map-closed {
+  opacity: 0;
+  transform: scale(0.86) rotate(-3deg);
+}
+
+.trifold-map-thing.opened .trifold-map-open {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.trifold-map-folds {
+  transform-box: fill-box;
+  transform-origin: left center;
+  transition: transform 0.5s cubic-bezier(0.34, 1.25, 0.5, 1);
+}
+
+.trifold-map-thing:not(.opened):hover .trifold-map-folds,
+.trifold-map-thing:not(.opened):focus-visible .trifold-map-folds {
+  transform: scaleX(var(--map-open));
+}
+
+.trifold-map-route {
+  stroke-dasharray: 70;
+  stroke-dashoffset: 70;
+}
+
+.trifold-map-pin {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+
+.trifold-map-thing.opened .trifold-map-route {
+  animation: trifold-route-draw 0.9s cubic-bezier(0.34, 1.15, 0.5, 1) 0.13s both;
+}
+
+.trifold-map-thing.opened .trifold-map-pin {
+  animation: trifold-pin-drop 0.68s cubic-bezier(0.34, 1.35, 0.5, 1) 0.18s both;
+}
+
+.trifold-map-thing:focus-visible {
+  border-radius: 6px;
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+@keyframes trifold-route-draw {
+  from {
+    stroke-dashoffset: 70;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes trifold-pin-drop {
+  0% {
+    transform: translateY(-8px) scale(0.88);
+    opacity: 0;
+  }
+
+  62% {
+    transform: translateY(1px) scale(1.04);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .trifold-map-route {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .object-gallery-page {
+    overflow: auto;
+    padding: 34px 0;
+  }
+
+  .object-gallery-grid {
+    grid-template-columns: 1fr;
+    width: min(420px, calc(100vw - 30px));
+    gap: 26px;
+  }
+
+  .endless-door-object {
+    min-height: auto;
   }
 
   .endless-door-stage {
-    width: clamp(196px, min(58vw, calc((100dvh - var(--floor-offset) - 28px) * 0.44)), 302px);
+    width: clamp(142px, min(42vw, calc((100dvh - 64px) * 0.25)), 158px);
+  }
+
+  .trifold-map-art {
+    width: clamp(198px, 66vw, 270px);
   }
 }
