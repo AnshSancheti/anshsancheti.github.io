@@ -168,7 +168,7 @@ body { margin: 0; background: var(--page); }
   .minimal-header,
   .minimal-page main,
   .minimal-footer { width: calc(100% - 32px); }
-  .minimal-work { padding: 26px 0 36px; }
+  .minimal-work { padding: 26px 0; }
   .minimal-project { grid-template-columns: 1fr 18px; gap: 14px; }
   .minimal-project-copy { grid-template-columns: 1fr; gap: 8px; }
   .minimal-tags { display: none; }
