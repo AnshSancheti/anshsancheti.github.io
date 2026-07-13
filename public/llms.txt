@@ -8,7 +8,7 @@ Canonical site: https://anshsancheti.github.io/
 
 - [Current work](https://anshsancheti.github.io/now/): Artificial Taste, Superforecaster, and consolidating this project archive. Updated July 2026.
 
-## Recent selected work
+## Selected work
 
 - [Reddit Atlas](https://reddit-atlas.fly.dev/): Every Reddit post and comment from 2006–2025, embedded and clustered by user participation. Tags: data, map. Created 2026.
 - [Claude Explores Earth](https://claude-explores-earth.fly.dev/): A pair of agents wander the planet via Street View, trying to find each other by passing notes on a shared scratchpad. Tags: agents, map. Created 2026.

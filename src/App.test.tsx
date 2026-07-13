@@ -10,7 +10,7 @@ test('renders the portfolio homepage', () => {
   render(<App />);
 
   expect(
-    screen.getByRole('heading', { name: 'Recent selected work' })
+    screen.getByRole('heading', { name: 'Selected work' })
   ).toBeInTheDocument();
   expect(screen.getByText('Claude Explores Earth')).toBeInTheDocument();
 });

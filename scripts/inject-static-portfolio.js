@@ -38,7 +38,7 @@ const staticPortfolio = `
       <main id="top">
         <section class="minimal-work" id="work" aria-labelledby="work-heading">
           <div class="minimal-section-title">
-            <h2 id="work-heading">Recent selected work</h2>
+            <h2 id="work-heading">Selected work</h2>
             <span>Some projects take a few seconds to wake up.</span>
           </div>
           <div class="minimal-projects">${projectRows}
@@ -131,7 +131,7 @@ const structuredData = {
     {
       '@type': 'ItemList',
       '@id': `${siteUrl}#selected-work`,
-      name: 'Recent selected work by Ansh Sancheti',
+      name: 'Selected work by Ansh Sancheti',
       numberOfItems: projects.length,
       itemListElement: projects.map((project, index) => ({
         '@type': 'ListItem',
