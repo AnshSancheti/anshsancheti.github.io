@@ -1,0 +1,29 @@
+# DONGs Gallery
+
+> An independent index of VSauce's DONGs (Do Online Now, Guys), tagged and organized for browsing.
+
+Canonical URL: https://anshsancheti.github.io/dongs/gallery.html
+Creator: [Ansh Sancheti](https://anshsancheti.github.io/)
+Status: Public web archive and gallery
+
+## What it is
+
+DONGs Gallery collects 1,044 websites, games, tools, experiments, and curiosities featured in VSauce's DONGs series. It gives each entry a screenshot, original name and destination, a short description of what it is, descriptive tags, and a zero-to-three-star editorial rating.
+
+The gallery is designed as a browsable index of a particular era of the web. Many original destinations have changed, disappeared, or depended on discontinued technology such as Flash. When an original site is no longer useful, the gallery may link to an archived copy in the Internet Archive's Wayback Machine.
+
+This is an independent index, not an official VSauce project. The featured names, sites, videos, and linked work belong to their respective creators.
+
+## What visitors can do
+
+- Search the full index by name and description.
+- Filter by editorial star rating and descriptive tags.
+- Bookmark entries locally in the browser.
+- Ask the gallery to choose a random destination.
+- Follow links to the original DONGs video playlist and Blogspot archive.
+
+## Important links
+
+- [Browse DONGs Gallery](https://anshsancheti.github.io/dongs/gallery.html)
+- [Watch the DONGs playlist on YouTube](https://www.youtube.com/watch?v=aNgE_hf41NY&list=PLEC0A5E71DE1EDFCE&index=1)
+- [Browse the original DONGs archive](https://dongs2.blogspot.com/)
