@@ -80,7 +80,7 @@ const staticNow = `
         <div class="minimal-now-copy">
           <p>${escapeHtml(now.employment.prefix)}<a href="${escapeHtml(now.employment.href)}"><strong>${escapeHtml(now.employment.company)}</strong></a>.</p>
           <p>${escapeHtml(now.artificialTaste.prefix)}<strong>${escapeHtml(now.artificialTaste.title)}</strong>. ${escapeHtml(now.artificialTaste.reflection)}</p>
-          <p>${escapeHtml(now.forecastBench.prefix)}<a href="${escapeHtml(now.forecastBench.href)}">${escapeHtml(now.forecastBench.title)}</a>${escapeHtml(now.forecastBench.suffix)}</p>
+          <p>${escapeHtml(now.forecastBench.prefix)}<a href="${escapeHtml(now.forecastBench.href)}"><strong>${escapeHtml(now.forecastBench.title)}</strong></a>${escapeHtml(now.forecastBench.suffix)}</p>
           <span>Updated ${escapeHtml(now.updated)}</span>
         </div>
       </main>
