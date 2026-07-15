@@ -16,15 +16,20 @@ const escapeHtml = (value) => String(value)
 
 const absoluteUrl = (href) => new URL(href, siteUrl).href;
 
-const projectRows = projects.map((project) => `
-            <a class="minimal-project" href="${escapeHtml(project.href)}" target="_blank" rel="noreferrer">
+const projectRows = projects.map((project) => {
+  const externalAttributes = project.href.startsWith('http')
+    ? ' target="_blank" rel="noreferrer"'
+    : '';
+
+  return `
+            <a class="minimal-project" href="${escapeHtml(project.href)}"${externalAttributes}>
               <span class="minimal-project-copy">
                 <strong>${escapeHtml(project.title)}</strong>
                 <span>${escapeHtml(project.description)}</span>
               </span>
-              <span class="minimal-tags">${escapeHtml(project.tags)}</span>
-              <span class="minimal-arrow" aria-hidden="true"></span>
-            </a>`).join('');
+              <span class="minimal-arrow minimal-arrow--external" aria-hidden="true"></span>
+            </a>`;
+}).join('');
 
 const staticPortfolio = `
     <div class="minimal-page">
@@ -52,8 +57,8 @@ const staticPortfolio = `
             <h2>Artifacts</h2>
             <div class="minimal-links">
               <a href="/?door">Endless Door <span class="minimal-arrow" aria-hidden="true"></span></a>
-              <a href="https://anshsancheti.github.io/nyc-tree-map/" target="_blank" rel="noreferrer">NYC Tree Foliage <span class="minimal-arrow" aria-hidden="true"></span></a>
-              <a href="https://anshsancheti.github.io/us-voter-turnout/" target="_blank" rel="noreferrer">US Voter Turnout <span class="minimal-arrow" aria-hidden="true"></span></a>
+              <a href="/nyc-tree-map/">NYC Tree Foliage <span class="minimal-arrow" aria-hidden="true"></span></a>
+              <a href="/us-voter-turnout/">US Voter Turnout <span class="minimal-arrow" aria-hidden="true"></span></a>
             </div>
           </div>
         </section>
