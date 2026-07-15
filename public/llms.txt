@@ -22,6 +22,15 @@ Updated July 2026.
 - [Fourcorners](https://fourcorners.fly.dev/): Political compass memes but for anything on two axes. Tags: tool, memes. Created 2025.
 - [Crosswars](https://crosswars.fly.dev/): Real-time PvP crosswords (NYT Mini edition). Tags: game, multiplayer. Created 2025.
 
+## LLM-readable project briefs
+
+- [Reddit Atlas project brief](https://reddit-atlas.fly.dev/llms.txt)
+- [The Artisanal Tax project brief](https://sizzle-index.fly.dev/llms.txt)
+- [Lot Shot project brief](https://lot-shot.fly.dev/llms.txt)
+- [DONGs Gallery project brief](https://anshsancheti.github.io/dongs/llms.txt)
+- [Fourcorners project brief](https://fourcorners.fly.dev/llms.txt)
+- [Crosswars project brief](https://crosswars.fly.dev/llms.txt)
+
 ## In progress
 
 - Superforecaster: An auditable research harness for AI probabilistic forecasting. Research prototype, 2026.
