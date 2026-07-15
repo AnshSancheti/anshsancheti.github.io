@@ -23,7 +23,8 @@ test('renders the portfolio homepage', () => {
     '_blank'
   );
   const dongsGallery = screen.getByRole('link', { name: /DONGs Gallery/ });
-  expect(dongsGallery).not.toHaveAttribute('target');
+  expect(dongsGallery).toHaveAttribute('target', '_blank');
+  expect(dongsGallery).toHaveAttribute('rel', 'noreferrer');
   expect(dongsGallery.querySelector('.minimal-arrow')).toHaveClass(
     'minimal-arrow--external'
   );

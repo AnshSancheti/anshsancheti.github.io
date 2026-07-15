@@ -17,7 +17,7 @@ const escapeHtml = (value) => String(value)
 const absoluteUrl = (href) => new URL(href, siteUrl).href;
 
 const projectRows = projects.map((project) => {
-  const externalAttributes = project.href.startsWith('http')
+  const externalAttributes = project.href.startsWith('http') || project.newTab
     ? ' target="_blank" rel="noreferrer"'
     : '';
 

@@ -32,7 +32,8 @@
     "year": "2026",
     "tags": "archive, web",
     "description": "An index of all of VSauce’s DONGs (Do Online Now, Guys): tagged and organized.",
-    "href": "/dongs/gallery.html"
+    "href": "/dongs/gallery.html",
+    "newTab": true
   },
   {
     "title": "Fourcorners",

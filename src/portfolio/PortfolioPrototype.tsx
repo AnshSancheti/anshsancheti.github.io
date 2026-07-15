@@ -20,21 +20,25 @@ export default function PortfolioPrototype() {
           </div>
 
           <div className="minimal-projects">
-            {projects.map((project) => (
-              <a
-                className="minimal-project"
-                href={project.href}
-                target={project.href.startsWith('http') ? '_blank' : undefined}
-                rel={project.href.startsWith('http') ? 'noreferrer' : undefined}
-                key={project.title}
-              >
-                <span className="minimal-project-copy">
-                  <strong>{project.title}</strong>
-                  <span>{project.description}</span>
-                </span>
-                <span className="minimal-arrow minimal-arrow--external" aria-hidden="true" />
-              </a>
-            ))}
+            {projects.map((project) => {
+              const opensInNewTab = project.href.startsWith('http') || project.newTab;
+
+              return (
+                <a
+                  className="minimal-project"
+                  href={project.href}
+                  target={opensInNewTab ? '_blank' : undefined}
+                  rel={opensInNewTab ? 'noreferrer' : undefined}
+                  key={project.title}
+                >
+                  <span className="minimal-project-copy">
+                    <strong>{project.title}</strong>
+                    <span>{project.description}</span>
+                  </span>
+                  <span className="minimal-arrow minimal-arrow--external" aria-hidden="true" />
+                </a>
+              );
+            })}
           </div>
         </section>
 
