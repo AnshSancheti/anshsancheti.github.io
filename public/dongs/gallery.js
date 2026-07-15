@@ -10,7 +10,7 @@
   const requestedRating = params.get('stars');
   const initialRating = ['1', '2', '3', 'all'].includes(requestedRating)
     ? requestedRating
-    : (initialSearch ? 'all' : '3');
+    : 'all';
 
   const state = {
     search: initialSearch,
@@ -58,7 +58,7 @@
   function syncUrl() {
     const next = new URLSearchParams();
     if (state.search) next.set('q', state.search);
-    if (state.rating !== '3') next.set('stars', state.rating);
+    if (state.rating !== 'all') next.set('stars', state.rating);
     if (state.tag) next.set('tag', state.tag);
     const query = next.toString();
     window.history.replaceState(null, '', `${window.location.pathname}${query ? `?${query}` : ''}`);
@@ -70,7 +70,7 @@
     });
     searchInput.value = state.search;
     tagSelect.value = tagVocabulary.includes(state.tag) ? state.tag : '';
-    const isDefault = !state.search && state.rating === '3' && !state.tag;
+    const isDefault = !state.search && state.rating === 'all' && !state.tag;
     clearButton.hidden = isDefault;
   }
 
@@ -172,7 +172,6 @@
   });
 
   searchInput.addEventListener('input', (event) => {
-    if (event.target.value && !state.search && state.rating === '3') state.rating = 'all';
     state.search = event.target.value;
     resetVisibleAndRender();
   });
@@ -193,7 +192,7 @@
 
   clearButton.addEventListener('click', () => {
     state.search = '';
-    state.rating = '3';
+    state.rating = 'all';
     state.tag = '';
     resetVisibleAndRender();
   });

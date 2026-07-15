@@ -217,10 +217,10 @@
       <div class="control-field">
         <span class="control-label">Stars</span>
         <div class="rating-group" role="group" aria-label="Filter by star rating">
-          <button class="rating-button" type="button" data-rating="3" aria-pressed="true" aria-label="3 stars">★★★</button>
+          <button class="rating-button" type="button" data-rating="3" aria-pressed="false" aria-label="3 stars">★★★</button>
           <button class="rating-button" type="button" data-rating="2" aria-pressed="false" aria-label="2 stars">★★</button>
           <button class="rating-button" type="button" data-rating="1" aria-pressed="false" aria-label="1 star">★</button>
-          <button class="rating-button" type="button" data-rating="all" aria-pressed="false">All</button>
+          <button class="rating-button" type="button" data-rating="all" aria-pressed="true">All</button>
         </div>
       </div>
 
@@ -234,14 +234,11 @@
       <button class="random-button" id="random-dong" type="button">Take me somewhere</button>
     </section>
 
-    <div class="results-bar" aria-live="polite">
-      <span id="count">Loading DONGs…</span>
-      <button class="clear-button" id="clear-filters" type="button" hidden>Reset</button>
-    </div>
-
     <section class="dongs-grid" id="grid" aria-label="DONGs"></section>
 
     <div class="load-more-wrap">
+      <button class="clear-button" id="clear-filters" type="button" hidden>Reset</button>
+      <span id="count" aria-live="polite">Loading DONGs…</span>
       <button class="load-more" id="load-more" type="button" hidden>Show more</button>
     </div>
   </main>
