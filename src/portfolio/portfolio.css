@@ -1,9 +1,9 @@
 :root {
-  --page: #f7f7f4;
-  --text: #161616;
-  --muted: #6f6f69;
-  --rule: #ccccC6;
-  --hover: #eeeecf;
+  --page: #f3efe4;
+  --text: #1d1b17;
+  --muted: #716c62;
+  --rule: #d5cfc1;
+  --hover: #e9e1d1;
 }
 
 html { scroll-behavior: smooth; }
@@ -39,6 +39,7 @@ body { margin: 0; background: var(--page); }
 .minimal-footer a { text-decoration: none; }
 .minimal-header nav a:hover,
 .minimal-footer a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.minimal-header nav a[aria-current="page"] { font-weight: 700; }
 
 .minimal-work { padding: 32px 0 42px; }
 .minimal-section-title {
@@ -55,7 +56,7 @@ body { margin: 0; background: var(--page); }
 
 .minimal-project {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 160px 20px;
+  grid-template-columns: minmax(0, 1fr) 20px;
   gap: 24px;
   align-items: start;
   padding: 24px 10px 25px;
@@ -67,12 +68,20 @@ body { margin: 0; background: var(--page); }
 .minimal-project:hover,
 .minimal-project:focus-visible {
   background: var(--hover);
-  outline: none;
 }
-.minimal-tags { color: var(--muted); font-size: 12px; }
+.minimal-project:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: -2px;
+}
+.minimal-project:hover .minimal-project-copy strong,
+.minimal-project:focus-visible .minimal-project-copy strong {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
 .minimal-project-copy { display: grid; grid-template-columns: minmax(160px, .65fr) minmax(260px, 1fr); gap: 28px; }
 .minimal-project-copy strong { font-size: 17px; line-height: 1.25; }
-.minimal-project-copy > span { max-width: 520px; color: #464642; }
+.minimal-project-copy > span { max-width: 520px; color: #4b473f; }
 .minimal-arrow {
   position: relative;
   display: inline-block;
@@ -85,20 +94,40 @@ body { margin: 0; background: var(--page); }
 .minimal-arrow::before {
   content: '';
   position: absolute;
+  top: 6px;
+  left: 1px;
+  width: 10px;
+  border-top: 1px solid currentColor;
+}
+.minimal-arrow::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: 1px;
+  width: 6px;
+  height: 6px;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  transform: rotate(45deg);
+}
+.minimal-arrow--external::before {
   top: 1px;
   right: 1px;
+  left: auto;
   width: 7px;
   height: 7px;
   border-top: 1px solid currentColor;
   border-right: 1px solid currentColor;
 }
-.minimal-arrow::after {
-  content: '';
-  position: absolute;
+.minimal-arrow--external::after {
+  top: auto;
+  right: auto;
   left: 2px;
   bottom: 2px;
   width: 10px;
+  height: 0;
   border-top: 1px solid currentColor;
+  border-right: 0;
   transform: rotate(-45deg);
   transform-origin: left center;
 }
@@ -120,11 +149,16 @@ body { margin: 0; background: var(--page); }
 }
 .minimal-note { max-width: 390px; }
 .minimal-note strong { font-size: 20px; }
-.minimal-note p { margin: 10px 0 18px; color: #464642; }
+.minimal-note p { margin: 10px 0 18px; color: #4b473f; }
 .minimal-note span { color: var(--muted); font-size: 12px; }
 .minimal-links { border-top: 1px solid var(--rule); }
 .minimal-links a { display: flex; align-items: center; justify-content: space-between; padding: 13px 10px; border-bottom: 1px solid var(--rule); text-decoration: none; }
-.minimal-links a:hover { background: var(--hover); }
+.minimal-links a:hover,
+.minimal-links a:focus-visible { background: var(--hover); }
+.minimal-links a:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: -2px;
+}
 
 .minimal-now { padding: 68px 0 140px; }
 .minimal-now-copy {
@@ -132,7 +166,7 @@ body { margin: 0; background: var(--page); }
 }
 .minimal-now-copy p {
   margin: 0 0 22px;
-  font-size: clamp(20px, 2.6vw, 29px);
+  font-size: clamp(20px, 2.2vw, 26px);
   line-height: 1.35;
   letter-spacing: -.025em;
 }
@@ -158,7 +192,6 @@ body { margin: 0; background: var(--page); }
   .minimal-work { padding: 26px 0; }
   .minimal-project { grid-template-columns: 1fr 18px; gap: 14px; }
   .minimal-project-copy { grid-template-columns: 1fr; gap: 8px; }
-  .minimal-tags { display: none; }
   .minimal-secondary { grid-template-columns: 1fr; gap: 65px; }
   .minimal-column-about { order: 2; }
   .minimal-now { padding: 44px 0 100px; }

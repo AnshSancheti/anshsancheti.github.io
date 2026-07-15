@@ -21,13 +21,18 @@ export default function PortfolioPrototype() {
 
           <div className="minimal-projects">
             {projects.map((project) => (
-              <a className="minimal-project" href={project.href} target="_blank" rel="noreferrer" key={project.title}>
+              <a
+                className="minimal-project"
+                href={project.href}
+                target={project.href.startsWith('http') ? '_blank' : undefined}
+                rel={project.href.startsWith('http') ? 'noreferrer' : undefined}
+                key={project.title}
+              >
                 <span className="minimal-project-copy">
                   <strong>{project.title}</strong>
                   <span>{project.description}</span>
                 </span>
-                <span className="minimal-tags">{project.tags}</span>
-                <span className="minimal-arrow" aria-hidden="true" />
+                <span className={`minimal-arrow${project.href.startsWith('http') ? ' minimal-arrow--external' : ''}`} aria-hidden="true" />
               </a>
             ))}
           </div>
@@ -43,8 +48,8 @@ export default function PortfolioPrototype() {
             <h2>Artifacts</h2>
             <div className="minimal-links">
               <a href="/?door">Endless Door <span className="minimal-arrow" aria-hidden="true" /></a>
-              <a href="https://anshsancheti.github.io/nyc-tree-map/" target="_blank" rel="noreferrer">NYC Tree Foliage <span className="minimal-arrow" aria-hidden="true" /></a>
-              <a href="https://anshsancheti.github.io/us-voter-turnout/" target="_blank" rel="noreferrer">US Voter Turnout <span className="minimal-arrow" aria-hidden="true" /></a>
+              <a href="/nyc-tree-map/">NYC Tree Foliage <span className="minimal-arrow" aria-hidden="true" /></a>
+              <a href="/us-voter-turnout/">US Voter Turnout <span className="minimal-arrow" aria-hidden="true" /></a>
             </div>
           </div>
         </section>

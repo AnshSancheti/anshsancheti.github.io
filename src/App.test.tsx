@@ -17,6 +17,18 @@ test('renders the portfolio homepage', () => {
   expect(
     within(screen.getByRole('navigation')).queryByRole('link', { name: 'Email' })
   ).not.toBeInTheDocument();
+
+  expect(screen.getByRole('link', { name: /Reddit Atlas/ })).toHaveAttribute(
+    'target',
+    '_blank'
+  );
+  expect(screen.getByRole('link', { name: /DONGs Gallery/ })).not.toHaveAttribute(
+    'target'
+  );
+  expect(screen.getByRole('link', { name: 'NYC Tree Foliage' })).toHaveAttribute(
+    'href',
+    '/nyc-tree-map/'
+  );
 });
 
 test('keeps the endless door available as an artifact', () => {
