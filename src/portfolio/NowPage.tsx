@@ -24,7 +24,7 @@ export default function NowPage() {
           </p>
           <p>
             {now.forecastBench.prefix}
-            <a href={now.forecastBench.href}>{now.forecastBench.title}</a>
+            <a href={now.forecastBench.href}><strong>{now.forecastBench.title}</strong></a>
             {now.forecastBench.suffix}
           </p>
           <span>Updated {now.updated}</span>

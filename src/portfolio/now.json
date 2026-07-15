@@ -8,7 +8,7 @@
   "artificialTaste": {
     "prefix": "Outside of work, I'm finishing ",
     "title": "Artificial Taste",
-    "reflection": "I'm a big believer in the idea that you're a combination of the five people you spend the most time with. As more people add an LLM or three to their top five, what does that do to our culture? I'm starting by mapping the taste of each model family."
+    "reflection": "I'm a big believer in the idea that you're a combination of the five people you spend the most time with. As more people add an LLM or three to their top five, what does that do to culture? Before personalization makes “default taste” meaningless, I'm picking at the question by mapping the taste of each model family out of the box."
   },
   "forecastBench": {
     "prefix": "I'm also building submissions to ",
