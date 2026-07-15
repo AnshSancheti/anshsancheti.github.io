@@ -32,7 +32,7 @@ export default function PortfolioPrototype() {
                   <strong>{project.title}</strong>
                   <span>{project.description}</span>
                 </span>
-                <span className={`minimal-arrow${project.href.startsWith('http') ? ' minimal-arrow--external' : ''}`} aria-hidden="true" />
+                <span className="minimal-arrow minimal-arrow--external" aria-hidden="true" />
               </a>
             ))}
           </div>

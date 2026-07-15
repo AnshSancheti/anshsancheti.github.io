@@ -22,8 +22,10 @@ test('renders the portfolio homepage', () => {
     'target',
     '_blank'
   );
-  expect(screen.getByRole('link', { name: /DONGs Gallery/ })).not.toHaveAttribute(
-    'target'
+  const dongsGallery = screen.getByRole('link', { name: /DONGs Gallery/ });
+  expect(dongsGallery).not.toHaveAttribute('target');
+  expect(dongsGallery.querySelector('.minimal-arrow')).toHaveClass(
+    'minimal-arrow--external'
   );
   expect(screen.getByRole('link', { name: 'NYC Tree Foliage' })).toHaveAttribute(
     'href',
