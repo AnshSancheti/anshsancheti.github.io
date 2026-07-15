@@ -51,7 +51,7 @@ const staticPortfolio = `
         <section class="minimal-secondary">
           <div class="minimal-column minimal-column-about" id="about">
             <h2>About</h2>
-            <p>Committed to answering questions nobody's asked. Based in NYC.</p>
+            <p>Mostly the consequences of one thing leading to another. Based in NYC.</p>
           </div>
           <div class="minimal-column">
             <h2>Artifacts</h2>
