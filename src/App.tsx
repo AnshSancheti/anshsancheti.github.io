@@ -1,14 +1,15 @@
 import React from 'react';
-import EndlessDoor from './EndlessDoor';
+import ObjectGallery from './ObjectGallery';
 import PortfolioPrototype from './portfolio/PortfolioPrototype';
 import NowPage from './portfolio/NowPage';
-import './App.css';
 
 function App() {
   const showDoor = new URLSearchParams(window.location.search).has('door');
-  const showNow = window.location.pathname.replace(/\/+$/, '') === '/now';
+  const path = window.location.pathname.replace(/\/+$/, '');
+  const showObjects = path === '/objects';
+  const showNow = path === '/now';
 
-  if (showDoor) return <EndlessDoor />;
+  if (showDoor || showObjects) return <ObjectGallery />;
   if (showNow) return <NowPage />;
   return <PortfolioPrototype />;
 }

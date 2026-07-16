@@ -51,7 +51,7 @@ export default function PortfolioPrototype() {
           <div className="minimal-column">
             <h2>Artifacts</h2>
             <div className="minimal-links">
-              <a href="/?door">Endless Door <span className="minimal-arrow" aria-hidden="true" /></a>
+              <a href="/objects/">Endless Door <span className="minimal-arrow" aria-hidden="true" /></a>
               <a href="/nyc-tree-map/">NYC Tree Foliage <span className="minimal-arrow" aria-hidden="true" /></a>
               <a href="/us-voter-turnout/">US Voter Turnout <span className="minimal-arrow" aria-hidden="true" /></a>
             </div>

@@ -6,6 +6,7 @@ const now = require('../src/portfolio/now.json');
 const siteUrl = 'https://anshsancheti.github.io/';
 const buildIndex = path.join(__dirname, '..', 'build', 'index.html');
 const buildNowDirectory = path.join(__dirname, '..', 'build', 'now');
+const buildObjectsDirectory = path.join(__dirname, '..', 'build', 'objects');
 
 const escapeHtml = (value) => String(value)
   .replaceAll('&', '&amp;')
@@ -56,7 +57,7 @@ const staticPortfolio = `
           <div class="minimal-column">
             <h2>Artifacts</h2>
             <div class="minimal-links">
-              <a href="/?door">Endless Door <span class="minimal-arrow" aria-hidden="true"></span></a>
+              <a href="/objects/">Endless Door <span class="minimal-arrow" aria-hidden="true"></span></a>
               <a href="/nyc-tree-map/">NYC Tree Foliage <span class="minimal-arrow" aria-hidden="true"></span></a>
               <a href="/us-voter-turnout/">US Voter Turnout <span class="minimal-arrow" aria-hidden="true"></span></a>
             </div>
@@ -161,6 +162,21 @@ const nowStructuredData = {
   },
 };
 
+const objectsStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  '@id': `${siteUrl}objects/#page`,
+  url: `${siteUrl}objects/`,
+  name: 'Interactive Objects — Ansh Sancheti',
+  description: 'An endless hand-drawn door and an animated trifold map by Ansh Sancheti.',
+  creator: {
+    '@type': 'Person',
+    '@id': `${siteUrl}#ansh`,
+    name: 'Ansh Sancheti',
+    url: siteUrl,
+  },
+};
+
 const template = fs.readFileSync(buildIndex, 'utf8');
 
 if (!template.includes('<div id="root"></div>')) {
@@ -201,6 +217,38 @@ const nowHtml = injectPage(staticNow, nowStructuredData)
     `content="${nowDescription}"`,
   );
 
+const objectsDescription = 'An endless hand-drawn door and an animated trifold map by Ansh Sancheti.';
+const objectsHtml = template
+  .replace(
+    structuredDataMarker,
+    `<script id="portfolio-structured-data" type="application/ld+json">${JSON.stringify(objectsStructuredData).replaceAll('<', '\\u003c')}</script>`,
+  )
+  .replace('<title>Ansh Sancheti — Projects</title>', '<title>Interactive Objects — Ansh Sancheti</title>')
+  .replace('content="#f3efe4"', 'content="#0a0a0a"')
+  .replace(
+    'content="Projects and experiments by Ansh Sancheti, a software engineer in New York: AI agents, large-scale data maps, games, archives, and tools."',
+    `content="${objectsDescription}"`,
+  )
+  .replace('href="https://anshsancheti.github.io/"', 'href="https://anshsancheti.github.io/objects/"')
+  .replace('content="Ansh Sancheti — Projects"', 'content="Interactive Objects — Ansh Sancheti"')
+  .replace(
+    'content="AI agents, large-scale data maps, games, archives, and other experiments by Ansh Sancheti."',
+    `content="${objectsDescription}"`,
+  )
+  .replace('content="https://anshsancheti.github.io/"', 'content="https://anshsancheti.github.io/objects/"')
+  .replace('content="Ansh Sancheti — Projects"', 'content="Interactive Objects — Ansh Sancheti"')
+  .replace(
+    'content="AI agents, large-scale data maps, games, archives, and other experiments by Ansh Sancheti."',
+    `content="${objectsDescription}"`,
+  )
+  .replace(
+    '<noscript>The project index is available below. JavaScript powers the interactive pieces.</noscript>',
+    '<noscript>The interactive objects require JavaScript.</noscript>',
+  )
+  .replace('<body>', '<body style="background:#0a0a0a">');
+
 fs.writeFileSync(buildIndex, homeHtml);
 fs.mkdirSync(buildNowDirectory, { recursive: true });
 fs.writeFileSync(path.join(buildNowDirectory, 'index.html'), nowHtml);
+fs.mkdirSync(buildObjectsDirectory, { recursive: true });
+fs.writeFileSync(path.join(buildObjectsDirectory, 'index.html'), objectsHtml);
