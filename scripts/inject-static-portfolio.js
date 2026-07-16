@@ -6,6 +6,7 @@ const now = require('../src/portfolio/now.json');
 const siteUrl = 'https://anshsancheti.github.io/';
 const buildIndex = path.join(__dirname, '..', 'build', 'index.html');
 const buildNowDirectory = path.join(__dirname, '..', 'build', 'now');
+const buildDoorDirectory = path.join(__dirname, '..', 'build', 'door');
 const buildObjectsDirectory = path.join(__dirname, '..', 'build', 'objects');
 
 const escapeHtml = (value) => String(value)
@@ -57,7 +58,7 @@ const staticPortfolio = `
           <div class="minimal-column">
             <h2>Artifacts</h2>
             <div class="minimal-links">
-              <a href="/objects/">Endless Door <span class="minimal-arrow" aria-hidden="true"></span></a>
+              <a href="/door/">Endless Door <span class="minimal-arrow" aria-hidden="true"></span></a>
               <a href="/nyc-tree-map/">NYC Tree Foliage <span class="minimal-arrow" aria-hidden="true"></span></a>
               <a href="/us-voter-turnout/">US Voter Turnout <span class="minimal-arrow" aria-hidden="true"></span></a>
             </div>
@@ -162,13 +163,13 @@ const nowStructuredData = {
   },
 };
 
-const objectsStructuredData = {
+const doorStructuredData = {
   '@context': 'https://schema.org',
   '@type': 'CreativeWork',
-  '@id': `${siteUrl}objects/#page`,
-  url: `${siteUrl}objects/`,
-  name: 'Interactive Objects — Ansh Sancheti',
-  description: 'An endless hand-drawn door and an animated trifold map by Ansh Sancheti.',
+  '@id': `${siteUrl}door/#page`,
+  url: `${siteUrl}door/`,
+  name: 'Endless Door — Ansh Sancheti',
+  description: 'An endless hand-drawn door by Ansh Sancheti. Click or drag to open another door.',
   creator: {
     '@type': 'Person',
     '@id': `${siteUrl}#ansh`,
@@ -217,38 +218,40 @@ const nowHtml = injectPage(staticNow, nowStructuredData)
     `content="${nowDescription}"`,
   );
 
-const objectsDescription = 'An endless hand-drawn door and an animated trifold map by Ansh Sancheti.';
-const objectsHtml = template
+const doorDescription = 'An endless hand-drawn door by Ansh Sancheti. Click or drag to open another door.';
+const doorHtml = template
   .replace(
     structuredDataMarker,
-    `<script id="portfolio-structured-data" type="application/ld+json">${JSON.stringify(objectsStructuredData).replaceAll('<', '\\u003c')}</script>`,
+    `<script id="portfolio-structured-data" type="application/ld+json">${JSON.stringify(doorStructuredData).replaceAll('<', '\\u003c')}</script>`,
   )
-  .replace('<title>Ansh Sancheti — Projects</title>', '<title>Interactive Objects — Ansh Sancheti</title>')
+  .replace('<title>Ansh Sancheti — Projects</title>', '<title>Endless Door — Ansh Sancheti</title>')
   .replace('content="#f3efe4"', 'content="#0a0a0a"')
   .replace(
     'content="Projects and experiments by Ansh Sancheti, a software engineer in New York: AI agents, large-scale data maps, games, archives, and tools."',
-    `content="${objectsDescription}"`,
+    `content="${doorDescription}"`,
   )
-  .replace('href="https://anshsancheti.github.io/"', 'href="https://anshsancheti.github.io/objects/"')
-  .replace('content="Ansh Sancheti — Projects"', 'content="Interactive Objects — Ansh Sancheti"')
+  .replace('href="https://anshsancheti.github.io/"', 'href="https://anshsancheti.github.io/door/"')
+  .replace('content="Ansh Sancheti — Projects"', 'content="Endless Door — Ansh Sancheti"')
   .replace(
     'content="AI agents, large-scale data maps, games, archives, and other experiments by Ansh Sancheti."',
-    `content="${objectsDescription}"`,
+    `content="${doorDescription}"`,
   )
-  .replace('content="https://anshsancheti.github.io/"', 'content="https://anshsancheti.github.io/objects/"')
-  .replace('content="Ansh Sancheti — Projects"', 'content="Interactive Objects — Ansh Sancheti"')
+  .replace('content="https://anshsancheti.github.io/"', 'content="https://anshsancheti.github.io/door/"')
+  .replace('content="Ansh Sancheti — Projects"', 'content="Endless Door — Ansh Sancheti"')
   .replace(
     'content="AI agents, large-scale data maps, games, archives, and other experiments by Ansh Sancheti."',
-    `content="${objectsDescription}"`,
+    `content="${doorDescription}"`,
   )
   .replace(
     '<noscript>The project index is available below. JavaScript powers the interactive pieces.</noscript>',
-    '<noscript>The interactive objects require JavaScript.</noscript>',
+    '<noscript>The Endless Door interaction requires JavaScript.</noscript>',
   )
   .replace('<body>', '<body style="background:#0a0a0a">');
 
 fs.writeFileSync(buildIndex, homeHtml);
 fs.mkdirSync(buildNowDirectory, { recursive: true });
 fs.writeFileSync(path.join(buildNowDirectory, 'index.html'), nowHtml);
+fs.mkdirSync(buildDoorDirectory, { recursive: true });
+fs.writeFileSync(path.join(buildDoorDirectory, 'index.html'), doorHtml);
 fs.mkdirSync(buildObjectsDirectory, { recursive: true });
-fs.writeFileSync(path.join(buildObjectsDirectory, 'index.html'), objectsHtml);
+fs.writeFileSync(path.join(buildObjectsDirectory, 'index.html'), doorHtml);

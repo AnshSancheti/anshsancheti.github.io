@@ -37,7 +37,7 @@ Updated July 2026.
 
 ## Artifacts
 
-- [Endless Door and interactive objects](https://anshsancheti.github.io/objects/)
+- [Endless Door](https://anshsancheti.github.io/door/)
 - [NYC Tree Foliage](https://anshsancheti.github.io/nyc-tree-map/)
 - [US Voter Turnout](https://anshsancheti.github.io/us-voter-turnout/)
 

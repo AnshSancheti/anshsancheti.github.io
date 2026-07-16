@@ -34,35 +34,39 @@ test('renders the portfolio homepage', () => {
   );
   expect(screen.getByRole('link', { name: 'Endless Door' })).toHaveAttribute(
     'href',
-    '/objects/'
+    '/door/'
   );
 });
 
-test('renders the recovered interactive objects page', () => {
-  window.history.pushState({}, '', '/objects/');
+test('renders Endless Door as a full-page experience', () => {
+  window.history.pushState({}, '', '/door/');
   render(<App />);
 
   expect(screen.getByTestId('endless-door')).toBeInTheDocument();
-  expect(screen.getByTestId('trifold-map')).toBeInTheDocument();
+  expect(screen.queryByTestId('trifold-map')).not.toBeInTheDocument();
   const door = screen.getByRole('button', { name: /click or drag left to open/i });
-  const map = screen.getByRole('button', { name: /where's ansh now/i });
 
   fireEvent.pointerEnter(door);
   expect(door).toHaveClass('is-hover-preview');
 
   fireEvent.keyDown(door, { key: 'ArrowLeft' });
   expect(door).toHaveAttribute('data-transition-mode', 'opening');
-
-  fireEvent.click(map);
-  expect(map).toHaveAttribute('aria-pressed', 'true');
 });
 
-test('keeps the old door URL as an alias to the recovered objects page', () => {
+test('keeps the objects URL as an alias to Endless Door', () => {
+  window.history.pushState({}, '', '/objects/');
+  render(<App />);
+
+  expect(screen.getByTestId('endless-door')).toBeInTheDocument();
+  expect(screen.queryByTestId('trifold-map')).not.toBeInTheDocument();
+});
+
+test('keeps the old door query as an alias to Endless Door', () => {
   window.history.pushState({}, '', '/?door');
   render(<App />);
 
   expect(screen.getByTestId('endless-door')).toBeInTheDocument();
-  expect(screen.getByTestId('trifold-map')).toBeInTheDocument();
+  expect(screen.queryByTestId('trifold-map')).not.toBeInTheDocument();
 });
 
 test('renders the Now page as a concise prose update', () => {
