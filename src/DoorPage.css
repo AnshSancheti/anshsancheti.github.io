@@ -21,7 +21,6 @@
 }
 
 .endless-door-stage {
-  --door-angle: 0deg;
   --door-hinge-x: 7.7%;
   --door-edge-x: 93.1%;
   --door-depth: clamp(5px, 0.58vw, 10px);
@@ -68,15 +67,20 @@
 
 .door-leaf {
   z-index: 5;
-  transform: rotateY(var(--door-angle)) translateZ(3px);
+  transform: rotateY(0deg) translateZ(3px);
   transform-origin: var(--door-hinge-x) 50%;
   will-change: transform;
   backface-visibility: visible;
-  --leaf-knob-facing-angle: var(--door-counter-angle);
 }
 
-.endless-door-stage.is-hover-preview .door-leaf {
+.endless-door-stage.is-hover-preview:not(.is-dragging):not(.is-transitioning) .door-leaf {
   transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform: rotateY(-18deg) translateZ(3px);
+}
+
+.endless-door-stage.is-hover-settling:not(.is-dragging):not(.is-transitioning) .door-leaf {
+  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform: rotateY(0deg) translateZ(3px);
 }
 
 .endless-door-stage.is-transitioning .door-leaf {
@@ -92,7 +96,6 @@
   transform-origin: var(--door-hinge-x) 50%;
   transform: rotateY(-180deg) translateZ(3px);
   backface-visibility: visible;
-  --leaf-knob-facing-angle: 180deg;
 }
 
 .door-face {
@@ -177,11 +180,11 @@
 }
 
 .door-knob-sphere-front {
-  transform: translateZ(calc(var(--door-half-depth) + var(--knob-throw))) rotateY(var(--leaf-knob-facing-angle, 0deg));
+  transform: translateZ(calc(var(--door-half-depth) + var(--knob-throw)));
 }
 
 .door-knob-sphere-back {
-  transform: rotateY(180deg) translateZ(calc(var(--door-half-depth) + var(--knob-throw))) rotateY(var(--leaf-knob-facing-angle, 0deg));
+  transform: rotateY(180deg) translateZ(calc(var(--door-half-depth) + var(--knob-throw)));
 }
 
 .door-fill,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import App from './App';
 
 beforeEach(() => {
@@ -40,13 +40,18 @@ test('renders the portfolio homepage', () => {
 
 test('renders Endless Door as a full-page experience', () => {
   window.history.pushState({}, '', '/door/');
-  render(<App />);
+  const { container } = render(<App />);
 
   expect(screen.getByTestId('endless-door')).toBeInTheDocument();
   expect(screen.queryByTestId('trifold-map')).not.toBeInTheDocument();
+  expect(container.querySelectorAll('filter')).toHaveLength(0);
+  expect(container.querySelectorAll('feTurbulence')).toHaveLength(0);
+  expect(container.querySelectorAll('feDisplacementMap')).toHaveLength(0);
   const door = screen.getByRole('button', { name: /click or drag left to open/i });
 
-  fireEvent.pointerEnter(door);
+  const mouseEnter = new Event('pointerover', { bubbles: true });
+  Object.defineProperty(mouseEnter, 'pointerType', { value: 'mouse' });
+  fireEvent(door, mouseEnter);
   expect(door).toHaveClass('is-hover-preview');
 
   fireEvent.keyDown(door, { key: 'ArrowLeft' });
@@ -59,6 +64,55 @@ test('keeps the objects URL as an alias to Endless Door', () => {
 
   expect(screen.getByTestId('endless-door')).toBeInTheDocument();
   expect(screen.queryByTestId('trifold-map')).not.toBeInTheDocument();
+});
+
+test('does not run an animation loop while Endless Door is idle', () => {
+  const requestAnimationFrame = jest.spyOn(window, 'requestAnimationFrame');
+  window.history.pushState({}, '', '/door/');
+
+  render(<App />);
+
+  expect(requestAnimationFrame).not.toHaveBeenCalled();
+  requestAnimationFrame.mockRestore();
+});
+
+test('does not apply the desktop hover preview to touch input', () => {
+  window.history.pushState({}, '', '/door/');
+  render(<App />);
+
+  const door = screen.getByTestId('door-stage');
+  const touchEnter = new Event('pointerover', { bubbles: true });
+  Object.defineProperty(touchEnter, 'pointerType', { value: 'touch' });
+  fireEvent(door, touchEnter);
+
+  expect(door).not.toHaveClass('is-hover-preview');
+});
+
+test('finishes a door animation without leaving background frame work running', () => {
+  const frames: FrameRequestCallback[] = [];
+  const requestAnimationFrame = jest
+    .spyOn(window, 'requestAnimationFrame')
+    .mockImplementation((callback) => {
+      frames.push(callback);
+      return frames.length;
+    });
+  window.history.pushState({}, '', '/door/');
+  render(<App />);
+
+  const door = screen.getByTestId('door-stage');
+  const leaf = screen.getByTestId('door-leaf');
+  fireEvent.keyDown(door, { key: 'ArrowLeft' });
+
+  expect(frames).toHaveLength(1);
+  act(() => frames.shift()?.(0));
+  expect(frames).toHaveLength(1);
+  act(() => frames.shift()?.(480));
+
+  expect(door).toHaveAttribute('data-transition-mode', 'idle');
+  expect(door).toHaveAttribute('data-opened-count', '1');
+  expect((leaf as HTMLElement).style.transform).toBe('');
+  expect(frames).toHaveLength(0);
+  requestAnimationFrame.mockRestore();
 });
 
 test('keeps the old door query as an alias to Endless Door', () => {

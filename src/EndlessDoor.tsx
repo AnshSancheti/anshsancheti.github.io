@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 const OPEN_ANGLE = 180;
 const HOVER_PREVIEW_ANGLE = OPEN_ANGLE * 0.1;
 const SETTLE_EPSILON = 0.6;
-const ANIMATION_SETTLE_EPSILON = 9;
 const DRAG_DEGREES_PER_PIXEL = 0.38;
-const ANIMATION_EASE_RATE = 6;
+const ANIMATION_DURATION_MS = 480;
+const MIN_ANIMATION_DURATION_MS = 140;
 
 type DoorMode = 'idle' | 'opening' | 'closing';
 
@@ -18,26 +18,15 @@ type PointerSession = {
   mode: DoorMode | null;
 };
 
-type DoorDrawingProps = {
-  idSuffix: string;
-};
-
 type DoorDepthProps = {
-  idSuffix: string;
   side: 'hinge' | 'latch';
-};
-
-type DoorBodyProps = {
-  idSuffix: string;
 };
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
-function DoorDepth({ idSuffix, side }: DoorDepthProps) {
-  const pencilId = `door-depth-pencil-${idSuffix}`;
-
+const DoorDepth = memo(function DoorDepth({ side }: DoorDepthProps) {
   return (
     <svg
       aria-hidden="true"
@@ -46,14 +35,7 @@ function DoorDepth({ idSuffix, side }: DoorDepthProps) {
       preserveAspectRatio="none"
       viewBox="0 0 34 704"
     >
-      <defs>
-        <filter id={pencilId} x="-20%" y="-10%" width="140%" height="120%">
-          <feTurbulence baseFrequency="0.022" numOctaves="3" result="noise" seed="13" type="fractalNoise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.35" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-      </defs>
-
-      <g filter={`url(#${pencilId})`}>
+      <g>
         <path className="door-depth-fill" d="M5 5 L30 3 L29 700 L4 699 Z" />
         <path className="door-depth-line" d="M5 5 L30 3 L29 700 L4 699 Z" />
         <path className="door-depth-edge" d="M9 10 C7 186 10 364 8 694" />
@@ -61,23 +43,23 @@ function DoorDepth({ idSuffix, side }: DoorDepthProps) {
       </g>
     </svg>
   );
-}
+});
 
-function DoorBody({ idSuffix }: DoorBodyProps) {
+const DoorBody = memo(function DoorBody() {
   return (
     <>
       <div className="door-face door-face-front">
-        <DoorDrawing idSuffix={`${idSuffix}-front`} />
+        <DoorDrawing />
       </div>
       <div className="door-face door-face-back">
-        <DoorDrawing idSuffix={`${idSuffix}-back`} />
+        <DoorDrawing />
       </div>
       <DoorKnobAssembly />
-      <DoorDepth idSuffix={`${idSuffix}-hinge`} side="hinge" />
-      <DoorDepth idSuffix={`${idSuffix}-latch`} side="latch" />
+      <DoorDepth side="hinge" />
+      <DoorDepth side="latch" />
     </>
   );
-}
+});
 
 function DoorKnobAssembly() {
   return (
@@ -88,8 +70,7 @@ function DoorKnobAssembly() {
   );
 }
 
-function DoorDrawing({ idSuffix }: DoorDrawingProps) {
-  const pencilId = `door-pencil-${idSuffix}`;
+const DoorDrawing = memo(function DoorDrawing() {
   const panels = useMemo(
     () => [
       {
@@ -123,14 +104,7 @@ function DoorDrawing({ idSuffix }: DoorDrawingProps) {
       preserveAspectRatio="none"
       viewBox="0 0 320 720"
     >
-      <defs>
-        <filter id={pencilId} x="-20%" y="-10%" width="140%" height="120%">
-          <feTurbulence baseFrequency="0.022" numOctaves="3" result="noise" seed="7" type="fractalNoise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-      </defs>
-
-      <g filter={`url(#${pencilId})`}>
+      <g>
         <path className="door-fill" d="M30 12 L297 9 L294 711 L28 708 Z" />
         <path className="door-line door-line-heavy" d="M30 12 L297 9 L294 711 L28 708 Z" />
         <path className="door-line door-line-faint" d="M40 24 L287 23 L284 699 L38 696 Z" />
@@ -151,28 +125,42 @@ function DoorDrawing({ idSuffix }: DoorDrawingProps) {
       </g>
     </svg>
   );
-}
+});
 
 function EndlessDoor() {
-  const [angle, setAngle] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isHoverSettling, setIsHoverSettling] = useState(false);
-  const [isResettingLeaf, setIsResettingLeaf] = useState(false);
   const [openedCount, setOpenedCount] = useState(0);
   const [doorMode, setDoorMode] = useState<DoorMode>('idle');
 
+  const activeLeafRef = useRef<HTMLDivElement | null>(null);
   const angleRef = useRef(0);
-  const animationTargetRef = useRef<number | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
   const openedCountRef = useRef(0);
   const doorModeRef = useRef<DoorMode>('idle');
   const pointerRef = useRef<PointerSession | null>(null);
   const hoverSettleTimeoutRef = useRef<number | null>(null);
 
-  const setAngleValue = useCallback((nextAngle: number) => {
+  const applyAngle = useCallback((nextAngle: number) => {
     const clamped = clamp(nextAngle, 0, OPEN_ANGLE);
     angleRef.current = clamped;
-    setAngle(clamped);
+
+    if (activeLeafRef.current) {
+      activeLeafRef.current.style.transform = `rotateY(${-clamped.toFixed(3)}deg) translateZ(3px)`;
+    }
+  }, []);
+
+  const clearActiveLeafTransform = useCallback(() => {
+    angleRef.current = 0;
+    activeLeafRef.current?.style.removeProperty('transform');
+  }, []);
+
+  const cancelActiveAnimation = useCallback(() => {
+    if (animationFrameRef.current !== null) {
+      window.cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
   }, []);
 
   const setOpenedCountValue = useCallback((nextCount: number) => {
@@ -187,6 +175,7 @@ function EndlessDoor() {
   }, []);
 
   const settleDoorAt = useCallback((settledAngle: number) => {
+    cancelActiveAnimation();
     const mode = doorModeRef.current;
 
     if (settledAngle >= OPEN_ANGLE - SETTLE_EPSILON) {
@@ -197,40 +186,56 @@ function EndlessDoor() {
       if (mode === 'closing') {
         setOpenedCountValue(openedCountRef.current - 1);
       }
-    } else {
-      setAngleValue(settledAngle);
-      return;
     }
 
-    animationTargetRef.current = null;
-    setIsResettingLeaf(true);
-    setAngleValue(0);
+    clearActiveLeafTransform();
     setDoorModeValue('idle');
-  }, [setAngleValue, setDoorModeValue, setOpenedCountValue]);
-
-  useEffect(() => {
-    if (!isResettingLeaf) {
-      return;
-    }
-
-    const rafId = window.requestAnimationFrame(() => {
-      setIsResettingLeaf(false);
-    });
-
-    return () => {
-      window.cancelAnimationFrame(rafId);
-    };
-  }, [isResettingLeaf]);
+  }, [cancelActiveAnimation, clearActiveLeafTransform, setDoorModeValue, setOpenedCountValue]);
 
   const animateDoor = useCallback((
     nextMode: Exclude<DoorMode, 'idle'>,
     startAngle: number,
     targetAngle: number
   ) => {
+    cancelActiveAnimation();
     setDoorModeValue(nextMode);
-    setAngleValue(startAngle);
-    animationTargetRef.current = targetAngle;
-  }, [setAngleValue, setDoorModeValue]);
+    applyAngle(startAngle);
+
+    const distance = Math.abs(targetAngle - startAngle);
+    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+    if (distance <= SETTLE_EPSILON || prefersReducedMotion) {
+      applyAngle(targetAngle);
+      settleDoorAt(targetAngle);
+      return;
+    }
+
+    const duration = Math.max(
+      MIN_ANIMATION_DURATION_MS,
+      ANIMATION_DURATION_MS * (distance / OPEN_ANGLE)
+    );
+    let startedAt: number | null = null;
+
+    const tick = (now: number) => {
+      if (startedAt === null) {
+        startedAt = now;
+      }
+
+      const progress = Math.min(1, (now - startedAt) / duration);
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      applyAngle(startAngle + (targetAngle - startAngle) * easedProgress);
+
+      if (progress < 1) {
+        animationFrameRef.current = window.requestAnimationFrame(tick);
+        return;
+      }
+
+      animationFrameRef.current = null;
+      settleDoorAt(targetAngle);
+    };
+
+    animationFrameRef.current = window.requestAnimationFrame(tick);
+  }, [applyAngle, cancelActiveAnimation, setDoorModeValue, settleDoorAt]);
 
   const openDoor = useCallback(() => {
     const startAngle = angleRef.current;
@@ -247,47 +252,13 @@ function EndlessDoor() {
   }, [animateDoor]);
 
   useEffect(() => {
-    let rafId = 0;
-    let lastTime = performance.now();
-
-    function tick(now: number) {
-      const deltaSeconds = Math.min((now - lastTime) / 1000, 0.045);
-      lastTime = now;
-
-      if (!pointerRef.current && animationTargetRef.current !== null) {
-        const current = angleRef.current;
-        const target = animationTargetRef.current;
-        const diff = target - current;
-
-        if (Math.abs(diff) > 0.02) {
-          const ease = 1 - Math.exp(-ANIMATION_EASE_RATE * deltaSeconds);
-          setAngleValue(current + diff * ease);
-        } else if (current !== target) {
-          setAngleValue(target);
-        }
-
-        if (Math.abs(target - angleRef.current) < ANIMATION_SETTLE_EPSILON) {
-          settleDoorAt(target);
-        }
-      }
-
-      rafId = window.requestAnimationFrame(tick);
-    }
-
-    rafId = window.requestAnimationFrame(tick);
-
     return () => {
-      window.cancelAnimationFrame(rafId);
-    };
-  }, [setAngleValue, settleDoorAt]);
-
-  useEffect(() => {
-    return () => {
+      cancelActiveAnimation();
       if (hoverSettleTimeoutRef.current !== null) {
         window.clearTimeout(hoverSettleTimeoutRef.current);
       }
     };
-  }, []);
+  }, [cancelActiveAnimation]);
 
   const clearHoverSettling = useCallback(() => {
     if (hoverSettleTimeoutRef.current !== null) {
@@ -298,15 +269,23 @@ function EndlessDoor() {
     setIsHoverSettling(false);
   }, []);
 
-  const handlePointerEnter = () => {
+  const handlePointerEnter = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType !== 'mouse') {
+      return;
+    }
+
     clearHoverSettling();
     setIsHovered(true);
   };
 
   const handlePointerLeave = () => {
+    if (!isHovered) {
+      clearHoverSettling();
+      return;
+    }
+
     const shouldSettleHover =
       !pointerRef.current
-      && !isResettingLeaf
       && doorModeRef.current === 'idle'
       && openedCountRef.current === 0
       && angleRef.current <= SETTLE_EPSILON;
@@ -335,14 +314,13 @@ function EndlessDoor() {
 
     const shouldCommitHoverPreview =
       isHovered
-      && !isResettingLeaf
       && doorModeRef.current === 'idle'
       && openedCountRef.current === 0
       && angleRef.current <= SETTLE_EPSILON;
     const startAngle = shouldCommitHoverPreview ? HOVER_PREVIEW_ANGLE : angleRef.current;
 
     if (shouldCommitHoverPreview) {
-      setAngleValue(startAngle);
+      applyAngle(startAngle);
     }
 
     pointerRef.current = {
@@ -354,7 +332,7 @@ function EndlessDoor() {
       mode: doorModeRef.current === 'idle' ? null : doorModeRef.current,
     };
 
-    animationTargetRef.current = null;
+    cancelActiveAnimation();
     setIsDragging(true);
     event.currentTarget.setPointerCapture(event.pointerId);
   };
@@ -375,11 +353,11 @@ function EndlessDoor() {
       pointer.mode = dx < 0 && openedCountRef.current > 0 ? 'closing' : 'opening';
       pointer.startAngle = pointer.mode === 'closing' ? OPEN_ANGLE : pointer.startAngle;
       setDoorModeValue(pointer.mode);
-      setAngleValue(pointer.startAngle);
+      applyAngle(pointer.startAngle);
     }
 
     if (pointer.mode) {
-      setAngleValue(pointer.startAngle + dx * DRAG_DEGREES_PER_PIXEL);
+      applyAngle(pointer.startAngle + dx * DRAG_DEGREES_PER_PIXEL);
     }
 
     event.preventDefault();
@@ -412,8 +390,16 @@ function EndlessDoor() {
       return;
     }
 
-    animationTargetRef.current = null;
-    settleDoorAt(angleRef.current);
+    const pointerMode = pointer.mode;
+    if (!pointerMode || pointerMode === 'idle') {
+      clearActiveLeafTransform();
+      setDoorModeValue('idle');
+      return;
+    }
+
+    const currentAngle = angleRef.current;
+    const targetAngle = currentAngle >= OPEN_ANGLE / 2 ? OPEN_ANGLE : 0;
+    animateDoor(pointerMode, currentAngle, targetAngle);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -433,16 +419,9 @@ function EndlessDoor() {
   const showHoverPreview =
     isHovered
     && !isDragging
-    && !isResettingLeaf
     && doorMode === 'idle'
     && openedCount === 0
-    && angle <= SETTLE_EPSILON;
-  const previewAngle =
-    showHoverPreview ? HOVER_PREVIEW_ANGLE : angle;
-  const stageStyle = {
-    '--door-angle': `${-previewAngle.toFixed(3)}deg`,
-    '--door-counter-angle': `${previewAngle.toFixed(3)}deg`,
-  } as React.CSSProperties;
+    && angleRef.current <= SETTLE_EPSILON;
 
   return (
     <section className="endless-door-object" data-testid="endless-door">
@@ -451,8 +430,8 @@ function EndlessDoor() {
         className={[
           'endless-door-stage',
           isDragging ? 'is-dragging' : '',
-          showHoverPreview || isHoverSettling ? 'is-hover-preview' : '',
-          isResettingLeaf ? 'is-resetting-leaf' : '',
+          showHoverPreview ? 'is-hover-preview' : '',
+          isHoverSettling ? 'is-hover-settling' : '',
           doorMode !== 'idle' ? 'is-transitioning' : '',
           doorMode === 'opening' ? 'is-opening' : '',
           doorMode === 'closing' ? 'is-closing' : '',
@@ -469,11 +448,10 @@ function EndlessDoor() {
         onPointerMove={handlePointerMove}
         onPointerUp={finishPointer}
         role="button"
-        style={stageStyle}
         tabIndex={0}
       >
         <div aria-hidden="true" className="door-layer door-layer-next">
-          <DoorBody idSuffix="next" />
+          <DoorBody />
         </div>
 
         <div aria-hidden="true" className="door-open-stack">
@@ -481,13 +459,13 @@ function EndlessDoor() {
             <div
               className="door-open-leaf"
             >
-              <DoorBody idSuffix="open" />
+              <DoorBody />
             </div>
           )}
         </div>
 
-        <div aria-hidden="true" className="door-leaf" data-testid="door-leaf">
-          <DoorBody idSuffix="active" />
+        <div aria-hidden="true" className="door-leaf" data-testid="door-leaf" ref={activeLeafRef}>
+          <DoorBody />
         </div>
       </div>
     </section>
