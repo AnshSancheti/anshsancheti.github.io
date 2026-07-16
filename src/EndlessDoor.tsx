@@ -1,11 +1,10 @@
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 const OPEN_ANGLE = 180;
-const HOVER_PREVIEW_ANGLE = OPEN_ANGLE * 0.1;
 const SETTLE_EPSILON = 0.6;
 const DRAG_DEGREES_PER_PIXEL = 0.38;
-const ANIMATION_DURATION_MS = 480;
-const MIN_ANIMATION_DURATION_MS = 140;
+const ANIMATION_DURATION_MS = 640;
+const MIN_ANIMATION_DURATION_MS = 180;
 
 type DoorMode = 'idle' | 'opening' | 'closing';
 
@@ -24,6 +23,12 @@ type DoorDepthProps = {
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
+}
+
+function easeInOutCubic(progress: number) {
+  return progress < 0.5
+    ? 4 * progress * progress * progress
+    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
 }
 
 const DoorDepth = memo(function DoorDepth({ side }: DoorDepthProps) {
@@ -129,18 +134,16 @@ const DoorDrawing = memo(function DoorDrawing() {
 
 function EndlessDoor() {
   const [isDragging, setIsDragging] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isHoverSettling, setIsHoverSettling] = useState(false);
   const [openedCount, setOpenedCount] = useState(0);
   const [doorMode, setDoorMode] = useState<DoorMode>('idle');
 
   const activeLeafRef = useRef<HTMLDivElement | null>(null);
   const angleRef = useRef(0);
   const animationFrameRef = useRef<number | null>(null);
+  const handoffFrameRef = useRef<number | null>(null);
   const openedCountRef = useRef(0);
   const doorModeRef = useRef<DoorMode>('idle');
   const pointerRef = useRef<PointerSession | null>(null);
-  const hoverSettleTimeoutRef = useRef<number | null>(null);
 
   const applyAngle = useCallback((nextAngle: number) => {
     const clamped = clamp(nextAngle, 0, OPEN_ANGLE);
@@ -163,6 +166,13 @@ function EndlessDoor() {
     }
   }, []);
 
+  const cancelHandoff = useCallback(() => {
+    if (handoffFrameRef.current !== null) {
+      window.cancelAnimationFrame(handoffFrameRef.current);
+      handoffFrameRef.current = null;
+    }
+  }, []);
+
   const setOpenedCountValue = useCallback((nextCount: number) => {
     const normalized = Math.max(0, Math.floor(nextCount));
     openedCountRef.current = normalized;
@@ -176,13 +186,23 @@ function EndlessDoor() {
 
   const settleDoorAt = useCallback((settledAngle: number) => {
     cancelActiveAnimation();
+    cancelHandoff();
     const mode = doorModeRef.current;
 
     if (settledAngle >= OPEN_ANGLE - SETTLE_EPSILON) {
       if (mode === 'opening') {
         setOpenedCountValue(openedCountRef.current + 1);
       }
-    } else if (settledAngle <= SETTLE_EPSILON) {
+
+      setDoorModeValue('idle');
+      handoffFrameRef.current = window.requestAnimationFrame(() => {
+        handoffFrameRef.current = null;
+        clearActiveLeafTransform();
+      });
+      return;
+    }
+
+    if (settledAngle <= SETTLE_EPSILON) {
       if (mode === 'closing') {
         setOpenedCountValue(openedCountRef.current - 1);
       }
@@ -190,7 +210,7 @@ function EndlessDoor() {
 
     clearActiveLeafTransform();
     setDoorModeValue('idle');
-  }, [cancelActiveAnimation, clearActiveLeafTransform, setDoorModeValue, setOpenedCountValue]);
+  }, [cancelActiveAnimation, cancelHandoff, clearActiveLeafTransform, setDoorModeValue, setOpenedCountValue]);
 
   const animateDoor = useCallback((
     nextMode: Exclude<DoorMode, 'idle'>,
@@ -198,6 +218,7 @@ function EndlessDoor() {
     targetAngle: number
   ) => {
     cancelActiveAnimation();
+    cancelHandoff();
     setDoorModeValue(nextMode);
     applyAngle(startAngle);
 
@@ -222,7 +243,7 @@ function EndlessDoor() {
       }
 
       const progress = Math.min(1, (now - startedAt) / duration);
-      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      const easedProgress = easeInOutCubic(progress);
       applyAngle(startAngle + (targetAngle - startAngle) * easedProgress);
 
       if (progress < 1) {
@@ -235,7 +256,7 @@ function EndlessDoor() {
     };
 
     animationFrameRef.current = window.requestAnimationFrame(tick);
-  }, [applyAngle, cancelActiveAnimation, setDoorModeValue, settleDoorAt]);
+  }, [applyAngle, cancelActiveAnimation, cancelHandoff, setDoorModeValue, settleDoorAt]);
 
   const openDoor = useCallback(() => {
     const startAngle = angleRef.current;
@@ -254,74 +275,16 @@ function EndlessDoor() {
   useEffect(() => {
     return () => {
       cancelActiveAnimation();
-      if (hoverSettleTimeoutRef.current !== null) {
-        window.clearTimeout(hoverSettleTimeoutRef.current);
-      }
+      cancelHandoff();
     };
-  }, [cancelActiveAnimation]);
-
-  const clearHoverSettling = useCallback(() => {
-    if (hoverSettleTimeoutRef.current !== null) {
-      window.clearTimeout(hoverSettleTimeoutRef.current);
-      hoverSettleTimeoutRef.current = null;
-    }
-
-    setIsHoverSettling(false);
-  }, []);
-
-  const handlePointerEnter = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType !== 'mouse') {
-      return;
-    }
-
-    clearHoverSettling();
-    setIsHovered(true);
-  };
-
-  const handlePointerLeave = () => {
-    if (!isHovered) {
-      clearHoverSettling();
-      return;
-    }
-
-    const shouldSettleHover =
-      !pointerRef.current
-      && doorModeRef.current === 'idle'
-      && openedCountRef.current === 0
-      && angleRef.current <= SETTLE_EPSILON;
-
-    setIsHovered(false);
-
-    if (!shouldSettleHover) {
-      clearHoverSettling();
-      return;
-    }
-
-    setIsHoverSettling(true);
-    if (hoverSettleTimeoutRef.current !== null) {
-      window.clearTimeout(hoverSettleTimeoutRef.current);
-    }
-    hoverSettleTimeoutRef.current = window.setTimeout(() => {
-      hoverSettleTimeoutRef.current = null;
-      setIsHoverSettling(false);
-    }, 200);
-  };
+  }, [cancelActiveAnimation, cancelHandoff]);
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (event.button !== 0) {
       return;
     }
 
-    const shouldCommitHoverPreview =
-      isHovered
-      && doorModeRef.current === 'idle'
-      && openedCountRef.current === 0
-      && angleRef.current <= SETTLE_EPSILON;
-    const startAngle = shouldCommitHoverPreview ? HOVER_PREVIEW_ANGLE : angleRef.current;
-
-    if (shouldCommitHoverPreview) {
-      applyAngle(startAngle);
-    }
+    const startAngle = angleRef.current;
 
     pointerRef.current = {
       id: event.pointerId,
@@ -416,12 +379,6 @@ function EndlessDoor() {
 
   const staticOpenCount = Math.max(0, openedCount - (doorMode === 'closing' ? 1 : 0));
   const showOpenLeaf = staticOpenCount > 0;
-  const showHoverPreview =
-    isHovered
-    && !isDragging
-    && doorMode === 'idle'
-    && openedCount === 0
-    && angleRef.current <= SETTLE_EPSILON;
 
   return (
     <section className="endless-door-object" data-testid="endless-door">
@@ -430,8 +387,6 @@ function EndlessDoor() {
         className={[
           'endless-door-stage',
           isDragging ? 'is-dragging' : '',
-          showHoverPreview ? 'is-hover-preview' : '',
-          isHoverSettling ? 'is-hover-settling' : '',
           doorMode !== 'idle' ? 'is-transitioning' : '',
           doorMode === 'opening' ? 'is-opening' : '',
           doorMode === 'closing' ? 'is-closing' : '',
@@ -443,8 +398,6 @@ function EndlessDoor() {
         onLostPointerCapture={finishPointer}
         onPointerCancel={finishPointer}
         onPointerDown={handlePointerDown}
-        onPointerEnter={handlePointerEnter}
-        onPointerLeave={handlePointerLeave}
         onPointerMove={handlePointerMove}
         onPointerUp={finishPointer}
         role="button"

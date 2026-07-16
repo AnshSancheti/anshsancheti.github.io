@@ -49,11 +49,6 @@ test('renders Endless Door as a full-page experience', () => {
   expect(container.querySelectorAll('feDisplacementMap')).toHaveLength(0);
   const door = screen.getByRole('button', { name: /click or drag left to open/i });
 
-  const mouseEnter = new Event('pointerover', { bubbles: true });
-  Object.defineProperty(mouseEnter, 'pointerType', { value: 'mouse' });
-  fireEvent(door, mouseEnter);
-  expect(door).toHaveClass('is-hover-preview');
-
   fireEvent.keyDown(door, { key: 'ArrowLeft' });
   expect(door).toHaveAttribute('data-transition-mode', 'opening');
 });
@@ -76,16 +71,18 @@ test('does not run an animation loop while Endless Door is idle', () => {
   requestAnimationFrame.mockRestore();
 });
 
-test('does not apply the desktop hover preview to touch input', () => {
+test('does not preview the door on hover', () => {
   window.history.pushState({}, '', '/door/');
   render(<App />);
 
   const door = screen.getByTestId('door-stage');
-  const touchEnter = new Event('pointerover', { bubbles: true });
-  Object.defineProperty(touchEnter, 'pointerType', { value: 'touch' });
-  fireEvent(door, touchEnter);
+  const leaf = screen.getByTestId('door-leaf');
+  const mouseEnter = new Event('pointerover', { bubbles: true });
+  Object.defineProperty(mouseEnter, 'pointerType', { value: 'mouse' });
+  fireEvent(door, mouseEnter);
 
   expect(door).not.toHaveClass('is-hover-preview');
+  expect((leaf as HTMLElement).style.transform).toBe('');
 });
 
 test('finishes a door animation without leaving background frame work running', () => {
@@ -106,10 +103,29 @@ test('finishes a door animation without leaving background frame work running', 
   expect(frames).toHaveLength(1);
   act(() => frames.shift()?.(0));
   expect(frames).toHaveLength(1);
-  act(() => frames.shift()?.(480));
+  act(() => frames.shift()?.(160));
+  expect((leaf as HTMLElement).style.transform).toContain('rotateY(-11.25deg)');
+  expect(frames).toHaveLength(1);
+  act(() => frames.shift()?.(640));
 
   expect(door).toHaveAttribute('data-transition-mode', 'idle');
   expect(door).toHaveAttribute('data-opened-count', '1');
+  expect((leaf as HTMLElement).style.transform).toContain('rotateY(-180deg)');
+  expect(frames).toHaveLength(1);
+  act(() => frames.shift()?.(656));
+
+  expect((leaf as HTMLElement).style.transform).toBe('');
+  expect(frames).toHaveLength(0);
+
+  fireEvent.keyDown(door, { key: 'ArrowRight' });
+  expect(frames).toHaveLength(1);
+  act(() => frames.shift()?.(1000));
+  act(() => frames.shift()?.(1160));
+  expect((leaf as HTMLElement).style.transform).toContain('rotateY(-168.75deg)');
+  act(() => frames.shift()?.(1640));
+
+  expect(door).toHaveAttribute('data-transition-mode', 'idle');
+  expect(door).toHaveAttribute('data-opened-count', '0');
   expect((leaf as HTMLElement).style.transform).toBe('');
   expect(frames).toHaveLength(0);
   requestAnimationFrame.mockRestore();
