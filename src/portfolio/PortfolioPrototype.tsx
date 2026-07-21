@@ -61,7 +61,6 @@ export default function PortfolioPrototype() {
       </main>
 
       <footer className="minimal-footer">
-        <span>Unsupervised</span>
         <div>
           <a href="https://github.com/AnshSancheti">GitHub</a>
           <a href="https://www.linkedin.com/in/ansh-sancheti-10b043aa">LinkedIn</a>

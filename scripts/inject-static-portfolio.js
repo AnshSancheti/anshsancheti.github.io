@@ -66,7 +66,6 @@ const staticPortfolio = `
         </section>
       </main>
       <footer class="minimal-footer">
-        <span>Unsupervised</span>
         <div>
           <a href="https://github.com/AnshSancheti">GitHub</a>
           <a href="https://www.linkedin.com/in/ansh-sancheti-10b043aa">LinkedIn</a>
@@ -92,7 +91,6 @@ const staticNow = `
         </div>
       </main>
       <footer class="minimal-footer">
-        <span>Unsupervised</span>
         <div>
           <a href="https://github.com/AnshSancheti">GitHub</a>
           <a href="https://www.linkedin.com/in/ansh-sancheti-10b043aa">LinkedIn</a>

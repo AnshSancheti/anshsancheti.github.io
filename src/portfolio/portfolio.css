@@ -183,7 +183,7 @@ body { margin: 0; background: var(--page); }
   color: var(--muted);
   font-size: 12px;
 }
-.minimal-footer div { display: flex; gap: 24px; }
+.minimal-footer div { display: flex; gap: 24px; margin-left: auto; }
 
 @media (max-width: 780px) {
   .minimal-header,
