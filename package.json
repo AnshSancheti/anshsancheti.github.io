@@ -49,6 +49,6 @@
   "overrides": {
     "@svgr/webpack": "^6.5.1",
     "@svgr/plugin-svgo": "^6.5.1",
-    "svgo": "^2.8.0"
+    "svgo": "^2.8.3"
   }
 }
