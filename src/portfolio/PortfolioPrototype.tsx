@@ -51,6 +51,7 @@ export default function PortfolioPrototype() {
           <div className="minimal-column">
             <h2>Artifacts</h2>
             <div className="minimal-links">
+              <a href="https://claude-explores-earth.fly.dev/" target="_blank" rel="noreferrer">Claude Explores Earth <span className="minimal-arrow minimal-arrow--external" aria-hidden="true" /></a>
               <a href="/door/">Endless Door <span className="minimal-arrow" aria-hidden="true" /></a>
               <a href="/nyc-tree-map/">NYC Tree Foliage <span className="minimal-arrow" aria-hidden="true" /></a>
               <a href="/us-voter-turnout/">US Voter Turnout <span className="minimal-arrow" aria-hidden="true" /></a>

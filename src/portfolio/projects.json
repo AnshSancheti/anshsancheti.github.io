@@ -7,17 +7,10 @@
     "href": "https://reddit-atlas.fly.dev/"
   },
   {
-    "title": "Claude Explores Earth",
-    "year": "2026",
-    "tags": "agents, map",
-    "description": "A pair of agents wander the planet via Street View, trying to find each other by passing notes on a shared scratchpad.",
-    "href": "https://claude-explores-earth.fly.dev/"
-  },
-  {
     "title": "New New York",
     "year": "2026",
     "tags": "data, NYC",
-    "description": "A map of restaurants newly added to Foursquare in NYC, because opening roundups are not a database.",
+    "description": "Monthly updating map of new restaurants opened up in NYC",
     "href": "https://newnewyork.dev/"
   },
   {
