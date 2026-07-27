@@ -14,6 +14,13 @@
     "href": "https://claude-explores-earth.fly.dev/"
   },
   {
+    "title": "New New York",
+    "year": "2026",
+    "tags": "data, NYC",
+    "description": "A map of restaurants newly added to Foursquare in NYC, because opening roundups are not a database.",
+    "href": "https://newnewyork.dev/"
+  },
+  {
     "title": "The Artisanal Tax",
     "year": "2026",
     "tags": "data, NYC",
