@@ -86,8 +86,6 @@ const staticNow = `
       <main class="minimal-now" aria-label="Now">
         <div class="minimal-now-copy">
           <p>${escapeHtml(now.employment.prefix)}<a href="${escapeHtml(now.employment.href)}"><strong>${escapeHtml(now.employment.company)}</strong></a>.</p>
-          <p>${escapeHtml(now.artificialTaste.prefix)}<strong>${escapeHtml(now.artificialTaste.title)}</strong>. ${escapeHtml(now.artificialTaste.reflection)}</p>
-          <p>${escapeHtml(now.forecastBench.prefix)}<a href="${escapeHtml(now.forecastBench.href)}"><strong>${escapeHtml(now.forecastBench.title)}</strong></a>${escapeHtml(now.forecastBench.suffix)}</p>
           <span>Updated ${escapeHtml(now.updated)}</span>
         </div>
       </main>
@@ -151,8 +149,8 @@ const nowStructuredData = {
   '@id': `${siteUrl}now/#page`,
   url: `${siteUrl}now/`,
   name: 'Now — Ansh Sancheti',
-  description: `${now.employment.prefix}${now.employment.company}. ${now.artificialTaste.prefix}${now.artificialTaste.title}. ${now.artificialTaste.reflection} ${now.forecastBench.prefix}${now.forecastBench.title}${now.forecastBench.suffix}`,
-  dateModified: '2026-07-13',
+  description: `${now.employment.prefix}${now.employment.company}.`,
+  dateModified: '2026-08-07',
   mainEntity: {
     '@type': 'Person',
     '@id': `${siteUrl}#ansh`,
@@ -197,7 +195,7 @@ const injectPage = (content, data) => template
   );
 
 const homeHtml = injectPage(staticPortfolio, structuredData);
-const nowDescription = 'Ansh Sancheti is a senior software engineer building agentic data security at Teleskope and working on Artificial Taste and ForecastBench submissions.';
+const nowDescription = 'Ansh Sancheti is a senior software engineer building agentic data security at Teleskope.';
 const nowHtml = injectPage(staticNow, nowStructuredData)
   .replace('<title>Ansh Sancheti — Projects</title>', '<title>Now — Ansh Sancheti</title>')
   .replace(

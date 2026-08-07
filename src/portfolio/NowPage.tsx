@@ -18,15 +18,6 @@ export default function NowPage() {
             {now.employment.prefix}
             <a href={now.employment.href}><strong>{now.employment.company}</strong></a>.
           </p>
-          <p>
-            {now.artificialTaste.prefix}<strong>{now.artificialTaste.title}</strong>.{' '}
-            {now.artificialTaste.reflection}
-          </p>
-          <p>
-            {now.forecastBench.prefix}
-            <a href={now.forecastBench.href}><strong>{now.forecastBench.title}</strong></a>
-            {now.forecastBench.suffix}
-          </p>
           <span>Updated {now.updated}</span>
         </div>
       </main>

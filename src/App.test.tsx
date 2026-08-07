@@ -148,13 +148,7 @@ test('renders the Now page as a concise prose update', () => {
   const teleskope = screen.getByRole('link', { name: 'Teleskope' });
   expect(teleskope).toHaveAttribute('href', 'https://www.teleskope.ai/');
   expect(teleskope.querySelector('strong')).not.toBeNull();
-  expect(screen.getByText('Artificial Taste')).toBeInTheDocument();
-  expect(screen.queryByRole('link', { name: 'Artificial Taste' })).not.toBeInTheDocument();
-  const forecastBench = screen.getByRole('link', { name: 'ForecastBench' });
-  expect(forecastBench).toHaveAttribute(
-    'href',
-    'https://forecastbench.org/'
-  );
-  expect(forecastBench.querySelector('strong')).not.toBeNull();
+  expect(screen.queryByText('Artificial Taste')).not.toBeInTheDocument();
+  expect(screen.queryByText('ForecastBench')).not.toBeInTheDocument();
   expect(screen.queryByText('This site')).not.toBeInTheDocument();
 });

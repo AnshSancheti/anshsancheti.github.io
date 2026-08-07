@@ -7,10 +7,7 @@ Canonical site: https://anshsancheti.github.io/
 ## Now
 
 - Senior software engineer building agentic data security at [Teleskope](https://www.teleskope.ai/).
-- Artificial Taste: Exploring what happens to culture as more people add one or several LLMs to the five voices they spend the most time with, starting by mapping the taste of each model family.
-- [ForecastBench](https://forecastbench.org/): Building submissions to test whether models can beat the best superforecasters at predicting the future.
-
-Updated July 2026.
+Updated August 2026.
 
 ## Selected work
 
