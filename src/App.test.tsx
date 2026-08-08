@@ -13,7 +13,7 @@ test('renders the portfolio homepage', () => {
     screen.getByRole('heading', { name: 'Selected work' })
   ).toBeInTheDocument();
   expect(
-    screen.getByRole('link', { name: 'Claude Explores Earth' })
+    screen.getByRole('link', { name: 'Rendezvous' })
   ).toHaveAttribute('href', 'https://claude-explores-earth.fly.dev/');
   expect(screen.queryByText('Artificial Taste')).not.toBeInTheDocument();
   expect(

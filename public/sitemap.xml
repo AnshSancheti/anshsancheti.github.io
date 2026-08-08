@@ -2,7 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://anshsancheti.github.io/</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-08-08</lastmod>
+  </url>
+  <url>
+    <loc>https://anshsancheti.github.io/about-project.html</loc>
+    <lastmod>2026-08-08</lastmod>
+  </url>
+  <url>
+    <loc>https://anshsancheti.github.io/llms.txt</loc>
+    <lastmod>2026-08-08</lastmod>
   </url>
   <url>
     <loc>https://anshsancheti.github.io/now/</loc>
@@ -10,22 +18,50 @@
   </url>
   <url>
     <loc>https://anshsancheti.github.io/door/</loc>
-    <lastmod>2026-07-15</lastmod>
+    <lastmod>2026-08-08</lastmod>
+  </url>
+  <url>
+    <loc>https://anshsancheti.github.io/door/about-project.html</loc>
+    <lastmod>2026-08-08</lastmod>
+  </url>
+  <url>
+    <loc>https://anshsancheti.github.io/door/llms.txt</loc>
+    <lastmod>2026-08-08</lastmod>
   </url>
   <url>
     <loc>https://anshsancheti.github.io/dongs/gallery.html</loc>
-    <lastmod>2026-07-15</lastmod>
+    <lastmod>2026-08-08</lastmod>
+  </url>
+  <url>
+    <loc>https://anshsancheti.github.io/dongs/about-project.html</loc>
+    <lastmod>2026-08-08</lastmod>
   </url>
   <url>
     <loc>https://anshsancheti.github.io/dongs/llms.txt</loc>
-    <lastmod>2026-07-15</lastmod>
+    <lastmod>2026-08-08</lastmod>
   </url>
   <url>
     <loc>https://anshsancheti.github.io/nyc-tree-map/</loc>
-    <lastmod>2025-12-07</lastmod>
+    <lastmod>2026-08-08</lastmod>
+  </url>
+  <url>
+    <loc>https://anshsancheti.github.io/nyc-tree-map/about-project.html</loc>
+    <lastmod>2026-08-08</lastmod>
+  </url>
+  <url>
+    <loc>https://anshsancheti.github.io/nyc-tree-map/llms.txt</loc>
+    <lastmod>2026-08-08</lastmod>
   </url>
   <url>
     <loc>https://anshsancheti.github.io/us-voter-turnout/</loc>
-    <lastmod>2025-11-23</lastmod>
+    <lastmod>2026-08-08</lastmod>
+  </url>
+  <url>
+    <loc>https://anshsancheti.github.io/us-voter-turnout/about-project.html</loc>
+    <lastmod>2026-08-08</lastmod>
+  </url>
+  <url>
+    <loc>https://anshsancheti.github.io/us-voter-turnout/llms.txt</loc>
+    <lastmod>2026-08-08</lastmod>
   </url>
 </urlset>

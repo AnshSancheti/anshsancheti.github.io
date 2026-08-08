@@ -58,7 +58,7 @@ const staticPortfolio = `
           <div class="minimal-column">
             <h2>Artifacts</h2>
             <div class="minimal-links">
-              <a href="https://claude-explores-earth.fly.dev/" target="_blank" rel="noreferrer">Claude Explores Earth <span class="minimal-arrow minimal-arrow--external" aria-hidden="true"></span></a>
+              <a href="https://claude-explores-earth.fly.dev/" target="_blank" rel="noreferrer">Rendezvous <span class="minimal-arrow minimal-arrow--external" aria-hidden="true"></span></a>
               <a href="/door/">Endless Door <span class="minimal-arrow" aria-hidden="true"></span></a>
               <a href="/nyc-tree-map/">NYC Tree Foliage <span class="minimal-arrow" aria-hidden="true"></span></a>
               <a href="/us-voter-turnout/">US Voter Turnout <span class="minimal-arrow" aria-hidden="true"></span></a>
@@ -243,6 +243,8 @@ const doorHtml = template
     '<noscript>The project index is available below. JavaScript powers the interactive pieces.</noscript>',
     '<noscript>The Endless Door interaction requires JavaScript.</noscript>',
   )
+  .replace('href="/llms.txt"', 'href="/door/llms.txt"')
+  .replace('href="/about-project.html"', 'href="/door/about-project.html"')
   .replace('<body>', '<body style="background:#0a0a0a">');
 
 fs.writeFileSync(buildIndex, homeHtml);

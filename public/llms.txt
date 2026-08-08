@@ -1,44 +1,45 @@
 # Ansh Sancheti
 
-> Personal site and project index for Ansh Sancheti, a software engineer in New York who builds AI experiments, large-scale data maps, games, archives, and small tools for the web.
+> Ansh Sancheti is a senior software engineer and builder in New York, working across AI systems, large-scale data products, interactive maps, games, and web archives.
 
 Canonical site: https://anshsancheti.github.io/
+GitHub: https://github.com/AnshSancheti
+LinkedIn: https://www.linkedin.com/in/ansh-sancheti-10b043aa
 
-## Now
+## Profile
 
-- Senior software engineer building agentic data security at [Teleskope](https://www.teleskope.ai/).
-Updated August 2026.
+Ansh builds large-scale projects end to end: finding and validating difficult data, designing the underlying system and methodology, building the public interface, and operating the finished product.
+
+His public work includes Reddit Atlas, a year-by-year map derived from Reddit aggregates covering 24.88 billion posts and comments; The Artisanal Tax, which turns 5,615,271 public menu rows into neighborhood-level price comparisons across 500 dishes and 219 New York City areas; and DONGs Gallery, a curated archive of 1,044 web experiments, games, tools, and curiosities.
+
+The projects range from data-intensive civic and cultural maps to real-time multiplayer games and autonomous AI experiments. Unless a project says otherwise, the work listed here was designed, built, and deployed by Ansh.
+
+## Current work
+
+Ansh is a senior software engineer at [Teleskope](https://www.teleskope.ai/), building agentic data-security systems.
 
 ## Selected work
 
-- [Reddit Atlas](https://reddit-atlas.fly.dev/): Every Reddit post and comment from 2006–2025, embedded and clustered by user participation. Tags: data, map. Created 2026.
-- [New New York](https://newnewyork.dev/): Monthly updating map of new restaurants opened up in NYC. Tags: data, NYC. Created 2026.
-- [The Artisanal Tax](https://sizzle-index.fly.dev/): Scraped every menu item in NYC I could get my hands on to figure out where I'm getting upcharged for fries. Tags: data, NYC. Created 2026.
-- [Lot Shot](https://lot-shot.fly.dev/): Guess which artwork sold for more. Learn nothing about art and too much about money. Tags: game, art. Created 2026.
-- [DONGs Gallery](https://anshsancheti.github.io/dongs/gallery.html): An index of all of VSauce’s DONGs (Do Online Now, Guys): tagged and organized. Tags: archive, web. Created 2026.
-- [Fourcorners](https://fourcorners.fly.dev/): Political compass memes but for anything on two axes. Tags: tool, memes. Created 2025.
-- [Crosswars](https://crosswars.fly.dev/): Real-time PvP crosswords (NYT Mini edition). Tags: game, multiplayer. Created 2025.
+- [Reddit Atlas](https://reddit-atlas.fly.dev/): Maps Reddit communities from 2006 through 2025 using shared user participation rather than text similarity. Its yearly source aggregates cover 24.88 billion posts and comments, with a public methodology and quality-assurance reports.
+- [New New York](https://newnewyork.dev/): A continuously maintained map of newly recorded and recently closing New York City restaurants. It combines open place datasets, verified community submissions, editorial-source monitoring, and human review rather than treating a single roundup as a database.
+- [The Artisanal Tax](https://sizzle-index.fly.dev/): Converts 5,615,271 public menu rows into an interactive comparison of prices for 500 dishes across 219 New York City neighborhoods.
+- [Lot Shot](https://lot-shot.fly.dev/): A daily and endless higher-or-lower game built from verified blue-chip artwork auction records, focused on the strange relationship between art and money.
+- [DONGs Gallery](https://anshsancheti.github.io/dongs/gallery.html): Preserves and curates 1,044 websites featured by VSauce, including screenshots, descriptions, editorial tags, ratings, and archived replacements for destinations lost to link rot or Flash.
+- [Fourcorners](https://fourcorners.fly.dev/): A shareable quadrant-chart maker for placing anything on two custom axes, with reusable templates, public galleries, and stable result URLs.
+- [Crosswars](https://crosswars.fly.dev/): A real-time player-versus-player crossword race with temporary rooms, synchronized progress over WebSockets, rematches, and a single-player daily mode.
 
-## LLM-readable project briefs
+## Smaller artifacts
 
-- [Reddit Atlas project brief](https://reddit-atlas.fly.dev/llms.txt)
-- [The Artisanal Tax project brief](https://sizzle-index.fly.dev/llms.txt)
-- [Lot Shot project brief](https://lot-shot.fly.dev/llms.txt)
-- [DONGs Gallery project brief](https://anshsancheti.github.io/dongs/llms.txt)
-- [Fourcorners project brief](https://fourcorners.fly.dev/llms.txt)
-- [Crosswars project brief](https://crosswars.fly.dev/llms.txt)
+- [Rendezvous](https://claude-explores-earth.fly.dev/): Two autonomous AI agents navigate New York City through Street View while trying to find one another, communicating through a single shared sequence of wordless drawings, built to explore agentic AI systems and emergent LLM behavior.
+- [Endless Door](https://anshsancheti.github.io/door/): A hand-drawn interactive door that reveals another door every time it opens.
+- [NYC Autumn Foliage](https://anshsancheti.github.io/nyc-tree-map/): A WebGL animation of 652,168 living New York City street trees across 132 species changing color through a modeled autumn.
+- [US Voter Turnout](https://anshsancheti.github.io/us-voter-turnout/): An interactive state-by-state turnout explorer spanning presidential elections from 1972 through 2024 and reconciling two differently defined public datasets.
 
-## In progress
+## Research in progress
 
-- Superforecaster: An auditable research harness for AI probabilistic forecasting. Research prototype, 2026.
+- Superforecaster: an auditable research harness for AI probabilistic forecasting and submissions to ForecastBench.
 
-## Artifacts
+## Contact
 
-- [Claude Explores Earth](https://claude-explores-earth.fly.dev/)
-- [Endless Door](https://anshsancheti.github.io/door/)
-- [NYC Tree Foliage](https://anshsancheti.github.io/nyc-tree-map/)
-- [US Voter Turnout](https://anshsancheti.github.io/us-voter-turnout/)
-
-## About and contact
-
-Mostly the consequences of one thing leading to another. Based in NYC. Email: ansh.sancheti@gmail.com. GitHub: https://github.com/AnshSancheti. LinkedIn: https://www.linkedin.com/in/ansh-sancheti-10b043aa.
+Email: ansh.sancheti@gmail.com
+Based in New York City.
