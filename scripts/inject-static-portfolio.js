@@ -164,8 +164,7 @@ const doorStructuredData = {
   '@type': 'CreativeWork',
   '@id': `${siteUrl}door/#page`,
   url: `${siteUrl}door/`,
-  name: 'Open Door Policy — Ansh Sancheti',
-  description: 'An endless hand-drawn door by Ansh Sancheti. Click or drag to open another door.',
+  name: 'Open Door Policy',
   creator: {
     '@type': 'Person',
     '@id': `${siteUrl}#ansh`,
@@ -214,30 +213,20 @@ const nowHtml = injectPage(staticNow, nowStructuredData)
     `content="${nowDescription}"`,
   );
 
-const doorDescription = 'An endless hand-drawn door by Ansh Sancheti. Click or drag to open another door.';
 const doorHtml = template
   .replace(
     structuredDataMarker,
     `<script id="portfolio-structured-data" type="application/ld+json">${JSON.stringify(doorStructuredData).replaceAll('<', '\\u003c')}</script>`,
   )
-  .replace('<title>Ansh Sancheti — Projects</title>', '<title>Open Door Policy — Ansh Sancheti</title>')
+  .replace('<title>Ansh Sancheti — Projects</title>', '<title>Open Door Policy</title>')
   .replace('content="#f3efe4"', 'content="#0a0a0a"')
-  .replace(
-    'content="Projects and experiments by Ansh Sancheti, a software engineer in New York: AI agents, large-scale data maps, games, archives, and tools."',
-    `content="${doorDescription}"`,
-  )
+  .replace(/\s*<meta name="description" content="[^"]*"\s*\/>/, '')
   .replace('href="https://anshsancheti.github.io/"', 'href="https://anshsancheti.github.io/door/"')
-  .replace('content="Ansh Sancheti — Projects"', 'content="Open Door Policy — Ansh Sancheti"')
-  .replace(
-    'content="AI agents, large-scale data maps, games, archives, and other experiments by Ansh Sancheti."',
-    `content="${doorDescription}"`,
-  )
+  .replace('content="Ansh Sancheti — Projects"', 'content="Open Door Policy"')
+  .replace(/\s*<meta property="og:description" content="[^"]*"\s*\/>/, '')
   .replace('content="https://anshsancheti.github.io/"', 'content="https://anshsancheti.github.io/door/"')
-  .replace('content="Ansh Sancheti — Projects"', 'content="Open Door Policy — Ansh Sancheti"')
-  .replace(
-    'content="AI agents, large-scale data maps, games, archives, and other experiments by Ansh Sancheti."',
-    `content="${doorDescription}"`,
-  )
+  .replace('content="Ansh Sancheti — Projects"', 'content="Open Door Policy"')
+  .replace(/\s*<meta name="twitter:description" content="[^"]*"\s*\/>/, '')
   .replace(
     '<noscript>The project index is available below. JavaScript powers the interactive pieces.</noscript>',
     '<noscript>The Open Door Policy interaction requires JavaScript.</noscript>',
