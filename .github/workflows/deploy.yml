@@ -35,26 +35,6 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Checkout Endless Autumn
-        uses: actions/checkout@v4
-        with:
-          repository: AnshSancheti/nyc-tree-map
-          ref: main
-          path: endless-autumn-source
-
-      - name: Install Endless Autumn dependencies
-        working-directory: endless-autumn-source
-        run: npm ci
-
-      - name: Build Endless Autumn
-        working-directory: endless-autumn-source
-        run: npm run build
-
-      - name: Add Endless Autumn to the site
-        run: |
-          mkdir -p build/endless-autumn
-          cp -R endless-autumn-source/docs/. build/endless-autumn/
-
       - name: SPA fallback (optional)
         run: |
           cp build/index.html build/404.html || true
