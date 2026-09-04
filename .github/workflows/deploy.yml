@@ -26,7 +26,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           cache: npm
 
       - name: Install dependencies
@@ -34,6 +34,26 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Checkout Endless Autumn
+        uses: actions/checkout@v4
+        with:
+          repository: AnshSancheti/nyc-tree-map
+          ref: main
+          path: endless-autumn-source
+
+      - name: Install Endless Autumn dependencies
+        working-directory: endless-autumn-source
+        run: npm ci
+
+      - name: Build Endless Autumn
+        working-directory: endless-autumn-source
+        run: npm run build
+
+      - name: Add Endless Autumn to the site
+        run: |
+          mkdir -p build/endless-autumn
+          cp -R endless-autumn-source/docs/. build/endless-autumn/
 
       - name: SPA fallback (optional)
         run: |
@@ -54,4 +74,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-

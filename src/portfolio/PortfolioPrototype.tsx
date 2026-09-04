@@ -52,7 +52,7 @@ export default function PortfolioPrototype() {
             <div className="minimal-links">
               <a href="https://claude-explores-earth.fly.dev/" target="_blank" rel="noreferrer">Rendezvous <span className="minimal-arrow minimal-arrow--external" aria-hidden="true" /></a>
               <a href="/door/">Open Door Policy <span className="minimal-arrow" aria-hidden="true" /></a>
-              <a href="/nyc-tree-map/">Endless Autumn <span className="minimal-arrow" aria-hidden="true" /></a>
+              <a href="/endless-autumn/">Endless Autumn <span className="minimal-arrow" aria-hidden="true" /></a>
               <a href="/us-voter-turnout/">Poll Position <span className="minimal-arrow" aria-hidden="true" /></a>
             </div>
           </div>

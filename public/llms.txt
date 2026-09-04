@@ -32,7 +32,7 @@ Ansh is a senior software engineer at [Teleskope](https://www.teleskope.ai/), bu
 
 - [Rendezvous](https://claude-explores-earth.fly.dev/): Two autonomous AI agents navigate New York City through Street View while trying to find one another, communicating through a single shared sequence of wordless drawings, built to explore agentic AI systems and emergent LLM behavior.
 - [Open Door Policy](https://anshsancheti.github.io/door/): A hand-drawn interactive door that reveals another door every time it opens.
-- [Endless Autumn](https://anshsancheti.github.io/nyc-tree-map/): A WebGL animation of 652,168 living New York City street trees across 132 species changing color through a modeled autumn.
+- [Endless Autumn](https://anshsancheti.github.io/endless-autumn/): digital senescence
 - [Poll Position](https://anshsancheti.github.io/us-voter-turnout/): An interactive state-by-state turnout explorer spanning presidential elections from 1972 through 2024 and reconciling two differently defined public datasets.
 
 ## Research in progress

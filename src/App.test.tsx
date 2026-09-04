@@ -41,7 +41,7 @@ test('renders the portfolio homepage', () => {
   );
   expect(screen.getByRole('link', { name: 'Endless Autumn' })).toHaveAttribute(
     'href',
-    '/nyc-tree-map/'
+    '/endless-autumn/'
   );
   expect(screen.getByRole('link', { name: 'Open Door Policy' })).toHaveAttribute(
     'href',

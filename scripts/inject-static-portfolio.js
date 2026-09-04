@@ -59,7 +59,7 @@ const staticPortfolio = `
             <div class="minimal-links">
               <a href="https://claude-explores-earth.fly.dev/" target="_blank" rel="noreferrer">Rendezvous <span class="minimal-arrow minimal-arrow--external" aria-hidden="true"></span></a>
               <a href="/door/">Open Door Policy <span class="minimal-arrow" aria-hidden="true"></span></a>
-              <a href="/nyc-tree-map/">Endless Autumn <span class="minimal-arrow" aria-hidden="true"></span></a>
+              <a href="/endless-autumn/">Endless Autumn <span class="minimal-arrow" aria-hidden="true"></span></a>
               <a href="/us-voter-turnout/">Poll Position <span class="minimal-arrow" aria-hidden="true"></span></a>
             </div>
           </div>
