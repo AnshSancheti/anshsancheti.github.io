@@ -45,7 +45,6 @@ const staticPortfolio = `
         <section class="minimal-work" id="work" aria-labelledby="work-heading">
           <div class="minimal-section-title">
             <h2 id="work-heading">Selected work</h2>
-            <span>Some projects take a few seconds to wake up.</span>
           </div>
           <div class="minimal-projects">${projectRows}
           </div>

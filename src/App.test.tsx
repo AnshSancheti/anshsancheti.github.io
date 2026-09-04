@@ -19,6 +19,12 @@ test('renders the portfolio homepage', () => {
   expect(
     within(screen.getByRole('navigation')).queryByRole('link', { name: 'Email' })
   ).not.toBeInTheDocument();
+  expect(
+    screen.queryByText('Some projects take a few seconds to wake up.')
+  ).not.toBeInTheDocument();
+  expect(screen.getByRole('link', { name: /Outbid/ })).toHaveTextContent(
+    'Guess which painting sold for more. Learned nothing about art and too much about money.'
+  );
 
   expect(screen.getByRole('link', { name: /Reddit Atlas/ })).toHaveAttribute(
     'target',

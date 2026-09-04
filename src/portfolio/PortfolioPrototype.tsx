@@ -16,7 +16,6 @@ export default function PortfolioPrototype() {
         <section className="minimal-work" id="work" aria-labelledby="work-heading">
           <div className="minimal-section-title">
             <h2 id="work-heading">Selected work</h2>
-            <span>Some projects take a few seconds to wake up.</span>
           </div>
 
           <div className="minimal-projects">
