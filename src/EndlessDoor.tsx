@@ -2,6 +2,8 @@ import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from '
 
 const OPEN_ANGLE = 180;
 const SETTLE_EPSILON = 0.6;
+// A dragged door only commits to opening once it is most of the way there.
+const OPEN_COMMIT_FRACTION = 0.85;
 const DRAG_DEGREES_PER_PIXEL = 0.38;
 const ANIMATION_DURATION_MS = 640;
 const MIN_ANIMATION_DURATION_MS = 180;
@@ -361,7 +363,8 @@ function EndlessDoor() {
     }
 
     const currentAngle = angleRef.current;
-    const targetAngle = currentAngle >= OPEN_ANGLE / 2 ? OPEN_ANGLE : 0;
+    const commitAngle = pointerMode === 'opening' ? OPEN_ANGLE * OPEN_COMMIT_FRACTION : OPEN_ANGLE / 2;
+    const targetAngle = currentAngle >= commitAngle ? OPEN_ANGLE : 0;
     animateDoor(pointerMode, currentAngle, targetAngle);
   };
 

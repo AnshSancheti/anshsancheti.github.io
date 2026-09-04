@@ -165,3 +165,69 @@ test('renders the Now page as a concise prose update', () => {
   expect(screen.queryByText('ForecastBench')).not.toBeInTheDocument();
   expect(screen.queryByText('This site')).not.toBeInTheDocument();
 });
+
+test('only commits a dragged door open once it is most of the way there', () => {
+  // jsdom has no PointerEvent; a MouseEvent subclass gives the handlers button and clientX.
+  class TestPointerEvent extends MouseEvent {
+    pointerId: number;
+    pointerType: string;
+
+    constructor(type: string, init: PointerEventInit = {}) {
+      super(type, init);
+      this.pointerId = init.pointerId ?? 0;
+      this.pointerType = init.pointerType ?? 'mouse';
+    }
+  }
+  const originalPointerEvent = window.PointerEvent;
+  (window as any).PointerEvent = TestPointerEvent;
+
+  const frames: FrameRequestCallback[] = [];
+  const requestAnimationFrame = jest
+    .spyOn(window, 'requestAnimationFrame')
+    .mockImplementation((callback) => {
+      frames.push(callback);
+      return frames.length;
+    });
+  const originalCapture = {
+    setPointerCapture: HTMLElement.prototype.setPointerCapture,
+    releasePointerCapture: HTMLElement.prototype.releasePointerCapture,
+    hasPointerCapture: HTMLElement.prototype.hasPointerCapture,
+  };
+  HTMLElement.prototype.setPointerCapture = jest.fn();
+  HTMLElement.prototype.releasePointerCapture = jest.fn();
+  HTMLElement.prototype.hasPointerCapture = jest.fn(() => false);
+
+  window.history.pushState({}, '', '/door/');
+  render(<App />);
+  const door = screen.getByTestId('door-stage');
+
+  // Pixels to drag for a fraction of the 180 degree swing at 0.38 degrees per pixel.
+  const dragFor = (fraction: number) => Math.ceil((180 * fraction) / 0.38);
+  const dragAndRelease = (fraction: number) => {
+    const startX = 600;
+    const endX = startX - dragFor(fraction);
+    fireEvent.pointerDown(door, { pointerId: 1, button: 0, clientX: startX, clientY: 300 });
+    fireEvent.pointerMove(door, { pointerId: 1, clientX: startX - 20, clientY: 300 });
+    fireEvent.pointerMove(door, { pointerId: 1, clientX: endX, clientY: 300 });
+    fireEvent.pointerUp(door, { pointerId: 1, clientX: endX, clientY: 300 });
+    let clock = 0;
+    while (frames.length > 0) {
+      const frame = frames.shift();
+      clock += 10_000;
+      const now = clock;
+      act(() => frame?.(now));
+    }
+  };
+
+  dragAndRelease(0.7);
+  expect(door).toHaveAttribute('data-opened-count', '0');
+  expect(door).toHaveAttribute('data-transition-mode', 'idle');
+
+  dragAndRelease(0.9);
+  expect(door).toHaveAttribute('data-opened-count', '1');
+  expect(door).toHaveAttribute('data-transition-mode', 'idle');
+
+  Object.assign(HTMLElement.prototype, originalCapture);
+  (window as any).PointerEvent = originalPointerEvent;
+  requestAnimationFrame.mockRestore();
+});
