@@ -30,6 +30,9 @@ test('renders the portfolio homepage', () => {
     'target',
     '_blank'
   );
+  expect(screen.getByRole('link', { name: /New New York/ })).toHaveTextContent(
+    'Weekly updating map of new and closing restaurants in NYC'
+  );
   const dongsGallery = screen.getByRole('link', { name: /DONGs Gallery/ });
   expect(dongsGallery).toHaveAttribute('target', '_blank');
   expect(dongsGallery).toHaveAttribute('rel', 'noreferrer');
