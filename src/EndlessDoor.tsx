@@ -2,8 +2,9 @@ import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from '
 
 const OPEN_ANGLE = 180;
 const SETTLE_EPSILON = 0.6;
-// A dragged door only commits to opening once it is most of the way there.
-const OPEN_COMMIT_FRACTION = 0.85;
+// A released door only finishes its swing once it is this close to either end.
+// Anywhere in between it stays exactly where it was let go.
+const AUTO_FINISH_FRACTION = 0.9;
 const DRAG_DEGREES_PER_PIXEL = 0.38;
 const ANIMATION_DURATION_MS = 640;
 const MIN_ANIMATION_DURATION_MS = 180;
@@ -286,18 +287,15 @@ function EndlessDoor() {
       return;
     }
 
-    const startAngle = angleRef.current;
-
     pointerRef.current = {
       id: event.pointerId,
       startX: event.clientX,
       startY: event.clientY,
-      startAngle,
+      startAngle: angleRef.current,
       moved: false,
-      mode: doorModeRef.current === 'idle' ? null : doorModeRef.current,
+      mode: null,
     };
 
-    cancelActiveAnimation();
     setIsDragging(true);
     event.currentTarget.setPointerCapture(event.pointerId);
   };
@@ -308,21 +306,33 @@ function EndlessDoor() {
       return;
     }
 
-    const dx = pointer.startX - event.clientX;
-    const dy = pointer.startY - event.clientY;
-    if (Math.hypot(dx, dy) > 5) {
-      pointer.moved = true;
-    }
+    if (!pointer.moved) {
+      const dx = pointer.startX - event.clientX;
+      const dy = pointer.startY - event.clientY;
+      if (Math.hypot(dx, dy) <= 5) {
+        return;
+      }
 
-    if (!pointer.mode && pointer.moved) {
-      pointer.mode = dx < 0 && openedCountRef.current > 0 ? 'closing' : 'opening';
-      pointer.startAngle = pointer.mode === 'closing' ? OPEN_ANGLE : pointer.startAngle;
-      setDoorModeValue(pointer.mode);
+      // The press has become a drag: take over from any running swing and
+      // measure the pull from here so the door does not jump.
+      pointer.moved = true;
+      pointer.startX = event.clientX;
+      cancelActiveAnimation();
+
+      if (doorModeRef.current === 'idle') {
+        pointer.mode = dx < 0 && openedCountRef.current > 0 ? 'closing' : 'opening';
+        pointer.startAngle = pointer.mode === 'closing' ? OPEN_ANGLE : angleRef.current;
+        setDoorModeValue(pointer.mode);
+      } else {
+        pointer.mode = doorModeRef.current;
+        pointer.startAngle = angleRef.current;
+      }
+
       applyAngle(pointer.startAngle);
     }
 
     if (pointer.mode) {
-      applyAngle(pointer.startAngle + dx * DRAG_DEGREES_PER_PIXEL);
+      applyAngle(pointer.startAngle + (pointer.startX - event.clientX) * DRAG_DEGREES_PER_PIXEL);
     }
 
     event.preventDefault();
@@ -341,31 +351,21 @@ function EndlessDoor() {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
 
-    if (!pointer.moved) {
-      const rect = event.currentTarget.getBoundingClientRect();
-      const clickedOpenDoorSide =
-        openedCountRef.current > 0 && event.clientX < rect.left + rect.width * 0.42;
-
-      if (clickedOpenDoorSide) {
-        closeDoor();
-      } else {
-        openDoor();
-      }
-
-      return;
-    }
-
     const pointerMode = pointer.mode;
     if (!pointerMode || pointerMode === 'idle') {
-      clearActiveLeafTransform();
-      setDoorModeValue('idle');
+      // A plain click, or a press that never became a drag, leaves the door alone.
       return;
     }
 
     const currentAngle = angleRef.current;
-    const commitAngle = pointerMode === 'opening' ? OPEN_ANGLE * OPEN_COMMIT_FRACTION : OPEN_ANGLE / 2;
-    const targetAngle = currentAngle >= commitAngle ? OPEN_ANGLE : 0;
-    animateDoor(pointerMode, currentAngle, targetAngle);
+    const finishBand = OPEN_ANGLE * (1 - AUTO_FINISH_FRACTION);
+
+    if (currentAngle >= OPEN_ANGLE - finishBand) {
+      animateDoor(pointerMode, currentAngle, OPEN_ANGLE);
+    } else if (currentAngle <= finishBand) {
+      animateDoor(pointerMode, currentAngle, 0);
+    }
+    // Otherwise the door rests where it was released until the next pull.
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -386,7 +386,7 @@ function EndlessDoor() {
   return (
     <section className="endless-door-object" data-testid="endless-door">
       <div
-        aria-label="Endless hand-drawn door. Click or drag left to open; drag right to close."
+        aria-label="Endless hand-drawn door. Drag left to open; drag right to close."
         className={[
           'endless-door-stage',
           isDragging ? 'is-dragging' : '',

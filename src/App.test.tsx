@@ -62,7 +62,7 @@ test('renders Open Door Policy as a full-page experience', () => {
   expect(container.querySelectorAll('filter')).toHaveLength(0);
   expect(container.querySelectorAll('feTurbulence')).toHaveLength(0);
   expect(container.querySelectorAll('feDisplacementMap')).toHaveLength(0);
-  const door = screen.getByRole('button', { name: /click or drag left to open/i });
+  const door = screen.getByRole('button', { name: /drag left to open/i });
 
   fireEvent.keyDown(door, { key: 'ArrowLeft' });
   expect(door).toHaveAttribute('data-transition-mode', 'opening');
@@ -166,7 +166,7 @@ test('renders the Now page as a concise prose update', () => {
   expect(screen.queryByText('This site')).not.toBeInTheDocument();
 });
 
-test('only commits a dragged door open once it is most of the way there', () => {
+test('leaves a dragged door where it was released until it is 90% of the way to either end', () => {
   // jsdom has no PointerEvent; a MouseEvent subclass gives the handlers button and clientX.
   class TestPointerEvent extends MouseEvent {
     pointerId: number;
@@ -200,17 +200,13 @@ test('only commits a dragged door open once it is most of the way there', () => 
   window.history.pushState({}, '', '/door/');
   render(<App />);
   const door = screen.getByTestId('door-stage');
+  const leaf = screen.getByTestId('door-leaf') as HTMLElement;
+  const leafAngle = () => -Number(/rotateY\((-?[\d.]+)deg\)/.exec(leaf.style.transform)?.[1] ?? 0);
 
-  // Pixels to drag for a fraction of the 180 degree swing at 0.38 degrees per pixel.
-  const dragFor = (fraction: number) => Math.ceil((180 * fraction) / 0.38);
-  const dragAndRelease = (fraction: number) => {
-    const startX = 600;
-    const endX = startX - dragFor(fraction);
-    fireEvent.pointerDown(door, { pointerId: 1, button: 0, clientX: startX, clientY: 300 });
-    fireEvent.pointerMove(door, { pointerId: 1, clientX: startX - 20, clientY: 300 });
-    fireEvent.pointerMove(door, { pointerId: 1, clientX: endX, clientY: 300 });
-    fireEvent.pointerUp(door, { pointerId: 1, clientX: endX, clientY: 300 });
-    let clock = 0;
+  // Pixels for a fraction of the 180 degree swing at 0.38 degrees per pixel.
+  const dragFor = (fraction: number) => Math.round((180 * fraction) / 0.38);
+  let clock = 0;
+  const runFrames = () => {
     while (frames.length > 0) {
       const frame = frames.shift();
       clock += 10_000;
@@ -218,13 +214,44 @@ test('only commits a dragged door open once it is most of the way there', () => 
       act(() => frame?.(now));
     }
   };
+  // Positive pixels pull the door open (leftwards); negative push it shut.
+  const dragAndRelease = (pixels: number) => {
+    const startX = 600;
+    const nudge = pixels > 0 ? -6 : 6;
+    fireEvent.pointerDown(door, { pointerId: 1, button: 0, clientX: startX, clientY: 300 });
+    fireEvent.pointerMove(door, { pointerId: 1, clientX: startX + nudge, clientY: 300 });
+    fireEvent.pointerMove(door, { pointerId: 1, clientX: startX + nudge - pixels, clientY: 300 });
+    fireEvent.pointerUp(door, { pointerId: 1, clientX: startX + nudge - pixels, clientY: 300 });
+    runFrames();
+  };
 
-  dragAndRelease(0.7);
+  // A plain click no longer swings the door.
+  fireEvent.pointerDown(door, { pointerId: 1, button: 0, clientX: 600, clientY: 300 });
+  fireEvent.pointerUp(door, { pointerId: 1, clientX: 600, clientY: 300 });
+  runFrames();
   expect(door).toHaveAttribute('data-opened-count', '0');
   expect(door).toHaveAttribute('data-transition-mode', 'idle');
 
-  dragAndRelease(0.9);
+  // Pulled 60% open and let go: it rests there.
+  dragAndRelease(dragFor(0.6));
+  expect(door).toHaveAttribute('data-opened-count', '0');
+  expect(door).toHaveAttribute('data-transition-mode', 'opening');
+  expect(leafAngle()).toBeCloseTo(108, 0);
+
+  // Pulled a further 35% (to 95%): it finishes opening on its own.
+  dragAndRelease(dragFor(0.35));
   expect(door).toHaveAttribute('data-opened-count', '1');
+  expect(door).toHaveAttribute('data-transition-mode', 'idle');
+
+  // Pushed 50% shut and let go: it rests there.
+  dragAndRelease(-dragFor(0.5));
+  expect(door).toHaveAttribute('data-opened-count', '1');
+  expect(door).toHaveAttribute('data-transition-mode', 'closing');
+  expect(leafAngle()).toBeCloseTo(90, 0);
+
+  // Pushed a further 45% (to 5% open): it finishes closing on its own.
+  dragAndRelease(-dragFor(0.45));
+  expect(door).toHaveAttribute('data-opened-count', '0');
   expect(door).toHaveAttribute('data-transition-mode', 'idle');
 
   Object.assign(HTMLElement.prototype, originalCapture);
