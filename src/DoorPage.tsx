@@ -21,7 +21,7 @@ export default function DoorPage() {
   }, []);
 
   return (
-    <main className="door-page" aria-label="Endless Door">
+    <main className="door-page" aria-label="Open Door Policy">
       <EndlessDoor />
     </main>
   );

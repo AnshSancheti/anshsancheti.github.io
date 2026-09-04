@@ -30,17 +30,21 @@ test('renders the portfolio homepage', () => {
   expect(dongsGallery.querySelector('.minimal-arrow')).toHaveClass(
     'minimal-arrow--external'
   );
-  expect(screen.getByRole('link', { name: 'NYC Tree Foliage' })).toHaveAttribute(
+  expect(screen.getByRole('link', { name: 'Endless Autumn' })).toHaveAttribute(
     'href',
     '/nyc-tree-map/'
   );
-  expect(screen.getByRole('link', { name: 'Endless Door' })).toHaveAttribute(
+  expect(screen.getByRole('link', { name: 'Open Door Policy' })).toHaveAttribute(
     'href',
     '/door/'
   );
+  expect(screen.getByRole('link', { name: 'Poll Position' })).toHaveAttribute(
+    'href',
+    '/us-voter-turnout/'
+  );
 });
 
-test('renders Endless Door as a full-page experience', () => {
+test('renders Open Door Policy as a full-page experience', () => {
   window.history.pushState({}, '', '/door/');
   const { container } = render(<App />);
 
@@ -55,7 +59,7 @@ test('renders Endless Door as a full-page experience', () => {
   expect(door).toHaveAttribute('data-transition-mode', 'opening');
 });
 
-test('keeps the objects URL as an alias to Endless Door', () => {
+test('keeps the objects URL as an alias to Open Door Policy', () => {
   window.history.pushState({}, '', '/objects/');
   render(<App />);
 
@@ -63,7 +67,7 @@ test('keeps the objects URL as an alias to Endless Door', () => {
   expect(screen.queryByTestId('trifold-map')).not.toBeInTheDocument();
 });
 
-test('does not run an animation loop while Endless Door is idle', () => {
+test('does not run an animation loop while Open Door Policy is idle', () => {
   const requestAnimationFrame = jest.spyOn(window, 'requestAnimationFrame');
   window.history.pushState({}, '', '/door/');
 
@@ -133,7 +137,7 @@ test('finishes a door animation without leaving background frame work running', 
   requestAnimationFrame.mockRestore();
 });
 
-test('keeps the old door query as an alias to Endless Door', () => {
+test('keeps the old door query as an alias to Open Door Policy', () => {
   window.history.pushState({}, '', '/?door');
   render(<App />);
 

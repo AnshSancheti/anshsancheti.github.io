@@ -59,9 +59,9 @@ const staticPortfolio = `
             <h2>Artifacts</h2>
             <div class="minimal-links">
               <a href="https://claude-explores-earth.fly.dev/" target="_blank" rel="noreferrer">Rendezvous <span class="minimal-arrow minimal-arrow--external" aria-hidden="true"></span></a>
-              <a href="/door/">Endless Door <span class="minimal-arrow" aria-hidden="true"></span></a>
-              <a href="/nyc-tree-map/">NYC Tree Foliage <span class="minimal-arrow" aria-hidden="true"></span></a>
-              <a href="/us-voter-turnout/">US Voter Turnout <span class="minimal-arrow" aria-hidden="true"></span></a>
+              <a href="/door/">Open Door Policy <span class="minimal-arrow" aria-hidden="true"></span></a>
+              <a href="/nyc-tree-map/">Endless Autumn <span class="minimal-arrow" aria-hidden="true"></span></a>
+              <a href="/us-voter-turnout/">Poll Position <span class="minimal-arrow" aria-hidden="true"></span></a>
             </div>
           </div>
         </section>
@@ -165,7 +165,7 @@ const doorStructuredData = {
   '@type': 'CreativeWork',
   '@id': `${siteUrl}door/#page`,
   url: `${siteUrl}door/`,
-  name: 'Endless Door — Ansh Sancheti',
+  name: 'Open Door Policy — Ansh Sancheti',
   description: 'An endless hand-drawn door by Ansh Sancheti. Click or drag to open another door.',
   creator: {
     '@type': 'Person',
@@ -221,27 +221,27 @@ const doorHtml = template
     structuredDataMarker,
     `<script id="portfolio-structured-data" type="application/ld+json">${JSON.stringify(doorStructuredData).replaceAll('<', '\\u003c')}</script>`,
   )
-  .replace('<title>Ansh Sancheti — Projects</title>', '<title>Endless Door — Ansh Sancheti</title>')
+  .replace('<title>Ansh Sancheti — Projects</title>', '<title>Open Door Policy — Ansh Sancheti</title>')
   .replace('content="#f3efe4"', 'content="#0a0a0a"')
   .replace(
     'content="Projects and experiments by Ansh Sancheti, a software engineer in New York: AI agents, large-scale data maps, games, archives, and tools."',
     `content="${doorDescription}"`,
   )
   .replace('href="https://anshsancheti.github.io/"', 'href="https://anshsancheti.github.io/door/"')
-  .replace('content="Ansh Sancheti — Projects"', 'content="Endless Door — Ansh Sancheti"')
+  .replace('content="Ansh Sancheti — Projects"', 'content="Open Door Policy — Ansh Sancheti"')
   .replace(
     'content="AI agents, large-scale data maps, games, archives, and other experiments by Ansh Sancheti."',
     `content="${doorDescription}"`,
   )
   .replace('content="https://anshsancheti.github.io/"', 'content="https://anshsancheti.github.io/door/"')
-  .replace('content="Ansh Sancheti — Projects"', 'content="Endless Door — Ansh Sancheti"')
+  .replace('content="Ansh Sancheti — Projects"', 'content="Open Door Policy — Ansh Sancheti"')
   .replace(
     'content="AI agents, large-scale data maps, games, archives, and other experiments by Ansh Sancheti."',
     `content="${doorDescription}"`,
   )
   .replace(
     '<noscript>The project index is available below. JavaScript powers the interactive pieces.</noscript>',
-    '<noscript>The Endless Door interaction requires JavaScript.</noscript>',
+    '<noscript>The Open Door Policy interaction requires JavaScript.</noscript>',
   )
   .replace('href="/llms.txt"', 'href="/door/llms.txt"')
   .replace('href="/about-project.html"', 'href="/door/about-project.html"')

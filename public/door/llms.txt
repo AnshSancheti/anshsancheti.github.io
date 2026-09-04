@@ -1,4 +1,4 @@
-# Endless Door
+# Open Door Policy
 
 > A hand-drawn interactive door that reveals another door every time it opens.
 
@@ -8,11 +8,11 @@ Status: Public interactive artifact
 
 ## What it is
 
-Endless Door is a minimal browser interaction built around an impossible object: opening the current door reveals the next door behind it, with no final room or destination.
+Open Door Policy is a minimal browser interaction built around an impossible object: opening the current door reveals the next door behind it, with no final room or destination.
 
 Visitors can click, drag, or use the keyboard to open and close the door. The motion uses direct transforms with a deliberate acceleration and deceleration curve, no idle animation loop, and a reduced-motion mode. The page is designed as a self-contained visual object rather than a conventional application.
 
 ## Important links
 
-- [Open Endless Door](https://anshsancheti.github.io/door/)
+- [View Open Door Policy](https://anshsancheti.github.io/door/)
 - [More work by Ansh Sancheti](https://anshsancheti.github.io/)
