@@ -10,7 +10,7 @@ LinkedIn: https://www.linkedin.com/in/ansh-sancheti-10b043aa
 
 Ansh builds large-scale projects end to end: finding and validating difficult data, designing the underlying system and methodology, building the public interface, and operating the finished product.
 
-His public work includes Reddit Atlas, a year-by-year map derived from Reddit aggregates covering 24.88 billion posts and comments; The Artisanal Tax, which turns 5,615,271 public menu rows into neighborhood-level price comparisons across 500 dishes and 219 New York City areas; and DONGs Gallery, a curated archive of 1,044 web experiments, games, tools, and curiosities.
+His public work includes Reddit Atlas, a year-by-year map derived from Reddit aggregates covering 24.88 billion posts and comments; The Spread, which turns 5,615,271 public menu rows into neighborhood-level price comparisons across 500 dishes and 219 New York City areas; and DONGs Gallery, a curated archive of 1,044 web experiments, games, tools, and curiosities.
 
 The projects range from data-intensive civic and cultural maps to real-time multiplayer games and autonomous AI experiments. Unless a project says otherwise, the work listed here was designed, built, and deployed by Ansh.
 
@@ -22,7 +22,7 @@ Ansh is a senior software engineer at [Teleskope](https://www.teleskope.ai/), bu
 
 - [Reddit Atlas](https://reddit-atlas.fly.dev/): Maps Reddit communities from 2006 through 2025 using shared user participation rather than text similarity. Its yearly source aggregates cover 24.88 billion posts and comments, with a public methodology and quality-assurance reports.
 - [New New York](https://newnewyork.dev/): A continuously maintained map of newly recorded and recently closing New York City restaurants. It combines open place datasets, verified community submissions, editorial-source monitoring, and human review rather than treating a single roundup as a database.
-- [The Artisanal Tax](https://sizzle-index.fly.dev/): Converts 5,615,271 public menu rows into an interactive comparison of prices for 500 dishes across 219 New York City neighborhoods.
+- [The Spread](https://sizzle-index.fly.dev/): Converts 5,615,271 public menu rows into an interactive comparison of prices for 500 dishes across 219 New York City neighborhoods.
 - [Outbid](https://lot-shot.fly.dev/): A daily and endless higher-or-lower game built from verified blue-chip painting auction records, focused on the strange relationship between art and money.
 - [DONGs Gallery](https://anshsancheti.github.io/dongs/gallery.html): Preserves and curates 1,044 websites featured by VSauce, including screenshots, descriptions, editorial tags, ratings, and archived replacements for destinations lost to link rot or Flash.
 - [Fourcorners](https://fourcorners.fly.dev/): A shareable quadrant-chart maker for placing anything on two custom axes, with reusable templates, public galleries, and stable result URLs.
